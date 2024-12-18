@@ -56,6 +56,7 @@ extension EventListItemView.Model {
 					.appendPrimaryText(" and ")
 					.appendGuestListButton(
 						text: otherGoingText(isGoing: true, event: event),
+						viewer: viewer,
 						guests: event.guests
 					)
 					.appendPrimaryText(" are going •")
@@ -73,6 +74,7 @@ extension EventListItemView.Model {
 					.appendPrimaryText(" and ")
 					.appendGuestListButton(
 						text: otherGoingText(isGoing: false, event: event),
+						viewer: viewer,
 						guests: event.guests
 					)
 					.appendPrimaryText(" are going •")

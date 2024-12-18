@@ -11,7 +11,7 @@ struct EventListView: View {
 
 	struct Model: Codable, Hashable {
 		var events: [EventListItemView.Model]
-	 }
+	}
 
 	var model: Model
 	private let buttons = [

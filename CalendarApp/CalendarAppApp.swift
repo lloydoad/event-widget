@@ -77,8 +77,8 @@ struct CalendarAppApp: App {
 							EventListView(model: model)
 						case .account(let model):
 							Text("Account: \(model.username)")
-						case .eventGuests(let model):
-							Text("Event guests: \(model.count)")
+						case .accounts(let model):
+							AccountListView(model: model)
 						case .subscriptions:
 							Text("Subscriptions")
 						case .composeEvent:

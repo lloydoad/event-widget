@@ -93,8 +93,19 @@ class AttributedStringBuilder {
 	}
 
 	@discardableResult
-	func appendGuestListButton(text: String, guests: [AccountModel]) throws -> AttributedStringBuilder {
-		let url = try DeepLinkParser.Route.eventGuests(guests).url()
+	func appendProfileBracket(_ account: AccountModel) throws -> AttributedStringBuilder {
+		let url = try DeepLinkParser.Route.account(account).url()
+		return appendButton(.bracket("profile", destination: url, color: .accent))
+	}
+
+	@discardableResult
+	func appendGuestListButton(text: String, viewer: AccountModel, guests: [AccountModel]) throws -> AttributedStringBuilder {
+		let accountListViewModel = try AccountListView.Model(
+			title: "guest list",
+			accounts: guests.map({ account in
+				try .init(viewer: viewer, account: account)
+			}))
+		let url = try DeepLinkParser.Route.accounts(accountListViewModel).url()
 		return appendButton(.primaryUnderline(text, destination: url))
 	}
 

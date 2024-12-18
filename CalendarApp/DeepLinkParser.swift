@@ -11,7 +11,7 @@ struct DeepLinkParser {
 	enum Route: Codable, Hashable {
 		case events(EventListView.Model)
 		case account(AccountModel)
-		case eventGuests([AccountModel])
+		case accounts(AccountListView.Model)
 		case subscriptions
 		case composeEvent
 
