@@ -7,37 +7,6 @@
 
 import SwiftUI
 
-enum AppFont {
-	case light
-	case large
-
-	var asFont: Font {
-		switch self {
-		case .light:
-			Font.system(size: 18, weight: .light, design: .serif)
-		case .large:
-			Font.system(size: 20, weight: .medium, design: .serif)
-		}
-	}
-}
-
-enum AppColor: Codable {
-	case primary
-	case secondary
-	case accent
-
-	var asUIColor: UIColor {
-		switch self {
-		case .accent:
-			return UIColor(red: 38.0 / 255.0, green: 167.0 / 255.0, blue: 222.0 / 255.0, alpha: 1)
-		case .primary:
-			return UIColor.label
-		case .secondary:
-			return UIColor.secondaryLabel
-		}
-	}
-}
-
 class AttributedStringBuilder {
 	private var fullString = AttributedString()
 
