@@ -10,10 +10,7 @@ import SwiftUI
 @main
 struct CalendarAppApp: App {
 	@State private var path: [DeepLinkParser.Route] = []
-	@State private var eventListModel: EventListView.Model = EventListView.Model(eventRows: [
-		viewModel(guest: catAccount),
-		viewModel(guest: ivoAccount)
-	])
+	@State private var eventListModel: EventListView.Model = EventListView.Model(events: [])
 	private let deepLinkParser = DeepLinkParser()
 
     var body: some Scene {
