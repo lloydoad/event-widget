@@ -11,6 +11,7 @@ struct AccountListView: View {
 	struct Model: Hashable, Codable {
 		var title: String
 		var accounts: [AccountListItemView.Model]
+		var footer: AttributedString?
 	}
 
 	var model: Model
@@ -25,6 +26,11 @@ struct AccountListView: View {
 					ForEach(model.accounts, id: \.hashValue) { account in
 						AccountListItemView(model: account)
 							.padding(.bottom, 4)
+					}
+					if let footer = model.footer {
+						Text(footer)
+							.font(.system(size: 20, weight: .ultraLight, design: .serif))
+							.frame(maxWidth: .infinity, alignment: .leading)
 					}
 				}
 				.frame(maxWidth: .infinity)
@@ -50,15 +56,17 @@ struct AccountListView: View {
 			try! AccountListItemView.Model(
 				viewer: AccountModelMocks.lloydAccount,
 				account: AccountModelMocks.ivoAccount
-			),
-			try! AccountListItemView.Model(
-				viewer: AccountModelMocks.lloydAccount,
-				account: AccountModelMocks.nickAccount
-			),
-			try! AccountListItemView.Model(
-				viewer: AccountModelMocks.lloydAccount,
-				account: AccountModelMocks.catAccount
 			)
 		])
 	)
+	AccountListView(model: AccountListView.Model(
+		title: "Subscriptions",
+		accounts: [],
+		footer: "Sync your contacts to see who has events!\n[Sync contacts]"
+	))
+	AccountListView(model: AccountListView.Model(
+		title: "Subscriptions",
+		accounts: [],
+		footer: "No contacts have joined yet!\n[Send some invites]"
+	))
 }
