@@ -95,21 +95,8 @@ class AttributedStringBuilder {
 	}
 
 	@discardableResult
-	func appendPrimaryText(_ text: String) -> AttributedStringBuilder {
+	func primaryText(_ text: String) -> AttributedStringBuilder {
 		self.appendText(.primary(text))
-	}
-
-//	@discardableResult
-//	func appendAccountButton(_ account: AccountModel) throws -> AttributedStringBuilder {
-//		let url = try DeepLinkParser.Route.account(.init(account: account)).url()
-//		return appendButton(.primaryUnderline(account.username, destination: url))
-//	}
-
-	@discardableResult
-	func appendProfileBracket(_ account: AccountModel) throws -> AttributedStringBuilder {
-		let url = try DeepLinkParser.Route.account(.init(account: account)).url()
-		// TODO: change
-		return appendButton(.bracket("profile", destination: url, color: .appTint))
 	}
 
 	@discardableResult
@@ -125,24 +112,5 @@ class AttributedStringBuilder {
 	@discardableResult
 	func underline(_ text: String, url: URL, color: AppColor) throws -> AttributedStringBuilder {
 		appendButton(.underline(text, destination: url, color: color))
-	}
-
-	@discardableResult
-	func appendGuestListButton(text: String, viewer: AccountModel, guests: [AccountModel]) throws -> AttributedStringBuilder {
-		let accountListViewModel = try AccountListView.Model(
-			variant: .guestList,
-			accounts: guests.map({ account in
-				try .account(viewer: viewer, account: account)
-			})
-		)
-		let route = DeepLinkParser.Route.accounts(accountListViewModel)
-		return try underline(text, deeplink: route, color: .primary)
-	}
-
-	func appendLocationButton(_ location: LocationModel) throws -> AttributedStringBuilder {
-		guard let url = location.appleMapsDeepLink else {
-			throw NSError(domain: "calendarApp", code: 1)
-		}
-		return try underline(location.address, url: url, color: .primary)
 	}
 }

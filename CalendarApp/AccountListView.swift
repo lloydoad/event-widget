@@ -59,12 +59,12 @@ struct AccountListView: View {
 				let builder = AttributedStringBuilder(baseStyle: .init(appFont: .light))
 				if !hasSyncedContacts {
 					try builder
-						.appendPrimaryText("sync your contacts to see who has upcoming events\n")
+						.primaryText("sync your contacts to see who has upcoming events\n")
 						.bracket("sync contacts", deeplink: .action(.sync), color: .appTint)
 				}
 				if model.accounts.isEmpty {
 					try builder
-						.appendPrimaryText("\n\nlooks like your contacts aren't here yet\n")
+						.primaryText("\n\nlooks like your contacts aren't here yet\n")
 						.bracket("send invites", deeplink: .action(.invite), color: .appTint)
 				}
 				return builder.build()

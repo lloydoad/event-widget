@@ -20,19 +20,21 @@ extension ListItemView.Model {
 
 	static private func accountControls(viewer: AccountModel, account: AccountModel) throws -> AttributedString {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .large)
-		let builder = AttributedStringBuilder(baseStyle: baseStyle)
-		try builder.appendProfileBracket(account)
-		builder.appendPrimaryText(" ")
+		let builder = try AttributedStringBuilder(baseStyle: baseStyle)
+			.bracket("profile",
+					 deeplink: .account(.init(account: account)),
+					 color: .appTint)
+		builder.primaryText(" ")
 
 		guard viewer != account else { return builder.build() }
 		if account.isSubscriber(viewer: viewer) {
 			try builder
 				.bracket("unsubscribe", deeplink: .action(.unsubscribe), color: .appTint)
-				.appendPrimaryText(" ")
+				.primaryText(" ")
 		} else {
 			try builder
 				.bracket("subscribe", deeplink: .action(.subscribe), color: .appTint)
-				.appendPrimaryText(" ")
+				.primaryText(" ")
 		}
 
 		return builder.build()
@@ -41,7 +43,7 @@ extension ListItemView.Model {
 	static private func accountContent(viewer: AccountModel, account: AccountModel) throws -> AttributedString {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .large)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
-		builder.appendPrimaryText("\(account.username), \(account.phoneNumber)")
+		builder.primaryText("\(account.username), \(account.phoneNumber)")
 		let content = builder.build()
 		return content
 	}
@@ -73,17 +75,17 @@ extension ListItemView.Model {
 		if event.joinable(viewer: viewer) {
 			try builder
 				.bracket("join", deeplink: .action(.join), color: .appTint)
-				.appendPrimaryText(" ")
+				.primaryText(" ")
 		}
 		if event.cancellable(viewer: viewer) {
 			try builder
 				.bracket("can't go", deeplink: .action(.cantGo), color: .appTint)
-				.appendPrimaryText(" ")
+				.primaryText(" ")
 		}
 		if event.deletable(viewer: viewer) {
 			try builder
 				.bracket("delete", deeplink: .action(.delete), color: .appTint)
-				.appendPrimaryText(" ")
+				.primaryText(" ")
 		}
 		return builder.build()
 	}
@@ -93,9 +95,9 @@ extension ListItemView.Model {
 													   end: event.endDate)
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light, strikeThrough: true)
 		return try AttributedStringBuilder(baseStyle: baseStyle)
-			.appendPrimaryText("\(event.description) • \(timeValue) at ")
-			.appendLocationButton(event.location)
-			.appendPrimaryText(" • ")
+			.primaryText("\(event.description) • \(timeValue) at ")
+			.location(event.location)
+			.primaryText(" • ")
 			.build()
 	}
 
@@ -105,45 +107,45 @@ extension ListItemView.Model {
 		let isNonCreatorGuest = event.isGoing(viewer: viewer) && viewer != event.creator
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
 		let builder = try AttributedStringBuilder(baseStyle: baseStyle)
-			.appendPrimaryText("\(event.description) • \(timeValue) at ")
-			.appendLocationButton(event.location)
-			.appendPrimaryText(" • ")
+			.primaryText("\(event.description) • \(timeValue) at ")
+			.location(event.location)
+			.primaryText(" • ")
 
 		if isNonCreatorGuest {
 			if event.guests.count > 1 {
 				try builder
 					.account(viewer)
-					.appendPrimaryText(", ")
+					.primaryText(", ")
 					.account(event.creator)
-					.appendPrimaryText(" and ")
-					.appendGuestListButton(
-						text: otherGoingText(isGoing: true, event: event),
+					.primaryText(" and ")
+					.guestList(
+						otherGoingText(isGoing: true, event: event),
 						viewer: viewer,
-						guests: event.guests
+						event: event
 					)
-					.appendPrimaryText(" are going •")
+					.primaryText(" are going •")
 			} else {
 				try builder
 					.account(viewer)
-					.appendPrimaryText(" and ")
+					.primaryText(" and ")
 					.account(event.creator)
-					.appendPrimaryText(" are going •")
+					.primaryText(" are going •")
 			}
 		} else {
 			if event.guests.count > 0 {
 				try builder
 					.account(event.creator)
-					.appendPrimaryText(" and ")
-					.appendGuestListButton(
-						text: otherGoingText(isGoing: false, event: event),
+					.primaryText(" and ")
+					.guestList(
+						otherGoingText(isGoing: false, event: event),
 						viewer: viewer,
-						guests: event.guests
+						event: event
 					)
-					.appendPrimaryText(" are going •")
+					.primaryText(" are going •")
 			} else {
 				try builder
 					.account(event.creator)
-					.appendPrimaryText(" is going •")
+					.primaryText(" is going •")
 			}
 		}
 
@@ -154,7 +156,27 @@ extension ListItemView.Model {
 extension AttributedStringBuilder {
 	func account(_ account: AccountModel) throws -> AttributedStringBuilder {
 		try self.underline(account.username,
-					   deeplink: .account(.init(account: account)),
-					   color: .primary)
+						   deeplink: .account(.init(account: account)),
+						   color: .primary)
+	}
+
+	func location(_ location: LocationModel) throws -> AttributedStringBuilder {
+		guard let url = location.appleMapsDeepLink else {
+			throw NSError(domain: "calendarApp", code: 1)
+		}
+		return try underline(location.address,
+							 url: url,
+							 color: .primary)
+	}
+
+	func guestList(_ text: String, viewer: AccountModel, event: EventModel) throws -> AttributedStringBuilder {
+		let accounts = try AccountListView.Model(
+			variant: .guestList,
+			accounts: (event.guests + [event.creator]).map({ account in
+				try .account(viewer: viewer, account: account)
+			})
+		)
+		let route = DeepLinkParser.Route.accounts(accounts)
+		return try underline(text, deeplink: route, color: .primary)
 	}
 }
