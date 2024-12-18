@@ -37,6 +37,7 @@ extension EventModel {
 struct EventModelMocks {
 	static func event(
 		creator: AccountModel,
+		description: String = "building lego till 8 or later. I'm not sure",
 		guests: [AccountModel] = [
 			AccountModelMocks.nickAccount,
 			AccountModelMocks.alanAccount,
@@ -46,7 +47,7 @@ struct EventModelMocks {
 	) -> EventModel {
 		EventModel(
 			creator: creator,
-			description: "building lego till 8 or later. I'm not sure",
+			description: description,
 			startDate: .now,
 			endDate: .now,
 			location: "235 Valencia St",
