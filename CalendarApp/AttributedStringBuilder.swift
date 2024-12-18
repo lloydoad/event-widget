@@ -59,18 +59,31 @@ class AttributedStringBuilder {
 	}
 
 	@discardableResult
-	func appendText(_ text: Text) -> AttributedStringBuilder {
+	private func appendText(_ text: Text) -> AttributedStringBuilder {
 		fullString += get(text: text.text, segmentStyle: text.segmentStyle)
 		return self
 	}
 
 	@discardableResult
-	func appendButton(_ button: Button) -> AttributedStringBuilder {
+	private func appendButton(_ button: Button) -> AttributedStringBuilder {
 		var segment = get(text: button.text, segmentStyle: button.segmentStyle)
 		segment.link = button.destination
+		segment.foregroundColor = button.segmentStyle.color.asUIColor
 		fullString += segment
 		return self
 	}
+
+	private func get(text: String, segmentStyle: SegmentStyle) -> AttributedString {
+		var attributedSegment = AttributedString(text)
+		attributedSegment.font = baseStyle.appFont.asFont
+		if segmentStyle.underline {
+			attributedSegment.underlineStyle = .single
+		}
+		attributedSegment.foregroundColor = Color(segmentStyle.color.asUIColor)
+		return attributedSegment
+	}
+
+	// MARK: - API
 
 	func build() -> AttributedString {
 		return fullString
@@ -90,7 +103,8 @@ class AttributedStringBuilder {
 	@discardableResult
 	func appendProfileBracket(_ account: AccountModel) throws -> AttributedStringBuilder {
 		let url = try DeepLinkParser.Route.account(account).url()
-		return appendButton(.bracket("profile", destination: url, color: .accent))
+		// TODO: change
+		return appendButton(.bracket("profile", destination: url, color: .appTint))
 	}
 
 	@discardableResult
@@ -103,8 +117,9 @@ class AttributedStringBuilder {
 		let accountListViewModel = try AccountListView.Model(
 			variant: .guestList,
 			accounts: guests.map({ account in
-				try .init(viewer: viewer, account: account)
-			}))
+				try .account(viewer: viewer, account: account)
+			})
+		)
 		let url = try DeepLinkParser.Route.accounts(accountListViewModel).url()
 		return appendButton(.primaryUnderline(text, destination: url))
 	}
@@ -114,15 +129,5 @@ class AttributedStringBuilder {
 			throw NSError(domain: "calendarApp", code: 1)
 		}
 		return appendButton(.primaryUnderline(location.address, destination: url))
-	}
-
-	private func get(text: String, segmentStyle: SegmentStyle) -> AttributedString {
-		var attributedSegment = AttributedString(text)
-		attributedSegment.font = baseStyle.appFont.asFont
-		if segmentStyle.underline {
-			attributedSegment.underlineStyle = .single
-		}
-		attributedSegment.foregroundColor = Color(segmentStyle.color.asUIColor)
-		return attributedSegment
 	}
 }

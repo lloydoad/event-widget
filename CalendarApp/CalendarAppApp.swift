@@ -12,7 +12,7 @@ struct CalendarAppApp: App {
 	@State private var path: [DeepLinkParser.Route] = []
 	@State private var eventListModel: EventListView.Model = EventListView.Model(
 		events: [
-		try! EventListItemView.Model(
+			try! .event(
 			viewer: AccountModelMocks.lloydAccount,
 			event: EventModelMocks.event(
 				creator: AccountModelMocks.serenaAccount,
@@ -24,7 +24,7 @@ struct CalendarAppApp: App {
 				]
 			)
 		),
-		try! EventListItemView.Model(
+			try! .event(
 			viewer: AccountModelMocks.lloydAccount,
 			event: EventModelMocks.event(
 				creator: AccountModelMocks.nickAccount,
@@ -39,7 +39,7 @@ struct CalendarAppApp: App {
 				]
 			)
 		),
-		try! EventListItemView.Model(
+			try! .event(
 			viewer: AccountModelMocks.lloydAccount,
 			event: EventModelMocks.event(
 				creator: AccountModelMocks.lloydAccount,
@@ -52,7 +52,7 @@ struct CalendarAppApp: App {
 				guests: []
 			)
 		),
-		try! EventListItemView.Model(
+			try! .event(
 			viewer: AccountModelMocks.lloydAccount,
 			event: EventModelMocks.event(
 				creator: AccountModelMocks.nickAccount,
@@ -69,11 +69,11 @@ struct CalendarAppApp: App {
 		subscription: AccountListView.Model.init(
 			variant: .subscriptions,
 			accounts: [
-				try! AccountListItemView.Model(
+				try! .account(
 					viewer: AccountModelMocks.lloydAccount,
 					account: AccountModelMocks.serenaAccount
 				),
-				try! AccountListItemView.Model(
+				try! .account(
 					viewer: AccountModelMocks.lloydAccount,
 					account: AccountModelMocks.ivoAccount
 				)

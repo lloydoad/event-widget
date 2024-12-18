@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EventListItemView: View {
+struct ListItemView: View {
 	struct Model: Hashable, Codable {
 		var content: AttributedString
 		var controls: AttributedString
@@ -30,32 +30,32 @@ struct EventListItemView: View {
 #Preview {
 	ScrollView {
 		Text("View: Cat")
-		EventListItemView(model: try! EventListItemView.Model(
+		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.catAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 		))
 		Text("View: Ivo")
-		EventListItemView(model: try! EventListItemView.Model(
+		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.ivoAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 		))
 		Text("View: Lloyd")
-		EventListItemView(model: try! EventListItemView.Model(
+		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.lloydAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 		))
 		Text("View: Cat")
-		EventListItemView(model: try! EventListItemView.Model(
+		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.catAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
 		))
 		Text("View: Ivo")
-		EventListItemView(model: try! EventListItemView.Model(
+		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.ivoAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
 		))
 		Text("View: Lloyd")
-		EventListItemView(model: try! EventListItemView.Model(
+		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.lloydAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
 		))

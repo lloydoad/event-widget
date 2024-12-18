@@ -7,39 +7,79 @@
 
 import SwiftUI
 
-extension EventListItemView.Model {
-	init(viewer: AccountModel, event: EventModel) throws {
-		content = try EventListItemView.Model.content(viewer: viewer, event: event)
-		controls = try EventListItemView.Model.controls(viewer: viewer, event: event)
+extension ListItemView.Model {
+
+	// MARK: - Account
+
+	static func account(viewer: AccountModel, account: AccountModel) throws -> ListItemView.Model {
+		ListItemView.Model(
+			content: try ListItemView.Model.accountContent(viewer: viewer, account: account),
+			controls: try ListItemView.Model.accountControls(viewer: viewer, account: account)
+		)
 	}
 
-	static func otherGoingText(isGoing: Bool, event: EventModel) -> String {
+	static private func accountControls(viewer: AccountModel, account: AccountModel) throws -> AttributedString {
+		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .large)
+		let builder = AttributedStringBuilder(baseStyle: baseStyle)
+		try builder.appendProfileBracket(account)
+		builder.appendPrimaryText(" ")
+
+		guard viewer != account else { return builder.build() }
+		if account.isSubscriber(viewer: viewer) {
+			try builder
+				.bracket("unsubscribe", deeplink: .action(.unsubscribe), color: .appTint)
+				.appendPrimaryText(" ")
+		} else {
+			try builder
+				.bracket("subscribe", deeplink: .action(.subscribe), color: .appTint)
+				.appendPrimaryText(" ")
+		}
+
+		return builder.build()
+	}
+
+	static private func accountContent(viewer: AccountModel, account: AccountModel) throws -> AttributedString {
+		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .large)
+		let builder = AttributedStringBuilder(baseStyle: baseStyle)
+		builder.appendPrimaryText("\(account.username), \(account.phoneNumber)")
+		return builder.build()
+	}
+
+	// MARK: - Event
+	static func event(viewer: AccountModel, event: EventModel) throws -> ListItemView.Model {
+		ListItemView.Model(
+			content: try ListItemView.Model.eventContent(viewer: viewer, event: event),
+			controls: try ListItemView.Model.eventControls(viewer: viewer, event: event)
+		)
+	}
+
+	static private func otherGoingText(isGoing: Bool, event: EventModel) -> String {
 		let guestCount = max(event.guests.count - (isGoing ? 1 : 0), 0)
 		return "\(guestCount) other\(guestCount > 1 ? "s" : "")"
 	}
 
-	static func controls(viewer: AccountModel, event: EventModel) throws -> AttributedString {
+	static private func eventControls(viewer: AccountModel, event: EventModel) throws -> AttributedString {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
 		if event.joinable(viewer: viewer) {
 			try builder
-				.bracket("join", deeplink: .action(.join), color: .accent)
+				.bracket("join", deeplink: .action(.join), color: .appTint)
 				.appendPrimaryText(" ")
 		}
 		if event.cancellable(viewer: viewer) {
 			try builder
-				.bracket("can't go", deeplink: .action(.cantGo), color: .accent)
+				.bracket("can't go", deeplink: .action(.cantGo), color: .appTint)
 				.appendPrimaryText(" ")
 		}
 		if event.deletable(viewer: viewer) {
 			try builder
-				.bracket("delete", deeplink: .action(.delete), color: .accent)
+				.bracket("delete", deeplink: .action(.delete), color: .appTint)
 				.appendPrimaryText(" ")
 		}
 		return builder.build()
 	}
 
-	static func content(viewer: AccountModel, event: EventModel) throws -> AttributedString {
+	static private func eventContent(viewer: AccountModel, event: EventModel) throws -> AttributedString {
 		let timeValue = DateFormatter().formattedRange(start: event.startDate,
 													   end: event.endDate)
 		let isNonCreatorGuest = event.isGoing(viewer: viewer) && viewer != event.creator

@@ -14,7 +14,7 @@ struct AccountListView: View {
 	}
 	struct Model: Hashable, Codable {
 		var variant: Variant
-		var accounts: [AccountListItemView.Model]
+		var accounts: [ListItemView.Model]
 	}
 
 	@Environment(\.hasSyncedContacts) var hasSyncedContacts
@@ -27,7 +27,7 @@ struct AccountListView: View {
 					Text(title)
 						.frame(maxWidth: .infinity, alignment: .leading)
 					ForEach(model.accounts, id: \.hashValue) { account in
-						AccountListItemView(model: account)
+						ListItemView(model: account)
 							.padding(.bottom, 4)
 					}
 					if let footer {
@@ -65,12 +65,12 @@ struct AccountListView: View {
 				if !hasSyncedContacts {
 					try builder
 						.appendPrimaryText("sync your contacts to see who has upcoming events\n")
-						.bracket("sync contacts", deeplink: .action(.sync), color: .accent)
+						.bracket("sync contacts", deeplink: .action(.sync), color: .appTint)
 				}
 				if model.accounts.isEmpty {
 					try builder
 						.appendPrimaryText("\n\nlooks like your contacts aren't here yet\n")
-						.bracket("send invites", deeplink: .action(.invite), color: .accent)
+						.bracket("send invites", deeplink: .action(.invite), color: .appTint)
 				}
 				return builder.build()
 			} catch {
@@ -84,15 +84,15 @@ struct AccountListView: View {
 	AccountListView(model: AccountListView.Model(
 		variant: .guestList,
 		accounts: [
-			try! AccountListItemView.Model(
+			try! .account(
 				viewer: AccountModelMocks.lloydAccount,
 				account: AccountModelMocks.alanAccount
 			),
-			try! AccountListItemView.Model(
+			try! .account(
 				viewer: AccountModelMocks.lloydAccount,
 				account: AccountModelMocks.serenaAccount
 			),
-			try! AccountListItemView.Model(
+			try! .account(
 				viewer: AccountModelMocks.lloydAccount,
 				account: AccountModelMocks.ivoAccount
 			)

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EventListView: View {
 	struct Model: Codable, Hashable {
-		var events: [EventListItemView.Model]
+		var events: [ListItemView.Model]
 		var subscription: AccountListView.Model
 	}
 
@@ -23,7 +23,7 @@ struct EventListView: View {
 						.font(.system(size: 24, weight: .medium, design: .serif))
 						.frame(maxWidth: .infinity, alignment: .leading)
 					ForEach(model.events, id: \.hashValue) { event in
-						EventListItemView(model: event)
+						ListItemView(model: event)
 							.padding(.bottom, 16)
 					}
 				}
@@ -61,15 +61,15 @@ struct EventListView: View {
 	EventListView(
 		model: EventListView.Model(
 			events: [
-				try! EventListItemView.Model(
+				try! .event(
 					viewer: AccountModelMocks.catAccount,
 					event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 				),
-				try! EventListItemView.Model(
+				try! .event(
 					viewer: AccountModelMocks.ivoAccount,
 					event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 				),
-				try! EventListItemView.Model(
+				try! .event(
 					viewer: AccountModelMocks.lloydAccount,
 					event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 				)
