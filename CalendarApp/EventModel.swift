@@ -44,15 +44,15 @@ extension EventModel {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
 		if joinable(guest: guest) {
-			builder.appendBracketButton("join", destination: "www.apple.com", color: .positive)
+			builder.appendBracketButton("join", destination: "www.apple.com", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
 		if cancellable(guest: guest) {
-			builder.appendBracketButton("cancel", destination: "www.apple.com", color: .negative)
+			builder.appendBracketButton("cancel", destination: "www.apple.com", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
 		if deletable(guest: guest) {
-			builder.appendBracketButton("delete", destination: "www.apple.com", color: .negative)
+			builder.appendBracketButton("delete", destination: "www.apple.com", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
 		builder.appendBracketButton("remind me", destination: "www.apple.com", color: .secondary)

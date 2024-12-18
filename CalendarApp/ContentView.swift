@@ -10,6 +10,18 @@ import SwiftUI
 struct ContentView: View {
 	struct Model {
 		var eventRows: [EventRowView.Model]
+		var bottomButtons: [ButtonModel] = [
+			ButtonModel(
+				title: "create new event",
+				destination: "http://maps.apple.com/?ll=50.894967,4.341626",
+				color: .secondary
+			),
+			ButtonModel(
+				title: "subscribe to more friends",
+				destination: "http://maps.apple.com/?ll=50.894967,4.341626",
+				color: .secondary
+			),
+		]
 	}
 
 	var model: Model
@@ -36,22 +48,7 @@ struct ContentView: View {
 					}
 					.frame(maxWidth: .infinity)
 				}
-				VStack(spacing: 4) {
-					Text(
-						AttributedStringBuilder(baseStyle: .init(appFont: .large))
-							.appendBracketButton("create new event",
-												 destination: "www.apple.com",
-												 color: .secondary).build()
-					)
-					.frame(maxWidth: .infinity, alignment: .trailing)
-					Text(
-						AttributedStringBuilder(baseStyle: .init(appFont: .large))
-							.appendBracketButton("subscribe to more friends",
-												 destination: "www.apple.com",
-												 color: .secondary).build()
-					)
-					.frame(maxWidth: .infinity, alignment: .trailing)
-				}
+				EventListButtonGroup(models: model.bottomButtons)
 			}
 			.padding(.horizontal, 16)
 			.padding(.bottom, 16)
@@ -60,11 +57,13 @@ struct ContentView: View {
 }
 
 #Preview {
-	ContentView(model: ContentView.Model(eventRows: [
-		viewModel(guest: "cat"),
-		viewModel(guest: "cat"),
-		viewModel(guest: "cat"),
-		viewModel(guest: "cat"),
-		viewModel(guest: "cat")
-	]))
+	ContentView(
+		model: ContentView.Model(eventRows: [
+			viewModel(guest: "cat"),
+			viewModel(guest: "cat"),
+			viewModel(guest: "cat"),
+			viewModel(guest: "cat"),
+			viewModel(guest: "cat")
+		])
+	)
 }

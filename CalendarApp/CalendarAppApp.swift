@@ -11,7 +11,10 @@ import SwiftUI
 struct CalendarAppApp: App {
     var body: some Scene {
         WindowGroup {
-			ContentView(model: ContentView.Model(eventRows: []))
+			ContentView(model: ContentView.Model(eventRows: [
+				viewModel(guest: "cat"),
+				viewModel(guest: "unknown")
+			]))
         }
     }
 }
