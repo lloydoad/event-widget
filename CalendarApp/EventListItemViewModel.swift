@@ -22,18 +22,20 @@ extension EventListItemView.Model {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
 		if event.joinable(viewer: viewer) {
-			builder.appendBracketButton("join", destination: "calendarapp://account", color: .accent)
-			builder.appendPrimaryText(" ")
+			try builder
+				.bracket("join", deeplink: .action(.join), color: .accent)
+				.appendPrimaryText(" ")
 		}
 		if event.cancellable(viewer: viewer) {
-			builder.appendBracketButton("can't go", destination: "calendarapp://account", color: .accent)
-			builder.appendPrimaryText(" ")
+			try builder
+				.bracket("can't go", deeplink: .action(.cantGo), color: .accent)
+				.appendPrimaryText(" ")
 		}
 		if event.deletable(viewer: viewer) {
-			builder.appendBracketButton("delete", destination: "calendarapp://account", color: .accent)
-			builder.appendPrimaryText(" ")
+			try builder
+				.bracket("delete", deeplink: .action(.delete), color: .accent)
+				.appendPrimaryText(" ")
 		}
-		builder.appendPrimaryText(" ")
 		return builder.build()
 	}
 

@@ -8,28 +8,30 @@
 import SwiftUI
 
 struct AccountListView: View {
+	enum Variant: Hashable, Codable {
+		case guestList
+		case subscriptions
+	}
 	struct Model: Hashable, Codable {
-		var title: String
+		var variant: Variant
 		var accounts: [AccountListItemView.Model]
-		var footer: AttributedString?
 	}
 
+	@Environment(\.hasSyncedContacts) var hasSyncedContacts
 	var model: Model
 
     var body: some View {
 		VStack {
 			ScrollView {
 				VStack(spacing: 16) {
-					Text(model.title)
-						.font(.system(size: 24, weight: .medium, design: .serif))
+					Text(title)
 						.frame(maxWidth: .infinity, alignment: .leading)
 					ForEach(model.accounts, id: \.hashValue) { account in
 						AccountListItemView(model: account)
 							.padding(.bottom, 4)
 					}
-					if let footer = model.footer {
+					if let footer {
 						Text(footer)
-							.font(.system(size: 20, weight: .ultraLight, design: .serif))
 							.frame(maxWidth: .infinity, alignment: .leading)
 					}
 				}
@@ -39,11 +41,48 @@ struct AccountListView: View {
 		.padding(.horizontal, 16)
 		.padding(.bottom, 16)
     }
+
+	private var title: AttributedString {
+		switch model.variant {
+		case .guestList:
+			AttributedStringBuilder(baseStyle: .init(appFont: .navigationTitle))
+				.appendPrimaryText("guest list")
+				.build()
+		case .subscriptions:
+			AttributedStringBuilder(baseStyle: .init(appFont: .navigationTitle))
+				.appendPrimaryText("subscriptions")
+				.build()
+		}
+	}
+
+	private var footer: AttributedString? {
+		switch model.variant {
+		case .guestList:
+			return nil
+		case .subscriptions:
+			do {
+				let builder = AttributedStringBuilder(baseStyle: .init(appFont: .light))
+				if !hasSyncedContacts {
+					try builder
+						.appendPrimaryText("sync your contacts to see who has upcoming events\n")
+						.bracket("sync contacts", deeplink: .action(.sync), color: .accent)
+				}
+				if model.accounts.isEmpty {
+					try builder
+						.appendPrimaryText("\n\nlooks like your contacts aren't here yet\n")
+						.bracket("send invites", deeplink: .action(.invite), color: .accent)
+				}
+				return builder.build()
+			} catch {
+				return nil
+			}
+		}
+	}
 }
 
 #Preview {
 	AccountListView(model: AccountListView.Model(
-		title: "Guest list",
+		variant: .guestList,
 		accounts: [
 			try! AccountListItemView.Model(
 				viewer: AccountModelMocks.lloydAccount,
@@ -60,13 +99,13 @@ struct AccountListView: View {
 		])
 	)
 	AccountListView(model: AccountListView.Model(
-		title: "Subscriptions",
-		accounts: [],
-		footer: "Sync your contacts to see who has events!\n[Sync contacts]"
+		variant: .subscriptions,
+		accounts: []
 	))
+	.environment(\.hasSyncedContacts, true)
 	AccountListView(model: AccountListView.Model(
-		title: "Subscriptions",
-		accounts: [],
-		footer: "No contacts have joined yet!\n[Send some invites]"
+		variant: .subscriptions,
+		accounts: []
 	))
+	.environment(\.hasSyncedContacts, false)
 }

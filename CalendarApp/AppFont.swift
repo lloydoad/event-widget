@@ -10,6 +10,8 @@ import SwiftUI
 enum AppFont {
 	case light
 	case large
+	case footer
+	case navigationTitle
 
 	var asFont: Font {
 		switch self {
@@ -17,6 +19,10 @@ enum AppFont {
 			Font.system(size: 18, weight: .light, design: .serif)
 		case .large:
 			Font.system(size: 20, weight: .medium, design: .serif)
+		case .footer:
+			Font.system(size: 20, weight: .ultraLight, design: .serif)
+		case .navigationTitle:
+			Font.system(size: 24, weight: .medium, design: .serif)
 		}
 	}
 }

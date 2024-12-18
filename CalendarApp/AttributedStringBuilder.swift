@@ -82,11 +82,6 @@ class AttributedStringBuilder {
 	}
 
 	@discardableResult
-	func appendBracketButton(_ text: String, destination: String, color: AppColor) -> AttributedStringBuilder {
-		self.appendButton(.bracket(text, destination: URL(string: destination)!, color: color))
-	}
-
-	@discardableResult
 	func appendAccountButton(_ account: AccountModel, isCurrentViewer: Bool = false) throws -> AttributedStringBuilder {
 		let url = try DeepLinkParser.Route.account(account).url()
 		return appendButton(.primaryUnderline(isCurrentViewer ? "you" : account.username, destination: url))
@@ -99,9 +94,14 @@ class AttributedStringBuilder {
 	}
 
 	@discardableResult
+	func bracket(_ text: String, deeplink: DeepLinkParser.Route, color: AppColor) throws -> AttributedStringBuilder {
+		appendButton(.bracket(text, destination: try deeplink.url(), color: color))
+	}
+
+	@discardableResult
 	func appendGuestListButton(text: String, viewer: AccountModel, guests: [AccountModel]) throws -> AttributedStringBuilder {
 		let accountListViewModel = try AccountListView.Model(
-			title: "guest list",
+			variant: .guestList,
 			accounts: guests.map({ account in
 				try .init(viewer: viewer, account: account)
 			}))

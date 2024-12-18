@@ -8,12 +8,23 @@
 import SwiftUI
 
 struct DeepLinkParser {
+	enum RouteAction: Codable, Hashable {
+		case join
+		case cantGo
+		case delete
+		case subscribe
+		case unsubscribe
+		case sync
+		case invite
+	}
+
 	enum Route: Codable, Hashable {
 		case events(EventListView.Model)
 		case account(AccountModel)
 		case accounts(AccountListView.Model)
-		case subscriptions
+		case subscriptions(AccountListView.Model)
 		case composeEvent
+		case action(RouteAction)
 
 		func url(modelParser: ModelParser = .init()) throws -> URL {
 			let dataString = try modelParser.encode(self)

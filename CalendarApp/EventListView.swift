@@ -8,24 +8,12 @@
 import SwiftUI
 
 struct EventListView: View {
-
 	struct Model: Codable, Hashable {
 		var events: [EventListItemView.Model]
+		var subscription: AccountListView.Model
 	}
 
 	var model: Model
-	private let buttons = [
-		ButtonModel(
-		   title: "create new event",
-		   destination: "http://maps.apple.com/?ll=50.894967,4.341626",
-		   color: .secondary
-		),
-		ButtonModel(
-		   title: "subscribe to more friends",
-		   destination: "http://maps.apple.com/?ll=50.894967,4.341626",
-		   color: .secondary
-		),
-	]
 
 	var body: some View {
 		VStack {
@@ -42,40 +30,53 @@ struct EventListView: View {
 				.frame(maxWidth: .infinity)
 			}
 			VStack() {
-				ForEach(buttons, id: \.self) { button in
-					Text(
-						AttributedStringBuilder(baseStyle: .init(appFont: .large))
-							.appendBracketButton(
-								button.title,
-								destination: button.destination,
-								color: button.color
-							).build()
-					)
-					.frame(maxWidth: .infinity, alignment: .trailing)
-					.padding(4)
+				ForEach(buttons(), id: \.self) { button in
+					Text(button.asAttributedString)
+						.frame(maxWidth: .infinity, alignment: .trailing)
+						.padding(4)
 				}
 			}
 		}
 		.padding(.horizontal, 16)
 		.padding(.bottom, 16)
 	}
+
+	private func buttons() -> [ButtonModel] {
+		[
+			ButtonModel(
+				title: "create new event",
+				color: .secondary,
+				route: .composeEvent
+			),
+			ButtonModel(
+				title: "subscribe to more friends",
+				color: .secondary,
+				route: .subscriptions(model.subscription)
+			),
+		]
+	}
 }
 
 #Preview {
 	EventListView(
-		model: EventListView.Model(events: [
-			try! EventListItemView.Model(
-				viewer: AccountModelMocks.catAccount,
-				event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
-			),
-			try! EventListItemView.Model(
-				viewer: AccountModelMocks.ivoAccount,
-				event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
-			),
-			try! EventListItemView.Model(
-				viewer: AccountModelMocks.lloydAccount,
-				event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
-			)
-		])
+		model: EventListView.Model(
+			events: [
+				try! EventListItemView.Model(
+					viewer: AccountModelMocks.catAccount,
+					event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
+				),
+				try! EventListItemView.Model(
+					viewer: AccountModelMocks.ivoAccount,
+					event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
+				),
+				try! EventListItemView.Model(
+					viewer: AccountModelMocks.lloydAccount,
+					event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
+				)
+			],
+			subscription: AccountListView.Model(
+				variant: .subscriptions,
+				accounts: []
+			))
 	)
 }

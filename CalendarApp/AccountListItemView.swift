@@ -41,18 +41,20 @@ extension AccountListItemView.Model {
 
 		guard viewer != account else { return builder.build() }
 		if account.isSubscriber(viewer: viewer) {
-			builder.appendBracketButton("unsubscribe", destination: "calendarapp://account", color: .accent)
-			builder.appendPrimaryText(" ")
+			try builder
+				.bracket("unsubscribe", deeplink: .action(.unsubscribe), color: .accent)
+				.appendPrimaryText(" ")
 		} else {
-			builder.appendBracketButton("subscribe", destination: "calendarapp://account", color: .accent)
-			builder.appendPrimaryText(" ")
+			try builder
+				.bracket("subscribe", deeplink: .action(.subscribe), color: .accent)
+				.appendPrimaryText(" ")
 		}
 
 		return builder.build()
 	}
 
 	static func content(viewer: AccountModel, account: AccountModel) throws -> AttributedString {
-		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .large)
+		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
 		builder.appendPrimaryText("\(account.username), \(account.phoneNumber)")
 		return builder.build()

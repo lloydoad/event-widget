@@ -10,7 +10,8 @@ import SwiftUI
 @main
 struct CalendarAppApp: App {
 	@State private var path: [DeepLinkParser.Route] = []
-	@State private var eventListModel: EventListView.Model = EventListView.Model(events: [
+	@State private var eventListModel: EventListView.Model = EventListView.Model(
+		events: [
 		try! EventListItemView.Model(
 			viewer: AccountModelMocks.lloydAccount,
 			event: EventModelMocks.event(
@@ -64,7 +65,21 @@ struct CalendarAppApp: App {
 				guests: []
 			)
 		)
-	])
+		],
+		subscription: AccountListView.Model.init(
+			variant: .subscriptions,
+			accounts: [
+				try! AccountListItemView.Model(
+					viewer: AccountModelMocks.lloydAccount,
+					account: AccountModelMocks.serenaAccount
+				),
+				try! AccountListItemView.Model(
+					viewer: AccountModelMocks.lloydAccount,
+					account: AccountModelMocks.ivoAccount
+				)
+			]
+		))
+
 	private let deepLinkParser = DeepLinkParser()
 
     var body: some Scene {
@@ -79,10 +94,12 @@ struct CalendarAppApp: App {
 							Text("Account: \(model.username)")
 						case .accounts(let model):
 							AccountListView(model: model)
-						case .subscriptions:
-							Text("Subscriptions")
+						case .subscriptions(let model):
+							AccountListView(model: model)
 						case .composeEvent:
 							Text("composeEvent")
+						case .action(let action):
+							Text("\(action)")
 						}
 					}
 					.onOpenURL { url in
@@ -91,6 +108,7 @@ struct CalendarAppApp: App {
 						}
 					}
 			}
+			.environment(\.hasSyncedContacts, false)
 		}
     }
 }
