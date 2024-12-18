@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ButtonModel: Hashable {
+struct ButtonModel: Hashable, Codable {
 	var title: String
 	var destination: String
 	var color: AppColor

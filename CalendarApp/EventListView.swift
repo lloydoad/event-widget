@@ -7,14 +7,8 @@
 
 import SwiftUI
 
-import SwiftUI
-
-//enum PageModel {
-//	case eventList()
-//}
-
 struct EventListView: View {
-	struct Model: Hashable {
+	struct Model: Codable, Hashable {
 		var eventRows: [EventRowView.Model]
 		var bottomButtons: [ButtonModel] = [
 			ButtonModel(
@@ -33,36 +27,34 @@ struct EventListView: View {
 	var model: Model
 
 	var body: some View {
-		NavigationStack {
-			VStack {
-				ScrollView {
-					VStack(spacing: 16) {
-						Text("untitled events widget")
-							.font(.system(size: 24, weight: .medium, design: .serif))
-							.frame(maxWidth: .infinity, alignment: .leading)
-						ForEach(model.eventRows, id: \.hashValue) { model in
-							EventRowView(model: model)
-								.padding(.bottom, 16)
-						}
+		VStack {
+			ScrollView {
+				VStack(spacing: 16) {
+					Text("untitled events widget")
+						.font(.system(size: 24, weight: .medium, design: .serif))
+						.frame(maxWidth: .infinity, alignment: .leading)
+					ForEach(model.eventRows, id: \.hashValue) { model in
+						EventRowView(model: model)
+							.padding(.bottom, 16)
 					}
-					.frame(maxWidth: .infinity)
 				}
-				EventListButtonGroup(models: model.bottomButtons)
+				.frame(maxWidth: .infinity)
 			}
-			.padding(.horizontal, 16)
-			.padding(.bottom, 16)
+			EventListButtonGroup(models: model.bottomButtons)
 		}
+		.padding(.horizontal, 16)
+		.padding(.bottom, 16)
 	}
 }
 
 #Preview {
 	EventListView(
 		model: EventListView.Model(eventRows: [
-			viewModel(guest: "cat"),
-			viewModel(guest: "cat"),
-			viewModel(guest: "cat"),
-			viewModel(guest: "cat"),
-			viewModel(guest: "cat")
+			viewModel(guest: catAccount),
+			viewModel(guest: catAccount),
+			viewModel(guest: catAccount),
+			viewModel(guest: catAccount),
+			viewModel(guest: catAccount)
 		])
 	)
 }

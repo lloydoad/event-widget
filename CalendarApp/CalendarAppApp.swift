@@ -7,49 +7,36 @@
 
 import SwiftUI
 
-struct DeepLinkParser {
-	enum Route: Hashable {
-		case events(EventListView.Model)
-		case account
-		case subscription
-	}
-
-	func getRoute(url: URL) -> Route? {
-		let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
-		guard let host = components?.host else { return nil }
-		print(components, host, components?.queryItems, components?.scheme, components?.path)
-		return nil
-	}
-}
-
 @main
 struct CalendarAppApp: App {
-	@State private var path = NavigationPath()
+	@State private var path: [DeepLinkParser.Route] = []
 	@State private var eventListModel: EventListView.Model = EventListView.Model(eventRows: [
-		viewModel(guest: "cat"),
-		viewModel(guest: "unknown")
+		viewModel(guest: catAccount),
+		viewModel(guest: ivoAccount)
 	])
 	private let deepLinkParser = DeepLinkParser()
 
     var body: some Scene {
         WindowGroup {
-			NavigationStack(path: $path, root: {
+			NavigationStack(path: $path) {
 				EventListView(model: eventListModel)
 					.navigationDestination(for: DeepLinkParser.Route.self) { route in
 						switch route {
 						case .events(let model):
 							EventListView(model: model)
-						case .account:
-							Text("Account")
-						case .subscription:
+						case .account(let model):
+							Text("Account: \(model.username)")
+						case .subscriptions:
 							Text("Subscriptions")
+						case .composeEvent:
+							Text("composeEvent")
 						}
 					}
-			})
-			.onOpenURL { url in
-				print(deepLinkParser.getRoute(url: url))
-	//			print("App was opened via URL: \(incomingURL)")
-	//			path.append()
+					.onOpenURL { url in
+						if let route = deepLinkParser.getRoute(url: url) {
+							path.append(route)
+						}
+					}
 			}
 		}
     }

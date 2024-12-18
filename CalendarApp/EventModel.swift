@@ -8,28 +8,28 @@
 import Foundation
 
 struct EventModel {
-	let creator: String
+	let creator: AccountModel
 	let description: String
 	let startDate: Date
 	let endDate: Date
 	let location: String
-	let guests: [String]
+	let guests: [AccountModel]
 }
 
 extension EventModel {
-	func isGoing(guest: String) -> Bool {
+	func isGoing(guest: AccountModel) -> Bool {
 		guests.contains(guest)
 	}
 
-	func joinable(guest: String) -> Bool {
+	func joinable(guest: AccountModel) -> Bool {
 		!isGoing(guest: guest) && guest != creator
 	}
 
-	func cancellable(guest: String) -> Bool {
+	func cancellable(guest: AccountModel) -> Bool {
 		isGoing(guest: guest)
 	}
 
-	func deletable(guest: String) -> Bool {
+	func deletable(guest: AccountModel) -> Bool {
 		creator == guest
 	}
 }
@@ -40,7 +40,7 @@ extension EventModel {
 		return "\(guestCount) other\(guestCount > 1 ? "s" : "")"
 	}
 
-	func buildAttributedControlContent(for guest: String) -> AttributedString {
+	func buildAttributedControlContent(for guest: AccountModel) -> AttributedString {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
 		if joinable(guest: guest) {
@@ -60,7 +60,7 @@ extension EventModel {
 		return builder.build()
 	}
 
-	func buildAttributedContent(for guest: String) -> AttributedString {
+	func buildAttributedContent(for guest: AccountModel) throws -> AttributedString {
 		let timeValue = DateFormatter().formattedRange(start: startDate,
 													   end: endDate)
 		let isGuestGoing = isGoing(guest: guest)
@@ -73,30 +73,30 @@ extension EventModel {
 
 		if isGuestGoing && guest != creator {
 			if guests.count > 1 {
-				builder
+				try builder
 					.appendPrimaryUnderlinedButton("you", destination: "calendarapp://account")
 					.appendPrimaryText(", ")
-					.appendPrimaryUnderlinedButton(creator, destination: "calendarapp://account")
+					.appendPrimaryUnderlinedAccount(creator)
 					.appendPrimaryText(" and ")
 					.appendPrimaryUnderlinedButton(otherGoingText(isGoing: true), destination: "calendarapp://account")
 					.appendPrimaryText(" are going •")
 			} else {
-				builder
+				try builder
 					.appendPrimaryUnderlinedButton("you", destination: "calendarapp://account")
 					.appendPrimaryText(" and ")
-					.appendPrimaryUnderlinedButton(creator, destination: "calendarapp://account")
+					.appendPrimaryUnderlinedAccount(creator)
 					.appendPrimaryText(" are going •")
 			}
 		} else {
 			if guests.count > 0 {
-				builder
-					.appendPrimaryUnderlinedButton(creator, destination: "calendarapp://account")
+				try builder
+					.appendPrimaryUnderlinedAccount(creator)
 					.appendPrimaryText(" and ")
 					.appendPrimaryUnderlinedButton(otherGoingText(isGoing: false), destination: "calendarapp://account")
 					.appendPrimaryText(" are going •")
 			} else {
-				builder
-					.appendPrimaryUnderlinedButton(creator, destination: "calendarapp://account")
+				try builder
+					.appendPrimaryUnderlinedAccount(creator)
 					.appendPrimaryText(" is going •")
 			}
 		}

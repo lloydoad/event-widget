@@ -21,9 +21,7 @@ enum AppFont {
 	}
 }
 
-enum AppColor {
-//	case positive
-//	case negative
+enum AppColor: Codable {
 	case primary
 	case secondary
 	case accent
@@ -123,6 +121,12 @@ class AttributedStringBuilder {
 	@discardableResult
 	func appendBracketButton(_ text: String, destination: String, color: AppColor) -> AttributedStringBuilder {
 		self.appendButton(.bracket(text, destination: URL(string: destination)!, color: color))
+	}
+
+	@discardableResult
+	func appendPrimaryUnderlinedAccount(_ account: AccountModel) throws -> AttributedStringBuilder {
+		let url = try DeepLinkParser.Route.account(account).url()
+		return appendButton(.primaryUnderline(account.username, destination: url))
 	}
 
 	private func get(text: String, segmentStyle: SegmentStyle) -> AttributedString {
