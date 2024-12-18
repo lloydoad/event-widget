@@ -19,9 +19,7 @@ struct EventListView: View {
 		VStack {
 			ScrollView {
 				VStack(spacing: 16) {
-					Text("untitled events widget")
-						.font(.system(size: 24, weight: .medium, design: .serif))
-						.frame(maxWidth: .infinity, alignment: .leading)
+					ListTitleView(title: title)
 					ForEach(model.events, id: \.hashValue) { event in
 						ListItemView(model: event)
 							.padding(.bottom, 16)
@@ -54,6 +52,10 @@ struct EventListView: View {
 				route: .subscriptions(model.subscription)
 			),
 		]
+	}
+
+	private var title: String {
+		"untitled events widget"
 	}
 }
 

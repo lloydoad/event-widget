@@ -24,8 +24,7 @@ struct AccountListView: View {
 		VStack {
 			ScrollView {
 				VStack(spacing: 16) {
-					Text(title)
-						.frame(maxWidth: .infinity, alignment: .leading)
+					ListTitleView(title: title)
 					ForEach(model.accounts, id: \.hashValue) { account in
 						ListItemView(model: account)
 							.padding(.bottom, 4)
@@ -42,16 +41,12 @@ struct AccountListView: View {
 		.padding(.bottom, 16)
     }
 
-	private var title: AttributedString {
+	private var title: String {
 		switch model.variant {
 		case .guestList:
-			AttributedStringBuilder(baseStyle: .init(appFont: .navigationTitle))
-				.appendPrimaryText("guest list")
-				.build()
+			"guest list"
 		case .subscriptions:
-			AttributedStringBuilder(baseStyle: .init(appFont: .navigationTitle))
-				.appendPrimaryText("subscriptions")
-				.build()
+			"subscriptions"
 		}
 	}
 

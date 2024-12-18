@@ -42,7 +42,8 @@ extension ListItemView.Model {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .large)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
 		builder.appendPrimaryText("\(account.username), \(account.phoneNumber)")
-		return builder.build()
+		let content = builder.build()
+		return content
 	}
 
 	// MARK: - Event

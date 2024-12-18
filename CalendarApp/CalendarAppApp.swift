@@ -108,6 +108,7 @@ struct CalendarAppApp: App {
 						}
 					}
 			}
+			.tint(Color(AppColor.appTint.asUIColor))
 			.environment(\.hasSyncedContacts, false)
 		}
     }
