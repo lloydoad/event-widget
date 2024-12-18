@@ -112,9 +112,9 @@ extension ListItemView.Model {
 		if isNonCreatorGuest {
 			if event.guests.count > 1 {
 				try builder
-					.appendAccountButton(viewer)
+					.account(viewer)
 					.appendPrimaryText(", ")
-					.appendAccountButton(event.creator)
+					.account(event.creator)
 					.appendPrimaryText(" and ")
 					.appendGuestListButton(
 						text: otherGoingText(isGoing: true, event: event),
@@ -124,15 +124,15 @@ extension ListItemView.Model {
 					.appendPrimaryText(" are going •")
 			} else {
 				try builder
-					.appendAccountButton(viewer)
+					.account(viewer)
 					.appendPrimaryText(" and ")
-					.appendAccountButton(event.creator)
+					.account(event.creator)
 					.appendPrimaryText(" are going •")
 			}
 		} else {
 			if event.guests.count > 0 {
 				try builder
-					.appendAccountButton(event.creator)
+					.account(event.creator)
 					.appendPrimaryText(" and ")
 					.appendGuestListButton(
 						text: otherGoingText(isGoing: false, event: event),
@@ -142,11 +142,19 @@ extension ListItemView.Model {
 					.appendPrimaryText(" are going •")
 			} else {
 				try builder
-					.appendAccountButton(event.creator)
+					.account(event.creator)
 					.appendPrimaryText(" is going •")
 			}
 		}
 
 		return builder.build()
+	}
+}
+
+extension AttributedStringBuilder {
+	func account(_ account: AccountModel) throws -> AttributedStringBuilder {
+		try self.underline(account.username,
+					   deeplink: .account(.init(account: account)),
+					   color: .primary)
 	}
 }

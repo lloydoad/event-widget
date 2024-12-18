@@ -77,7 +77,7 @@ struct CalendarAppApp: App {
 					creator: AccountModelMocks.lloydAccount,
 					description: "lets go around town and be spooky",
 					location: LocationModel(
-						address: "250 king st",
+						address: "1 california st",
 						city: "san francisco",
 						state: "california"
 					),
@@ -112,7 +112,7 @@ struct CalendarAppApp: App {
 						case .events(let model):
 							EventListView(model: model)
 						case .account(let model):
-							Text("Account: \(model.username)")
+							AccountView(model: model)
 						case .accounts(let model):
 							AccountListView(model: model)
 						case .subscriptions(let model):
