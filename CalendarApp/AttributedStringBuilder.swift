@@ -82,18 +82,12 @@ class AttributedStringBuilder {
 	}
 
 	@discardableResult
-	func appendPrimaryUnderlinedButton(_ text: String, destination: String) -> AttributedStringBuilder {
-		self.appendButton(.primaryUnderline(text,
-											destination: URL(string: destination)!))
-	}
-
-	@discardableResult
 	func appendBracketButton(_ text: String, destination: String, color: AppColor) -> AttributedStringBuilder {
 		self.appendButton(.bracket(text, destination: URL(string: destination)!, color: color))
 	}
 
 	@discardableResult
-	func appendPrimaryUnderlinedAccount(_ account: AccountModel, isCurrentViewer: Bool = false) throws -> AttributedStringBuilder {
+	func appendAccountButton(_ account: AccountModel, isCurrentViewer: Bool = false) throws -> AttributedStringBuilder {
 		let url = try DeepLinkParser.Route.account(account).url()
 		return appendButton(.primaryUnderline(isCurrentViewer ? "you" : account.username, destination: url))
 	}
@@ -102,6 +96,13 @@ class AttributedStringBuilder {
 	func appendGuestListButton(text: String, guests: [AccountModel]) throws -> AttributedStringBuilder {
 		let url = try DeepLinkParser.Route.eventGuests(guests).url()
 		return appendButton(.primaryUnderline(text, destination: url))
+	}
+
+	func appendLocationButton(_ location: LocationModel) throws -> AttributedStringBuilder {
+		guard let url = location.appleMapsDeepLink else {
+			throw NSError(domain: "calendarApp", code: 1)
+		}
+		return appendButton(.primaryUnderline(location.address, destination: url))
 	}
 
 	private func get(text: String, segmentStyle: SegmentStyle) -> AttributedString {

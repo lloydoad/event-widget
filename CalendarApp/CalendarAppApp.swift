@@ -28,6 +28,11 @@ struct CalendarAppApp: App {
 			event: EventModelMocks.event(
 				creator: AccountModelMocks.nickAccount,
 				description: "building lego till 8pm or later. idk",
+				location: LocationModel(
+					address: "1 haight st",
+					city: "san francisco",
+					state: "california"
+				),
 				guests: [
 					AccountModelMocks.lloydAccount,
 				]
@@ -38,6 +43,11 @@ struct CalendarAppApp: App {
 			event: EventModelMocks.event(
 				creator: AccountModelMocks.lloydAccount,
 				description: "thinking about going to a comedy after work. open to ideas",
+				location: LocationModel(
+					address: "250 fell st",
+					city: "san francisco",
+					state: "california"
+				),
 				guests: []
 			)
 		),
@@ -46,6 +56,11 @@ struct CalendarAppApp: App {
 			event: EventModelMocks.event(
 				creator: AccountModelMocks.nickAccount,
 				description: "anyone down to smash 👀 (as-in nintendo smash)",
+				location: LocationModel(
+					address: "250 king st",
+					city: "san francisco",
+					state: "california"
+				),
 				guests: []
 			)
 		)

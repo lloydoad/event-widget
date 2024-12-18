@@ -26,14 +26,13 @@ extension EventListItemView.Model {
 			builder.appendPrimaryText(" ")
 		}
 		if event.cancellable(viewer: viewer) {
-			builder.appendBracketButton("cancel", destination: "calendarapp://account", color: .accent)
+			builder.appendBracketButton("can't go", destination: "calendarapp://account", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
 		if event.deletable(viewer: viewer) {
 			builder.appendBracketButton("delete", destination: "calendarapp://account", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
-		builder.appendBracketButton("remind me", destination: "calendarapp://account", color: .secondary)
 		builder.appendPrimaryText(" ")
 		return builder.build()
 	}
@@ -43,17 +42,17 @@ extension EventListItemView.Model {
 													   end: event.endDate)
 		let isNonCreatorGuest = event.isGoing(viewer: viewer) && viewer != event.creator
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
-		let builder = AttributedStringBuilder(baseStyle: baseStyle)
+		let builder = try AttributedStringBuilder(baseStyle: baseStyle)
 			.appendPrimaryText("\(event.description) • \(timeValue) at ")
-			.appendPrimaryUnderlinedButton(event.location, destination: "calendarapp://account")
+			.appendLocationButton(event.location)
 			.appendPrimaryText(" • ")
 
 		if isNonCreatorGuest {
 			if event.guests.count > 1 {
 				try builder
-					.appendPrimaryUnderlinedAccount(viewer, isCurrentViewer: true)
+					.appendAccountButton(viewer, isCurrentViewer: true)
 					.appendPrimaryText(", ")
-					.appendPrimaryUnderlinedAccount(event.creator)
+					.appendAccountButton(event.creator)
 					.appendPrimaryText(" and ")
 					.appendGuestListButton(
 						text: otherGoingText(isGoing: true, event: event),
@@ -62,15 +61,15 @@ extension EventListItemView.Model {
 					.appendPrimaryText(" are going •")
 			} else {
 				try builder
-					.appendPrimaryUnderlinedAccount(viewer, isCurrentViewer: true)
+					.appendAccountButton(viewer, isCurrentViewer: true)
 					.appendPrimaryText(" and ")
-					.appendPrimaryUnderlinedAccount(event.creator)
+					.appendAccountButton(event.creator)
 					.appendPrimaryText(" are going •")
 			}
 		} else {
 			if event.guests.count > 0 {
 				try builder
-					.appendPrimaryUnderlinedAccount(event.creator)
+					.appendAccountButton(event.creator)
 					.appendPrimaryText(" and ")
 					.appendGuestListButton(
 						text: otherGoingText(isGoing: false, event: event),
@@ -79,7 +78,7 @@ extension EventListItemView.Model {
 					.appendPrimaryText(" are going •")
 			} else {
 				try builder
-					.appendPrimaryUnderlinedAccount(event.creator)
+					.appendAccountButton(event.creator)
 					.appendPrimaryText(" is going •")
 			}
 		}

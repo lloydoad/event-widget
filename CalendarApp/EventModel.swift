@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct EventModel {
+struct EventModel: Codable, Hashable, Equatable {
 	let creator: AccountModel
 	let description: String
 	let startDate: Date
 	let endDate: Date
-	let location: String
+	let location: LocationModel
 	let guests: [AccountModel]
 }
 
@@ -38,6 +38,11 @@ struct EventModelMocks {
 	static func event(
 		creator: AccountModel,
 		description: String = "building lego till 8 or later. I'm not sure",
+		location: LocationModel = LocationModel(
+			address: "235 Valencia St",
+			city: "San Francisco",
+			state: "California"
+		),
 		guests: [AccountModel] = [
 			AccountModelMocks.nickAccount,
 			AccountModelMocks.alanAccount,
@@ -50,7 +55,7 @@ struct EventModelMocks {
 			description: description,
 			startDate: .now,
 			endDate: .now,
-			location: "235 Valencia St",
+			location: location,
 			guests: guests
 		)
 	}
