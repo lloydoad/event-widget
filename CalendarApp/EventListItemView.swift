@@ -31,32 +31,32 @@ struct EventListItemView: View {
 	ScrollView {
 		Text("View: Cat")
 		EventListItemView(model: try! EventListItemView.Model(
-			guest: AccountModelMocks.catAccount,
+			viewer: AccountModelMocks.catAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 		))
 		Text("View: Ivo")
 		EventListItemView(model: try! EventListItemView.Model(
-			guest: AccountModelMocks.ivoAccount,
+			viewer: AccountModelMocks.ivoAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 		))
 		Text("View: Lloyd")
 		EventListItemView(model: try! EventListItemView.Model(
-			guest: AccountModelMocks.lloydAccount,
+			viewer: AccountModelMocks.lloydAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 		))
 		Text("View: Cat")
 		EventListItemView(model: try! EventListItemView.Model(
-			guest: AccountModelMocks.catAccount,
+			viewer: AccountModelMocks.catAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
 		))
 		Text("View: Ivo")
 		EventListItemView(model: try! EventListItemView.Model(
-			guest: AccountModelMocks.ivoAccount,
+			viewer: AccountModelMocks.ivoAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
 		))
 		Text("View: Lloyd")
 		EventListItemView(model: try! EventListItemView.Model(
-			guest: AccountModelMocks.lloydAccount,
+			viewer: AccountModelMocks.lloydAccount,
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
 		))
 	}

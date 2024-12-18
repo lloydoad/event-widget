@@ -93,9 +93,15 @@ class AttributedStringBuilder {
 	}
 
 	@discardableResult
-	func appendPrimaryUnderlinedAccount(_ account: AccountModel) throws -> AttributedStringBuilder {
+	func appendPrimaryUnderlinedAccount(_ account: AccountModel, isCurrentViewer: Bool = false) throws -> AttributedStringBuilder {
 		let url = try DeepLinkParser.Route.account(account).url()
-		return appendButton(.primaryUnderline(account.username, destination: url))
+		return appendButton(.primaryUnderline(isCurrentViewer ? "you" : account.username, destination: url))
+	}
+
+	@discardableResult
+	func appendGuestListButton(text: String, guests: [AccountModel]) throws -> AttributedStringBuilder {
+		let url = try DeepLinkParser.Route.eventGuests(guests).url()
+		return appendButton(.primaryUnderline(text, destination: url))
 	}
 
 	private func get(text: String, segmentStyle: SegmentStyle) -> AttributedString {

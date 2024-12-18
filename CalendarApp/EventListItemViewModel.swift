@@ -8,9 +8,9 @@
 import SwiftUI
 
 extension EventListItemView.Model {
-	init(guest: AccountModel, event: EventModel) throws {
-		content = try EventListItemView.Model.content(guest: guest, event: event)
-		controls = try EventListItemView.Model.controls(guest: guest, event: event)
+	init(viewer: AccountModel, event: EventModel) throws {
+		content = try EventListItemView.Model.content(viewer: viewer, event: event)
+		controls = try EventListItemView.Model.controls(viewer: viewer, event: event)
 	}
 
 	static func otherGoingText(isGoing: Bool, event: EventModel) -> String {
@@ -18,18 +18,18 @@ extension EventListItemView.Model {
 		return "\(guestCount) other\(guestCount > 1 ? "s" : "")"
 	}
 
-	static func controls(guest: AccountModel, event: EventModel) throws -> AttributedString {
+	static func controls(viewer: AccountModel, event: EventModel) throws -> AttributedString {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
-		if event.joinable(guest: guest) {
+		if event.joinable(viewer: viewer) {
 			builder.appendBracketButton("join", destination: "calendarapp://account", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
-		if event.cancellable(guest: guest) {
+		if event.cancellable(viewer: viewer) {
 			builder.appendBracketButton("cancel", destination: "calendarapp://account", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
-		if event.deletable(guest: guest) {
+		if event.deletable(viewer: viewer) {
 			builder.appendBracketButton("delete", destination: "calendarapp://account", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
@@ -38,10 +38,10 @@ extension EventListItemView.Model {
 		return builder.build()
 	}
 
-	static func content(guest: AccountModel, event: EventModel) throws -> AttributedString {
+	static func content(viewer: AccountModel, event: EventModel) throws -> AttributedString {
 		let timeValue = DateFormatter().formattedRange(start: event.startDate,
 													   end: event.endDate)
-		let isNonCreatorGuest = event.isGoing(guest: guest) && guest != event.creator
+		let isNonCreatorGuest = event.isGoing(viewer: viewer) && viewer != event.creator
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
 			.appendPrimaryText("\(event.description) • \(timeValue) at ")
@@ -51,18 +51,18 @@ extension EventListItemView.Model {
 		if isNonCreatorGuest {
 			if event.guests.count > 1 {
 				try builder
-					.appendPrimaryUnderlinedButton("you", destination: "calendarapp://account")
+					.appendPrimaryUnderlinedAccount(viewer, isCurrentViewer: true)
 					.appendPrimaryText(", ")
 					.appendPrimaryUnderlinedAccount(event.creator)
 					.appendPrimaryText(" and ")
-					.appendPrimaryUnderlinedButton(
-						otherGoingText(isGoing: true, event: event),
-						destination: "calendarapp://account"
+					.appendGuestListButton(
+						text: otherGoingText(isGoing: true, event: event),
+						guests: event.guests
 					)
 					.appendPrimaryText(" are going •")
 			} else {
 				try builder
-					.appendPrimaryUnderlinedButton("you", destination: "calendarapp://account")
+					.appendPrimaryUnderlinedAccount(viewer, isCurrentViewer: true)
 					.appendPrimaryText(" and ")
 					.appendPrimaryUnderlinedAccount(event.creator)
 					.appendPrimaryText(" are going •")
@@ -72,9 +72,9 @@ extension EventListItemView.Model {
 				try builder
 					.appendPrimaryUnderlinedAccount(event.creator)
 					.appendPrimaryText(" and ")
-					.appendPrimaryUnderlinedButton(
-						otherGoingText(isGoing: false, event: event),
-						destination: "calendarapp://account"
+					.appendGuestListButton(
+						text: otherGoingText(isGoing: false, event: event),
+						guests: event.guests
 					)
 					.appendPrimaryText(" are going •")
 			} else {

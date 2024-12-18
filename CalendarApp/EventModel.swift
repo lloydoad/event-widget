@@ -17,20 +17,20 @@ struct EventModel {
 }
 
 extension EventModel {
-	func isGoing(guest: AccountModel) -> Bool {
-		guests.contains(guest)
+	func isGoing(viewer: AccountModel) -> Bool {
+		guests.contains(viewer)
 	}
 
-	func joinable(guest: AccountModel) -> Bool {
-		!isGoing(guest: guest) && guest != creator
+	func joinable(viewer: AccountModel) -> Bool {
+		!isGoing(viewer: viewer) && viewer != creator
 	}
 
-	func cancellable(guest: AccountModel) -> Bool {
-		isGoing(guest: guest)
+	func cancellable(viewer: AccountModel) -> Bool {
+		isGoing(viewer: viewer)
 	}
 
-	func deletable(guest: AccountModel) -> Bool {
-		creator == guest
+	func deletable(viewer: AccountModel) -> Bool {
+		creator == viewer
 	}
 }
 

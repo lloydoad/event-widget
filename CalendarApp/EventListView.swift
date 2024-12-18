@@ -65,15 +65,15 @@ struct EventListView: View {
 	EventListView(
 		model: EventListView.Model(events: [
 			try! EventListItemView.Model(
-				guest: AccountModelMocks.catAccount,
+				viewer: AccountModelMocks.catAccount,
 				event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 			),
 			try! EventListItemView.Model(
-				guest: AccountModelMocks.ivoAccount,
+				viewer: AccountModelMocks.ivoAccount,
 				event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 			),
 			try! EventListItemView.Model(
-				guest: AccountModelMocks.lloydAccount,
+				viewer: AccountModelMocks.lloydAccount,
 				event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 			)
 		])
