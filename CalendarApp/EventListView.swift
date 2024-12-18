@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  EventListView.swift
 //  CalendarApp
 //
 //  Created by Lloyd Dapaah on 12/17/24.
@@ -7,8 +7,14 @@
 
 import SwiftUI
 
-struct ContentView: View {
-	struct Model {
+import SwiftUI
+
+//enum PageModel {
+//	case eventList()
+//}
+
+struct EventListView: View {
+	struct Model: Hashable {
 		var eventRows: [EventRowView.Model]
 		var bottomButtons: [ButtonModel] = [
 			ButtonModel(
@@ -26,19 +32,12 @@ struct ContentView: View {
 
 	var model: Model
 
-	init(model: Model) {
-		self.model = model
-		UINavigationBar.appearance().largeTitleTextAttributes = [
-			.font : UIFont.systemFont(ofSize: 22, weight: .medium)
-		]
-	}
-
-    var body: some View {
+	var body: some View {
 		NavigationStack {
 			VStack {
 				ScrollView {
 					VStack(spacing: 16) {
-						Text("unentitled events widget")
+						Text("untitled events widget")
 							.font(.system(size: 24, weight: .medium, design: .serif))
 							.frame(maxWidth: .infinity, alignment: .leading)
 						ForEach(model.eventRows, id: \.hashValue) { model in
@@ -53,12 +52,12 @@ struct ContentView: View {
 			.padding(.horizontal, 16)
 			.padding(.bottom, 16)
 		}
-    }
+	}
 }
 
 #Preview {
-	ContentView(
-		model: ContentView.Model(eventRows: [
+	EventListView(
+		model: EventListView.Model(eventRows: [
 			viewModel(guest: "cat"),
 			viewModel(guest: "cat"),
 			viewModel(guest: "cat"),

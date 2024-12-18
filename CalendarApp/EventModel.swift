@@ -44,18 +44,18 @@ extension EventModel {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
 		if joinable(guest: guest) {
-			builder.appendBracketButton("join", destination: "www.apple.com", color: .accent)
+			builder.appendBracketButton("join", destination: "calendarapp://account", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
 		if cancellable(guest: guest) {
-			builder.appendBracketButton("cancel", destination: "www.apple.com", color: .accent)
+			builder.appendBracketButton("cancel", destination: "calendarapp://account", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
 		if deletable(guest: guest) {
-			builder.appendBracketButton("delete", destination: "www.apple.com", color: .accent)
+			builder.appendBracketButton("delete", destination: "calendarapp://account", color: .accent)
 			builder.appendPrimaryText(" ")
 		}
-		builder.appendBracketButton("remind me", destination: "www.apple.com", color: .secondary)
+		builder.appendBracketButton("remind me", destination: "calendarapp://account", color: .secondary)
 		builder.appendPrimaryText(" ")
 		return builder.build()
 	}
@@ -68,35 +68,35 @@ extension EventModel {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
 			.appendPrimaryText("\(description) • \(timeValue) at ")
-			.appendPrimaryUnderlinedButton(location, destination: "www.apple.com")
+			.appendPrimaryUnderlinedButton(location, destination: "calendarapp://account")
 			.appendPrimaryText(" • ")
 
 		if isGuestGoing && guest != creator {
 			if guests.count > 1 {
 				builder
-					.appendPrimaryUnderlinedButton("you", destination: "www.apple.com")
+					.appendPrimaryUnderlinedButton("you", destination: "calendarapp://account")
 					.appendPrimaryText(", ")
-					.appendPrimaryUnderlinedButton(creator, destination: "www.apple.com")
+					.appendPrimaryUnderlinedButton(creator, destination: "calendarapp://account")
 					.appendPrimaryText(" and ")
-					.appendPrimaryUnderlinedButton(otherGoingText(isGoing: true), destination: "www.apple.com")
+					.appendPrimaryUnderlinedButton(otherGoingText(isGoing: true), destination: "calendarapp://account")
 					.appendPrimaryText(" are going •")
 			} else {
 				builder
-					.appendPrimaryUnderlinedButton("you", destination: "www.apple.com")
+					.appendPrimaryUnderlinedButton("you", destination: "calendarapp://account")
 					.appendPrimaryText(" and ")
-					.appendPrimaryUnderlinedButton(creator, destination: "www.apple.com")
+					.appendPrimaryUnderlinedButton(creator, destination: "calendarapp://account")
 					.appendPrimaryText(" are going •")
 			}
 		} else {
 			if guests.count > 0 {
 				builder
-					.appendPrimaryUnderlinedButton(creator, destination: "www.apple.com")
+					.appendPrimaryUnderlinedButton(creator, destination: "calendarapp://account")
 					.appendPrimaryText(" and ")
-					.appendPrimaryUnderlinedButton(otherGoingText(isGoing: false), destination: "www.apple.com")
+					.appendPrimaryUnderlinedButton(otherGoingText(isGoing: false), destination: "calendarapp://account")
 					.appendPrimaryText(" are going •")
 			} else {
 				builder
-					.appendPrimaryUnderlinedButton(creator, destination: "www.apple.com")
+					.appendPrimaryUnderlinedButton(creator, destination: "calendarapp://account")
 					.appendPrimaryText(" is going •")
 			}
 		}
