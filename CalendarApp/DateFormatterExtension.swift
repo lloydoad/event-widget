@@ -18,4 +18,22 @@ extension DateFormatter {
 			.replacingOccurrences(of: ":00", with: "")
 		return "\(cleanStartTime) to \(cleanEndTime)"
 	}
+
+	func createDate(
+		day: Int? = nil,
+		month: Int? = nil,
+		year: Int? = nil,
+		hour: Int? = nil,
+		minute: Int? = nil
+	) -> Date? {
+		var components = Calendar.current.dateComponents([
+			.year, .month, .day, .hour, .minute
+		], from: Date())
+		components.day = day ?? components.day
+		components.month = month ?? components.month
+		components.year = year ?? components.year
+		components.hour = hour ?? components.hour
+		components.minute = minute ?? components.minute
+		return Calendar.current.date(from: components)
+	}
 }

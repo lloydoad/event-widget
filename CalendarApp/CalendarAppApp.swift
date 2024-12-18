@@ -13,58 +13,79 @@ struct CalendarAppApp: App {
 	@State private var eventListModel: EventListView.Model = EventListView.Model(
 		events: [
 			try! .event(
-			viewer: AccountModelMocks.lloydAccount,
-			event: EventModelMocks.event(
-				creator: AccountModelMocks.serenaAccount,
-				description: "meditation at the SF Dharma collective. will be focused on emotions",
-				guests: [
-					AccountModelMocks.alanAccount,
-					AccountModelMocks.lloydAccount,
-					AccountModelMocks.ivoAccount
-				]
-			)
-		),
+				viewer: AccountModelMocks.lloydAccount,
+				event: EventModelMocks.event(
+					creator: AccountModelMocks.serenaAccount,
+					description: "meditation at the SF Dharma collective. will be focused on emotions",
+					startDate: DateFormatter().createDate(hour: 19, minute: 30)!,
+					endDate: DateFormatter().createDate(hour: 21, minute: 30)!,
+					guests: [
+						AccountModelMocks.alanAccount,
+						AccountModelMocks.lloydAccount,
+						AccountModelMocks.ivoAccount
+					]
+				)
+			),
 			try! .event(
-			viewer: AccountModelMocks.lloydAccount,
-			event: EventModelMocks.event(
-				creator: AccountModelMocks.nickAccount,
-				description: "building lego till 8pm or later. idk",
-				location: LocationModel(
-					address: "1 haight st",
-					city: "san francisco",
-					state: "california"
-				),
-				guests: [
-					AccountModelMocks.lloydAccount,
-				]
-			)
-		),
+				viewer: AccountModelMocks.lloydAccount,
+				event: EventModelMocks.event(
+					creator: AccountModelMocks.nickAccount,
+					description: "building lego till 8pm or later. idk",
+					location: LocationModel(
+						address: "1 haight st",
+						city: "san francisco",
+						state: "california"
+					),
+					startDate: DateFormatter().createDate(hour: 17, minute: 00)!,
+					endDate: DateFormatter().createDate(hour: 21, minute: 00)!,
+					guests: []
+				)
+			),
 			try! .event(
-			viewer: AccountModelMocks.lloydAccount,
-			event: EventModelMocks.event(
-				creator: AccountModelMocks.lloydAccount,
-				description: "thinking about going to a comedy after work. open to ideas",
-				location: LocationModel(
-					address: "250 fell st",
-					city: "san francisco",
-					state: "california"
-				),
-				guests: []
-			)
-		),
+				viewer: AccountModelMocks.lloydAccount,
+				event: EventModelMocks.event(
+					creator: AccountModelMocks.lloydAccount,
+					description: "thinking about going to a comedy after work. open to ideas",
+					location: LocationModel(
+						address: "250 fell st",
+						city: "san francisco",
+						state: "california"
+					),
+					startDate: DateFormatter().createDate(hour: 12, minute: 00)!,
+					endDate: DateFormatter().createDate(hour: 15, minute: 00)!,
+					guests: []
+				)
+			),
 			try! .event(
-			viewer: AccountModelMocks.lloydAccount,
-			event: EventModelMocks.event(
-				creator: AccountModelMocks.nickAccount,
-				description: "anyone down to smash 👀 (as-in nintendo smash)",
-				location: LocationModel(
-					address: "250 king st",
-					city: "san francisco",
-					state: "california"
-				),
-				guests: []
+				viewer: AccountModelMocks.lloydAccount,
+				event: EventModelMocks.event(
+					creator: AccountModelMocks.nickAccount,
+					description: "anyone down to smash 👀 (as-in nintendo smash)",
+					location: LocationModel(
+						address: "250 king st",
+						city: "san francisco",
+						state: "california"
+					),
+					startDate: DateFormatter().createDate(hour: 4, minute: 00)!,
+					endDate: DateFormatter().createDate(hour: 7, minute: 00)!,
+					guests: []
+				)
+			),
+			try! .event(
+				viewer: AccountModelMocks.lloydAccount,
+				event: EventModelMocks.event(
+					creator: AccountModelMocks.lloydAccount,
+					description: "lets go around town and be spooky",
+					location: LocationModel(
+						address: "250 king st",
+						city: "san francisco",
+						state: "california"
+					),
+					startDate: DateFormatter().createDate(hour: 1, minute: 30)!,
+					endDate: DateFormatter().createDate(hour: 4, minute: 15)!,
+					guests: [AccountModelMocks.serenaAccount]
+				)
 			)
-		)
 		],
 		subscription: AccountListView.Model.init(
 			variant: .subscriptions,

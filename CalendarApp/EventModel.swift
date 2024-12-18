@@ -22,11 +22,11 @@ extension EventModel {
 	}
 
 	func joinable(viewer: AccountModel) -> Bool {
-		!isGoing(viewer: viewer) && viewer != creator
+		!isGoing(viewer: viewer) && viewer != creator && endDate > .now
 	}
 
 	func cancellable(viewer: AccountModel) -> Bool {
-		isGoing(viewer: viewer)
+		isGoing(viewer: viewer) && endDate > .now
 	}
 
 	func deletable(viewer: AccountModel) -> Bool {
@@ -43,6 +43,8 @@ struct EventModelMocks {
 			city: "San Francisco",
 			state: "California"
 		),
+		startDate: Date = .now,
+		endDate: Date = .now,
 		guests: [AccountModel] = [
 			AccountModelMocks.nickAccount,
 			AccountModelMocks.alanAccount,
@@ -53,8 +55,8 @@ struct EventModelMocks {
 		EventModel(
 			creator: creator,
 			description: description,
-			startDate: .now,
-			endDate: .now,
+			startDate: startDate,
+			endDate: endDate,
 			location: location,
 			guests: guests
 		)

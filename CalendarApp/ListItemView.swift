@@ -19,10 +19,10 @@ struct ListItemView: View {
 		VStack(alignment: .leading, spacing: 4) {
 			Text(model.content)
 				.frame(maxWidth: .infinity, alignment: .leading)
-			Text(model.controls)
-				.frame(maxWidth: .infinity, alignment: .leading)
-			Color(cgColor: UIColor.tertiaryLabel.cgColor)
-				.frame(width: 100, height: 1)
+			if !model.controls.characters.isEmpty {
+				Text(model.controls)
+					.frame(maxWidth: .infinity, alignment: .leading)
+			}
 		}
 	}
 }

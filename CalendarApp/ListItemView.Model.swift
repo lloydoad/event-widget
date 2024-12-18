@@ -47,11 +47,19 @@ extension ListItemView.Model {
 	}
 
 	// MARK: - Event
+
 	static func event(viewer: AccountModel, event: EventModel) throws -> ListItemView.Model {
-		ListItemView.Model(
-			content: try ListItemView.Model.eventContent(viewer: viewer, event: event),
-			controls: try ListItemView.Model.eventControls(viewer: viewer, event: event)
-		)
+		if event.endDate < .now {
+			ListItemView.Model(
+				content: try ListItemView.Model.expiredEventContent(event: event),
+				controls: try ListItemView.Model.eventControls(viewer: viewer, event: event)
+			)
+		} else {
+			ListItemView.Model(
+				content: try ListItemView.Model.eventContent(viewer: viewer, event: event),
+				controls: try ListItemView.Model.eventControls(viewer: viewer, event: event)
+			)
+		}
 	}
 
 	static private func otherGoingText(isGoing: Bool, event: EventModel) -> String {
@@ -80,6 +88,17 @@ extension ListItemView.Model {
 		return builder.build()
 	}
 
+	static private func expiredEventContent(event: EventModel) throws -> AttributedString {
+		let timeValue = DateFormatter().formattedRange(start: event.startDate,
+													   end: event.endDate)
+		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light, strikeThrough: true)
+		return try AttributedStringBuilder(baseStyle: baseStyle)
+			.appendPrimaryText("\(event.description) • \(timeValue) at ")
+			.appendLocationButton(event.location)
+			.appendPrimaryText(" • ")
+			.build()
+	}
+
 	static private func eventContent(viewer: AccountModel, event: EventModel) throws -> AttributedString {
 		let timeValue = DateFormatter().formattedRange(start: event.startDate,
 													   end: event.endDate)
@@ -93,7 +112,7 @@ extension ListItemView.Model {
 		if isNonCreatorGuest {
 			if event.guests.count > 1 {
 				try builder
-					.appendAccountButton(viewer, isCurrentViewer: true)
+					.appendAccountButton(viewer)
 					.appendPrimaryText(", ")
 					.appendAccountButton(event.creator)
 					.appendPrimaryText(" and ")
@@ -105,7 +124,7 @@ extension ListItemView.Model {
 					.appendPrimaryText(" are going •")
 			} else {
 				try builder
-					.appendAccountButton(viewer, isCurrentViewer: true)
+					.appendAccountButton(viewer)
 					.appendPrimaryText(" and ")
 					.appendAccountButton(event.creator)
 					.appendPrimaryText(" are going •")

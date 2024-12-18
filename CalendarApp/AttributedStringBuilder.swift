@@ -12,6 +12,7 @@ class AttributedStringBuilder {
 
 	struct BaseStyle {
 		var appFont: AppFont
+		var strikeThrough: Bool = false
 	}
 
 	struct SegmentStyle {
@@ -80,6 +81,10 @@ class AttributedStringBuilder {
 			attributedSegment.underlineStyle = .single
 		}
 		attributedSegment.foregroundColor = Color(segmentStyle.color.asUIColor)
+		if baseStyle.strikeThrough {
+			attributedSegment.strikethroughStyle = .single
+			attributedSegment.strikethroughColor = segmentStyle.color.asUIColor
+		}
 		return attributedSegment
 	}
 
@@ -95,9 +100,9 @@ class AttributedStringBuilder {
 	}
 
 	@discardableResult
-	func appendAccountButton(_ account: AccountModel, isCurrentViewer: Bool = false) throws -> AttributedStringBuilder {
+	func appendAccountButton(_ account: AccountModel) throws -> AttributedStringBuilder {
 		let url = try DeepLinkParser.Route.account(account).url()
-		return appendButton(.primaryUnderline(isCurrentViewer ? "you" : account.username, destination: url))
+		return appendButton(.primaryUnderline(account.username, destination: url))
 	}
 
 	@discardableResult
