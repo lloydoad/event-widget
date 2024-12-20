@@ -43,13 +43,24 @@ struct PhoneNumberOnboardingStep: OnboardingStep {
                     }
                 ))
                 if formatter.isValid(context.phoneNumberEntry) {
-                    AttributedStringBuilder(baseStyle: .init(appFont: .large))
-                        .bracket("save number",
-                                 fallbackURL: URL(string: "www.apple.com")!,
-                                 deeplink: .action(.savePhoneNumberToOnboardingContext(context.phoneNumberEntry)),
-                                 color: .appTint)
-                        .view()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    if context.isPerformingActivity {
+                        HStack {
+                            ProgressView()
+                            AttributedStringBuilder(baseStyle: .init(appFont: .large))
+                                .primaryText("creating account ")
+                                .view()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    } else {
+                        AttributedStringBuilder(baseStyle: .init(appFont: .large))
+                            .bracket("create account",
+                                     fallbackURL: DeepLinkParser.Route.fallbackURL,
+                                     deeplink: .action(.savePhoneNumberToOnboardingContext(context.phoneNumberEntry)),
+                                     color: .appTint)
+                            .view()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    
                 }
             }
         )
@@ -73,4 +84,13 @@ struct PhoneNumberOnboardingStep: OnboardingStep {
             completedSteps: [.username("lloyd")],
             phoneNumberEntry: "(301) 234-5678")
         )
+}
+
+#Preview("phone number entry filled") {
+    OnboardingView()
+        .environmentObject(OnboardingContext(
+            completedSteps: [.username("lloyd")],
+            phoneNumberEntry: "(301) 234-5678",
+            isPerformingActivity: true
+        ))
 }

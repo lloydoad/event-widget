@@ -182,8 +182,13 @@ struct CalendarAppApp: App {
         case .saveUsernameToOnboardingContext(let string):
             onboardingContext.completedSteps.append(.username(string))
         case .savePhoneNumberToOnboardingContext(let string):
-            onboardingContext.completedSteps.append(.phoneNumber(string))
+            onboardingContext.isPerformingActivity = true
+            // make request to user store
+            // on success: go to next step
+            // on error: show error
+//            onboardingContext.completedSteps.append(.phoneNumber(string))
         case .syncContacts:
+            onboardingContext.isPerformingActivity = true
             contactSyncWorker.sync(
                 onSuccess: { contacts in
                     print(contacts)

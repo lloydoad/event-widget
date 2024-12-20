@@ -47,6 +47,10 @@ struct DeepLinkParser {
 			return URL(string: deeplinkURL)!
 		}
 
+        static var fallbackURL: URL {
+            URL(string: "calendarapp://")!
+        }
+
 		static func decode(_ string: String, modelParser: ModelParser = .init()) throws -> Route {
 			try modelParser.decode(string, as: Route.self)
 		}
