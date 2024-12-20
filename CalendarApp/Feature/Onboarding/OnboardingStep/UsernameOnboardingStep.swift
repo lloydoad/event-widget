@@ -36,8 +36,9 @@ struct UsernameOnboardingStep: OnboardingStep {
     func claimUsername(store: OnboardingStore) -> Text {
         let builder = AttributedStringBuilder(baseStyle: .init(appFont: .light))
         if store.usernameEntry.count >= 3 {
-            return try! builder
+            return builder
                 .bracket("save username",
+                         fallbackURL: DeepLinkParser.Route.fallbackURL,
                          deeplink: .action(.saveUsernameToOnboardingContext(store.usernameEntry)),
                          color: .appTint)
                 .view()

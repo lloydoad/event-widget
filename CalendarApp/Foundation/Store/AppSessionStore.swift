@@ -10,8 +10,11 @@ import SwiftUI
 class AppSessionStore: ObservableObject {
 	@Published private(set) var userAccount: AccountModel?
     @Published private(set) var hasSyncedContacts: Bool = false
-    @Published private(set) var hasOnboarded: Bool = false
     
+    var hasOnboarded: Bool {
+        userAccount != nil
+    }
+
     func updateUserAccount(_ account: AccountModel) {
         self.userAccount = account
     }

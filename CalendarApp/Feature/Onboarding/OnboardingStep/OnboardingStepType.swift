@@ -11,7 +11,6 @@ enum OnboardingStepType {
     case username
     case phoneNumber
     case syncContacts
-    case complete
 }
 
 enum OnboardingStepComplete: Equatable {

@@ -11,9 +11,7 @@ struct OnboardingView: View {
     @EnvironmentObject var onboardingStore: OnboardingStore
     private var steps: [any OnboardingStep] = [
         UsernameOnboardingStep(),
-        SyncContactsOnboardingStep(),
         PhoneNumberOnboardingStep(),
-        CompleteOnboardingStep()
     ]
 
     var body: some View {

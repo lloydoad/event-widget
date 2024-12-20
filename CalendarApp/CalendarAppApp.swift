@@ -12,7 +12,9 @@ struct CalendarAppApp: App {
     @State private var appSessionStore = AppSessionStore()
     @State private var onboardingStore = OnboardingStore()
     
-    private var contactSyncWorker = ContactSyncWorker()
+    private let contactSyncWorker = ContactSyncWorker()
+    // TODO: Replace with network store
+    private let accountWorker = AccountWorker(accountStore: MockAccountStore())
     
     @State private var navigationPagePath: [DeepLinkParser.Page] = []
     @State private var sheetPage: DeepLinkParser.Page?
@@ -181,12 +183,20 @@ struct CalendarAppApp: App {
             break
         case .saveUsernameToOnboardingContext(let string):
             onboardingStore.completedSteps.append(.username(string))
-        case .savePhoneNumberToOnboardingContext(let string):
+        case .savePhoneNumberToOnboardingContext(let phoneNumber):
             onboardingStore.isPerformingActivity = true
-            // make request to user store
-            // on success: go to next step
-            // on error: show error
-//            onboardingContext.completedSteps.append(.phoneNumber(string))
+            accountWorker.createAccount(
+                username: onboardingStore.savedUsername ?? "",
+                phoneNumber: onboardingStore.savedPhoneNumber ?? "",
+                onSuccess: { newUserAccount in
+                    appSessionStore.updateUserAccount(newUserAccount)
+                    onboardingStore.isPerformingActivity = false
+                    onboardingStore.completedSteps.append(.phoneNumber(phoneNumber))
+                }, onError: { error in
+                    errorMessage = error.localizedDescription
+                    isPresentingError = true
+                    onboardingStore.isPerformingActivity = false
+                })
         case .syncContacts:
             onboardingStore.isPerformingActivity = true
             contactSyncWorker.sync(
