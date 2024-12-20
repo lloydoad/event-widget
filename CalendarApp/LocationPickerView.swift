@@ -18,19 +18,8 @@ struct LocationPickerView: View {
 			ListTitleView(title: "search address")
 			searchBar
 			searchResults
-			HStack {
-				Spacer()
-				Button("[save]") {
-					if let selected = viewModel.selectedLocation {
-						location = createLocationModel(from: selected)
-						dismiss()
-					}
-				}
-				.font(AppFont.large.asFont)
-				.tint(Color(AppColor.primary.asUIColor))
-				.disabled(viewModel.selectedLocation == nil)
-			}
 		}
+        .font(AppFont.large.asFont)
 		.padding()
 	}
 
@@ -55,7 +44,7 @@ struct LocationPickerView: View {
 		}
 		.padding()
 		.background(Color(.secondarySystemBackground))
-		.clipShape(RoundedRectangle(cornerSize: .init(width: 16, height: 16)))
+		.clipShape(RoundedRectangle(cornerSize: .init(width: 12, height: 12)))
 	}
 
 	private var searchResults: some View {
@@ -71,27 +60,37 @@ struct LocationPickerView: View {
 					.foregroundColor(.red)
 			} else {
 				ForEach(viewModel.searchResults, id: \.self) { item in
-					Button {
-						viewModel.selectLocation(item)
-					} label: {
-						VStack(alignment: .leading) {
-							Text(item.name ?? "Unknown Location")
-								.font(.headline)
-
-							if let address = item.placemark.title {
-								Text(address)
-									.font(.caption)
-									.foregroundColor(.secondary)
-							}
-						}
-					}
+                    locationItemView(for: item)
 				}
 			}
 		}
 		.listStyle(.plain)
 	}
+    
+    private func locationItemView(for item: MKMapItem) -> some View {
+        Button {
+            viewModel.selectLocation(item)
+            if let selected = viewModel.selectedLocation {
+                location = locationModel(from: selected)
+                dismiss()
+            }
+        } label: {
+            VStack(alignment: .leading) {
+                Text(item.name ?? "unknown location")
+                    .font(.headline)
+                    .fontDesign(.serif)
 
-	private func createLocationModel(from item: MKMapItem) -> LocationModel {
+                if let address = item.placemark.title {
+                    Text(address)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .fontDesign(.serif)
+                }
+            }
+        }
+    }
+
+	private func locationModel(from item: MKMapItem) -> LocationModel {
 		let placemark = item.placemark
 		let address = placemark.thoroughfare ?? ""
 		let city = placemark.locality ?? ""

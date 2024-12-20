@@ -33,7 +33,6 @@ class LocationPickerViewModel: ObservableObject {
 			do {
 				let request = MKLocalSearch.Request()
 				request.naturalLanguageQuery = searchText
-
 				let search = MKLocalSearch(request: request)
 				let response = try await search.start()
 
