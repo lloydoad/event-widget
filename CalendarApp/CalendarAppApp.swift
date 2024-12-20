@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct CalendarAppApp: App {
     @State private var appSessionStore = AppSessionStore()
-    @State private var onboardingContext = OnboardingContext()
+    @State private var onboardingStore = OnboardingStore()
     
     private var contactSyncWorker = ContactSyncWorker()
     
@@ -144,7 +144,7 @@ struct CalendarAppApp: App {
             })
 			.tint(Color(AppColor.appTint.asUIColor))
             .environmentObject(appSessionStore)
-            .environmentObject(onboardingContext)
+            .environmentObject(onboardingStore)
 		}
     }
     
@@ -180,25 +180,25 @@ struct CalendarAppApp: App {
         case .markOnboardingComplete:
             break
         case .saveUsernameToOnboardingContext(let string):
-            onboardingContext.completedSteps.append(.username(string))
+            onboardingStore.completedSteps.append(.username(string))
         case .savePhoneNumberToOnboardingContext(let string):
-            onboardingContext.isPerformingActivity = true
+            onboardingStore.isPerformingActivity = true
             // make request to user store
             // on success: go to next step
             // on error: show error
 //            onboardingContext.completedSteps.append(.phoneNumber(string))
         case .syncContacts:
-            onboardingContext.isPerformingActivity = true
+            onboardingStore.isPerformingActivity = true
             contactSyncWorker.sync(
                 onSuccess: { contacts in
                     print(contacts)
-                    onboardingContext.isPerformingActivity = false
-                    onboardingContext.completedSteps.append(.hasSyncedContacts)
+                    onboardingStore.isPerformingActivity = false
+                    onboardingStore.completedSteps.append(.hasSyncedContacts)
                 },
                 onError: { error in
                     errorMessage = error.localizedDescription
                     isPresentingError = true
-                    onboardingContext.isPerformingActivity = false
+                    onboardingStore.isPerformingActivity = false
                 })
         }
     }

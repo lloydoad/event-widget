@@ -12,14 +12,14 @@ struct CompleteOnboardingStep: OnboardingStep {
         .complete
     }
 
-    func body(context: OnboardingContext) -> AnyView {
+    func body(store: OnboardingStore) -> AnyView {
         AnyView(
             VStack(spacing: 8) {
                 AttributedStringBuilder(baseStyle: .init(appFont: .large))
-                    .primaryText("hello \(context.savedUsername ?? "")! saving your username and preferences ...")
+                    .primaryText("hello \(store.savedUsername ?? "")! saving your username and preferences ...")
                     .view()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                if context.isPerformingActivity {
+                if store.isPerformingActivity {
                     HStack {
                         ProgressView()
                         Spacer()
@@ -27,7 +27,7 @@ struct CompleteOnboardingStep: OnboardingStep {
                 }
             }
             .onAppear {
-                context.isPerformingActivity = true
+                store.isPerformingActivity = true
 //                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
 //                    
 //                }
@@ -35,14 +35,14 @@ struct CompleteOnboardingStep: OnboardingStep {
         )
     }
 
-    func isApplicable(context: OnboardingContext) -> Bool {
-        context.hasUsernameAndPhoneNumber && context.hasSyncedContacts
+    func isApplicable(store: OnboardingStore) -> Bool {
+        store.hasUsernameAndPhoneNumber && store.hasSyncedContacts
     }
 }
 
 #Preview("step 3") {
     OnboardingView()
-        .environmentObject(OnboardingContext(completedSteps: [
+        .environmentObject(OnboardingStore(completedSteps: [
             .username("lloydd"),
             .phoneNumber("301-367-1234"),
             .hasSyncedContacts

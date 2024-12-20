@@ -13,9 +13,9 @@ struct SyncContactsOnboardingStep: OnboardingStep {
         .syncContacts
     }
 
-    func body(context: OnboardingContext) -> AnyView {
+    func body(store: OnboardingStore) -> AnyView {
         let builder = AttributedStringBuilder(baseStyle: .init(appFont: .large))
-        if context.isPerformingActivity {
+        if store.isPerformingActivity {
             builder
                 .primaryText("syncing contacts...")
         } else {
@@ -35,21 +35,21 @@ struct SyncContactsOnboardingStep: OnboardingStep {
         )
     }
 
-    func isApplicable(context: OnboardingContext) -> Bool {
-        context.hasUsernameAndPhoneNumber && !context.hasSyncedContacts
+    func isApplicable(store: OnboardingStore) -> Bool {
+        store.hasUsernameAndPhoneNumber && !store.hasSyncedContacts
     }
 }
 
 #Preview("sync contacts") {
     OnboardingView()
-        .environmentObject(OnboardingContext(
+        .environmentObject(OnboardingStore(
             completedSteps: [.username("lloyd"), .phoneNumber("301-555-1234")]
         ))
 }
 
 #Preview("sync contacts - network request") {
     OnboardingView()
-        .environmentObject(OnboardingContext(
+        .environmentObject(OnboardingStore(
             completedSteps: [
                 .username("lloyd"),
                 .phoneNumber("301-555-1234")

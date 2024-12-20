@@ -9,8 +9,8 @@ import SwiftUI
 
 protocol OnboardingStep {
     var stepType: OnboardingStepType { get }
-    func body(context: OnboardingContext) -> AnyView
-    func isApplicable(context: OnboardingContext) -> Bool
+    func body(store: OnboardingStore) -> AnyView
+    func isApplicable(store: OnboardingStore) -> Bool
 }
 
 

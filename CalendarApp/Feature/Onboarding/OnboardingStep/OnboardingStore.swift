@@ -1,5 +1,5 @@
 //
-//  OnboardingContext.swift
+//  OnboardingStore.swift
 //  CalendarApp
 //
 //  Created by Lloyd Dapaah on 12/19/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class OnboardingContext: ObservableObject {
+class OnboardingStore: ObservableObject {
     @Published var completedSteps: [OnboardingStepComplete] = []
     @Published var usernameEntry: String = ""
     @Published var phoneNumberEntry: String = ""

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @EnvironmentObject var onboardingContext: OnboardingContext
+    @EnvironmentObject var onboardingStore: OnboardingStore
     private var steps: [any OnboardingStep] = [
         UsernameOnboardingStep(),
         SyncContactsOnboardingStep(),
@@ -24,8 +24,8 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             withAnimation(.easeInOut) {
                 ForEach(steps, id: \.stepType) { step in
-                    if step.isApplicable(context: onboardingContext) {
-                        step.body(context: onboardingContext)
+                    if step.isApplicable(store: onboardingStore) {
+                        step.body(store: onboardingStore)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
@@ -37,5 +37,5 @@ struct OnboardingView: View {
 
 #Preview("step 1") {
     OnboardingView()
-        .environmentObject(OnboardingContext())
+        .environmentObject(OnboardingStore())
 }

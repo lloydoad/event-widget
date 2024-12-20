@@ -12,33 +12,33 @@ struct UsernameOnboardingStep: OnboardingStep {
         .username
     }
 
-    func body(context: OnboardingContext) -> AnyView {
+    func body(store: OnboardingStore) -> AnyView {
         return AnyView(
             VStack(spacing: 4) {
                 TextField("enter a username", text: Binding(
                     get: {
-                        context.usernameEntry
+                        store.usernameEntry
                     },
                     set: { newValue in
-                        context.usernameEntry = newValue
+                        store.usernameEntry = newValue
                             .trimmingCharacters(in: .whitespaces)
                     }
                 ))
                 .font(AppFont.large.asFont)
                 .autocorrectionDisabled()
                 .textFieldStyle(.roundedBorder)
-                claimUsername(context: context)
+                claimUsername(store: store)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         )
     }
 
-    func claimUsername(context: OnboardingContext) -> Text {
+    func claimUsername(store: OnboardingStore) -> Text {
         let builder = AttributedStringBuilder(baseStyle: .init(appFont: .light))
-        if context.usernameEntry.count >= 3 {
+        if store.usernameEntry.count >= 3 {
             return try! builder
                 .bracket("save username",
-                         deeplink: .action(.saveUsernameToOnboardingContext(context.usernameEntry)),
+                         deeplink: .action(.saveUsernameToOnboardingContext(store.usernameEntry)),
                          color: .appTint)
                 .view()
         } else {
@@ -49,19 +49,19 @@ struct UsernameOnboardingStep: OnboardingStep {
         }
     }
 
-    func isApplicable(context: OnboardingContext) -> Bool {
-        context.completedSteps.isEmpty
+    func isApplicable(store: OnboardingStore) -> Bool {
+        store.completedSteps.isEmpty
     }
 }
 
 #Preview("username step") {
-    @Previewable @State var context = OnboardingContext()
+    @Previewable @State var store = OnboardingStore()
     OnboardingView()
-        .environmentObject(context)
+        .environmentObject(store)
 }
 
 #Preview("username step filled") {
-    @Previewable @State var context = OnboardingContext(usernameEntry: "lloyd")
+    @Previewable @State var store = OnboardingStore(usernameEntry: "lloyd")
     OnboardingView()
-        .environmentObject(context)
+        .environmentObject(store)
 }

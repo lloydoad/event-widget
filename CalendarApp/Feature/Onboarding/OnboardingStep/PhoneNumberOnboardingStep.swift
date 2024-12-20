@@ -31,19 +31,19 @@ struct PhoneNumberOnboardingStep: OnboardingStep {
         .phoneNumber
     }
 
-    func body(context: OnboardingContext) -> AnyView {
+    func body(store: OnboardingStore) -> AnyView {
         return AnyView(
             VStack(spacing: 8) {
                 PhoneNumberField(formatter: formatter, text: Binding(
                     get: {
-                        context.phoneNumberEntry
+                        store.phoneNumberEntry
                     },
                     set: { newValue in
-                        context.phoneNumberEntry = newValue
+                        store.phoneNumberEntry = newValue
                     }
                 ))
-                if formatter.isValid(context.phoneNumberEntry) {
-                    if context.isPerformingActivity {
+                if formatter.isValid(store.phoneNumberEntry) {
+                    if store.isPerformingActivity {
                         HStack {
                             ProgressView()
                             AttributedStringBuilder(baseStyle: .init(appFont: .large))
@@ -55,7 +55,7 @@ struct PhoneNumberOnboardingStep: OnboardingStep {
                         AttributedStringBuilder(baseStyle: .init(appFont: .large))
                             .bracket("create account",
                                      fallbackURL: DeepLinkParser.Route.fallbackURL,
-                                     deeplink: .action(.savePhoneNumberToOnboardingContext(context.phoneNumberEntry)),
+                                     deeplink: .action(.savePhoneNumberToOnboardingContext(store.phoneNumberEntry)),
                                      color: .appTint)
                             .view()
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -66,21 +66,21 @@ struct PhoneNumberOnboardingStep: OnboardingStep {
         )
     }
 
-    func isApplicable(context: OnboardingContext) -> Bool {
-        context.hasUsername && !context.hasPhoneNumber
+    func isApplicable(store: OnboardingStore) -> Bool {
+        store.hasUsername && !store.hasPhoneNumber
     }
 }
 
 #Preview("phone number entry") {
     OnboardingView()
-        .environmentObject(OnboardingContext(
+        .environmentObject(OnboardingStore(
             completedSteps: [.username("lloyd")]
         ))
 }
 
 #Preview("phone number entry filled") {
     OnboardingView()
-        .environmentObject(OnboardingContext(
+        .environmentObject(OnboardingStore(
             completedSteps: [.username("lloyd")],
             phoneNumberEntry: "(301) 234-5678")
         )
@@ -88,7 +88,7 @@ struct PhoneNumberOnboardingStep: OnboardingStep {
 
 #Preview("phone number entry filled") {
     OnboardingView()
-        .environmentObject(OnboardingContext(
+        .environmentObject(OnboardingStore(
             completedSteps: [.username("lloyd")],
             phoneNumberEntry: "(301) 234-5678",
             isPerformingActivity: true
