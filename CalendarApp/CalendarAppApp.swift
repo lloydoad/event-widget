@@ -118,7 +118,7 @@ struct CalendarAppApp: App {
 						case .subscriptions(let model):
 							AccountListView(model: model)
 						case .composeEvent:
-							Text("composeEvent")
+							ComposerView()
 						case .action(let action):
 							Text("\(action)")
 						}
@@ -131,6 +131,9 @@ struct CalendarAppApp: App {
 			}
 			.tint(Color(AppColor.appTint.asUIColor))
 			.environment(\.hasSyncedContacts, false)
+			.environmentObject(UserAccountStore(
+				account: AccountModelMocks.lloydAccount
+			))
 		}
     }
 }

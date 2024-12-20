@@ -20,6 +20,30 @@ extension AccountModel {
 	}
 }
 
+class UserAccountStore: ObservableObject {
+	// @Published will trigger view updates when the account changes
+	@Published var account: AccountModel
+
+	init(account: AccountModel) {
+		self.account = account
+	}
+
+	convenience init() {
+		let defaultAccount = AccountModel(
+			uuid: UUID(),
+			username: "",
+			phoneNumber: "",
+			subscriberIDs: []
+		)
+		self.init(account: defaultAccount)
+	}
+
+	func update(_ account: AccountModel) {
+		self.account = account
+	}
+}
+
+
 struct AccountModelMocks {
 	static let alanUUID = UUID()
 	static let serenaUUID = UUID()
