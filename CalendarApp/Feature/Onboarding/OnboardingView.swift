@@ -12,6 +12,7 @@ struct OnboardingView: View {
     private var steps: [any OnboardingStep] = [
         UsernameOnboardingStep(),
         SyncContactsOnboardingStep(),
+        PhoneNumberOnboardingStep(),
         CompleteOnboardingStep()
     ]
 
@@ -37,8 +38,4 @@ struct OnboardingView: View {
 #Preview("step 1") {
     OnboardingView()
         .environmentObject(OnboardingContext())
-}
-#Preview("step 3") {
-    OnboardingView()
-        .environmentObject(OnboardingContext(completedSteps: [.username("lloydd"), .hasSyncedContacts]))
 }

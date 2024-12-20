@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct UsernameOnboardingStep: OnboardingStep {
-    var stepType: OnboardingStepType { .username }
+    var stepType: OnboardingStepType {
+        .username
+    }
 
     func body(context: OnboardingContext) -> AnyView {
         return AnyView(
-            VStack {
+            VStack(spacing: 4) {
                 TextField("enter a username", text: Binding(
                     get: {
                         context.usernameEntry

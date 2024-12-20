@@ -183,6 +183,8 @@ struct CalendarAppApp: App {
             break
         case .saveUsernameToOnboardingContext(let string):
             onboardingContext.completedSteps.append(.username(string))
+        case .savePhoneNumberToOnboardingContext(let string):
+            onboardingContext.completedSteps.append(.phoneNumber(string))
         case .syncContacts:
             contactSyncWorker.sync(
                 onSuccess: { contacts in

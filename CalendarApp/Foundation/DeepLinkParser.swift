@@ -17,6 +17,7 @@ struct DeepLinkParser {
 		case invite
         case markOnboardingComplete
         case saveUsernameToOnboardingContext(String)
+        case savePhoneNumberToOnboardingContext(String)
         case syncContacts
 	}
     

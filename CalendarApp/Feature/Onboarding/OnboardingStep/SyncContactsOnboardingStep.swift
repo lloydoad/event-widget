@@ -36,14 +36,14 @@ struct SyncContactsOnboardingStep: OnboardingStep {
     }
 
     func isApplicable(context: OnboardingContext) -> Bool {
-        context.hasUsername && !context.hasSyncedContacts
+        context.hasUsernameAndPhoneNumber && !context.hasSyncedContacts
     }
 }
 
 #Preview("sync contacts") {
     OnboardingView()
         .environmentObject(OnboardingContext(
-            completedSteps: [.username("lloyd")]
+            completedSteps: [.username("lloyd"), .phoneNumber("301-555-1234")]
         ))
 }
 
@@ -51,7 +51,8 @@ struct SyncContactsOnboardingStep: OnboardingStep {
     OnboardingView()
         .environmentObject(OnboardingContext(
             completedSteps: [
-                .username("lloyd")
+                .username("lloyd"),
+                .phoneNumber("301-555-1234")
             ],
             isPerformingActivity: true
         ))
