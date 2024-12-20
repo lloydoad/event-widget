@@ -17,7 +17,7 @@ struct AccountListView: View {
 		var accounts: [ListItemView.Model]
 	}
 
-	@Environment(\.hasSyncedContacts) var hasSyncedContacts
+    @EnvironmentObject var appSessionStore: AppSessionStore
 	var model: Model
 
     var body: some View {
@@ -57,10 +57,12 @@ struct AccountListView: View {
 		case .subscriptions:
 			do {
 				let builder = AttributedStringBuilder(baseStyle: .init(appFont: .light))
-				if !hasSyncedContacts {
+                if !appSessionStore.hasSyncedContacts {
 					try builder
 						.primaryText("sync your contacts to see who has upcoming events\n")
-						.bracket("sync contacts", deeplink: .action(.sync), color: .appTint)
+                        .bracket("sync contacts",
+                                 deeplink: .action(.syncContacts),
+                                 color: .appTint)
 				}
 				if model.accounts.isEmpty {
 					try builder
@@ -75,32 +77,39 @@ struct AccountListView: View {
 	}
 }
 
-#Preview {
-	AccountListView(model: AccountListView.Model(
-		variant: .guestList,
-		accounts: [
-			try! .account(
-				viewer: AccountModelMocks.lloydAccount,
-				account: AccountModelMocks.alanAccount
-			),
-			try! .account(
-				viewer: AccountModelMocks.lloydAccount,
-				account: AccountModelMocks.serenaAccount
-			),
-			try! .account(
-				viewer: AccountModelMocks.lloydAccount,
-				account: AccountModelMocks.ivoAccount
-			)
-		])
-	)
+#Preview("many accounts") {
+    AccountListView(model: AccountListView.Model(
+        variant: .guestList,
+        accounts: [
+            try! .account(
+                viewer: AccountModelMocks.lloydAccount,
+                account: AccountModelMocks.alanAccount
+            ),
+            try! .account(
+                viewer: AccountModelMocks.lloydAccount,
+                account: AccountModelMocks.serenaAccount
+            ),
+            try! .account(
+                viewer: AccountModelMocks.lloydAccount,
+                account: AccountModelMocks.ivoAccount
+            )
+        ])
+    )
+    .environmentObject(mockAppSessionStore())
+}
+
+#Preview("no accounts - contacts synced") {
 	AccountListView(model: AccountListView.Model(
 		variant: .subscriptions,
 		accounts: []
 	))
-	.environment(\.hasSyncedContacts, true)
-	AccountListView(model: AccountListView.Model(
-		variant: .subscriptions,
-		accounts: []
-	))
-	.environment(\.hasSyncedContacts, false)
+    .environmentObject(mockAppSessionStore())
+}
+
+#Preview("no accounts - contacts not synced") {
+    AccountListView(model: AccountListView.Model(
+        variant: .subscriptions,
+        accounts: []
+    ))
+    .environmentObject(mockAppSessionStore(hasSyncedContacts: false))
 }

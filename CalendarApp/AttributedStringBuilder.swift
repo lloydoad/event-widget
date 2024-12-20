@@ -93,16 +93,30 @@ class AttributedStringBuilder {
 	func build() -> AttributedString {
 		return fullString
 	}
+    
+    func view() -> SwiftUI.Text {
+        SwiftUI.Text(build())
+    }
 
 	@discardableResult
 	func primaryText(_ text: String) -> AttributedStringBuilder {
 		self.appendText(.primary(text))
 	}
+    
+    func text(_ text: Text) -> AttributedStringBuilder {
+        return appendText(text)
+    }
 
 	@discardableResult
 	func bracket(_ text: String, deeplink: DeepLinkParser.Route, color: AppColor) throws -> AttributedStringBuilder {
 		appendButton(.bracket(text, destination: try deeplink.url(), color: color))
 	}
+    
+    @discardableResult
+    func bracket(_ text: String, fallbackURL: URL, deeplink: DeepLinkParser.Route, color: AppColor) -> AttributedStringBuilder {
+        let url = (try? deeplink.url()) ?? fallbackURL
+        return appendButton(.bracket(text, destination: url, color: color))
+    }
 
 	@discardableResult
 	func underline(_ text: String, deeplink: DeepLinkParser.Route, color: AppColor) throws -> AttributedStringBuilder {

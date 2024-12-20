@@ -9,8 +9,16 @@ import SwiftUI
 
 @main
 struct CalendarAppApp: App {
+    @State private var appSessionStore = AppSessionStore()
+    @State private var onboardingContext = OnboardingContext()
+    
+    private var contactSyncWorker = ContactSyncWorker()
+    
     @State private var navigationPagePath: [DeepLinkParser.Page] = []
     @State private var sheetPage: DeepLinkParser.Page?
+    @State private var errorMessage: String?
+    @State private var isPresentingError: Bool = false
+    
 	@State private var eventListModel: EventListView.Model = EventListView.Model(
 		events: [
 			try! .event(
@@ -107,32 +115,36 @@ struct CalendarAppApp: App {
     var body: some Scene {
         WindowGroup {
 			NavigationStack(path: $navigationPagePath) {
-				EventListView(model: eventListModel)
-                    .navigationDestination(for: DeepLinkParser.Page.self) { page in
-                        pageView(page)
-					}
-                    .sheet(item: $sheetPage, content: { page in
-                        pageView(page)
-                    })
-					.onOpenURL { url in
-						if let route = deepLinkParser.getRoute(url: url) {
-                            switch route {
-                            case .action(let routeAction):
-                                // handle some action
-								break
-                            case .push(let page):
-                                navigationPagePath.append(page)
-                            case .sheet(let page):
-                                sheetPage = page
-                            }
-						}
-					}
+                if appSessionStore.hasOnboarded {
+                    EventListView(model: eventListModel)
+                        .navigationDestination(for: DeepLinkParser.Page.self) { page in
+                            pageView(page)
+                        }
+                } else {
+                    OnboardingView()
+                }
 			}
+            .sheet(item: $sheetPage, content: { page in
+                pageView(page)
+            })
+            .onOpenURL { url in
+                if let route = deepLinkParser.getRoute(url: url) {
+                    switch route {
+                    case .action(let action):
+                        handleAction(action)
+                    case .push(let page):
+                        navigationPagePath.append(page)
+                    case .sheet(let page):
+                        sheetPage = page
+                    }
+                }
+            }
+            .alert(errorMessage ?? "something went wrong", isPresented: $isPresentingError, actions: {
+                Button("OK", role: .cancel) { }
+            })
 			.tint(Color(AppColor.appTint.asUIColor))
-			.environment(\.hasSyncedContacts, false)
-			.environmentObject(UserAccountStore(
-				account: AccountModelMocks.lloydAccount
-			))
+            .environmentObject(appSessionStore)
+            .environmentObject(onboardingContext)
 		}
     }
     
@@ -148,6 +160,41 @@ struct CalendarAppApp: App {
                 return AnyView(AccountListView(model: model))
             case .composer:
                 return AnyView(ComposerView())
+            case .signInWithApple:
+                return AnyView(SignInWithAppleView())
             }
+    }
+    
+    func handleAction(_ action: DeepLinkParser.RouteAction) {
+        switch action {
+        case .join:
+            break
+        case .cantGo:
+            break
+        case .delete:
+            break
+        case .subscribe:
+            break
+        case .unsubscribe:
+            break
+        case .invite:
+            break
+        case .markOnboardingComplete:
+            break
+        case .saveUsernameToOnboardingContext(let string):
+            onboardingContext.completedSteps.append(.username(string))
+        case .syncContacts:
+            contactSyncWorker.sync(
+                onSuccess: { contacts in
+                    print(contacts)
+                    onboardingContext.isPerformingActivity = false
+                    onboardingContext.completedSteps.append(.hasSyncedContacts)
+                },
+                onError: { error in
+                    errorMessage = error.localizedDescription
+                    isPresentingError = true
+                    onboardingContext.isPerformingActivity = false
+                })
+        }
     }
 }

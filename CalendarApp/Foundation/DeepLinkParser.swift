@@ -14,8 +14,10 @@ struct DeepLinkParser {
 		case delete
 		case subscribe
 		case unsubscribe
-		case sync
 		case invite
+        case markOnboardingComplete
+        case saveUsernameToOnboardingContext(String)
+        case syncContacts
 	}
     
     enum Page: Codable, Hashable, Identifiable {
@@ -24,6 +26,7 @@ struct DeepLinkParser {
         case accounts(AccountListView.Model)
         case subscriptions(AccountListView.Model)
         case composer
+        case signInWithApple
         
         var id: String {
             hashValue.description

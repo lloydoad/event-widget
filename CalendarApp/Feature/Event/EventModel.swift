@@ -8,12 +8,13 @@
 import Foundation
 
 struct EventModel: Codable, Hashable, Equatable {
-	let creator: AccountModel
-	let description: String
-	let startDate: Date
-	let endDate: Date
-	let location: LocationModel
-	let guests: [AccountModel]
+    var uuid: UUID
+    var creator: AccountModel
+    var description: String
+    var startDate: Date
+    var endDate: Date
+    var location: LocationModel
+    var guests: [AccountModel]
 }
 
 extension EventModel {
@@ -53,6 +54,7 @@ struct EventModelMocks {
 		]
 	) -> EventModel {
 		EventModel(
+            uuid: .init(),
 			creator: creator,
 			description: description,
 			startDate: startDate,

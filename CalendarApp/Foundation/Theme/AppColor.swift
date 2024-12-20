@@ -16,7 +16,8 @@ enum AppColor: Codable {
 	var asUIColor: UIColor {
 		switch self {
 		case .appTint:
-			return UIColor(red: 38.0 / 255.0, green: 167.0 / 255.0, blue: 222.0 / 255.0, alpha: 1)
+//			return UIColor(red: 38.0 / 255.0, green: 167.0 / 255.0, blue: 222.0 / 255.0, alpha: 1)
+            return UIColor.tintColor
 		case .primary:
 			return UIColor.label
 		case .secondary:

@@ -9,7 +9,7 @@ import SwiftUI
 import MapKit
 
 struct ComposerView: View {
-    @EnvironmentObject var userAccountStore: UserAccountStore
+    @EnvironmentObject var appSessionStore: AppSessionStore
     @Environment(\.dismiss) private var dismiss
     
     @State private var description: String = "description ..."
@@ -65,12 +65,14 @@ struct ComposerView: View {
 		guard
 			!description.isEmpty,
 			endDate > .now,
-			let location = location
+			let location = location,
+            let userAccount = appSessionStore.userAccount
 		else {
 			return nil
 		}
 		return EventModel(
-			creator: userAccountStore.account,
+            uuid: .init(),
+            creator: userAccount,
 			description: description,
 			startDate: startDate,
 			endDate: endDate,
@@ -89,7 +91,5 @@ struct ComposerView: View {
 
 #Preview {
 	ComposerView()
-		.environmentObject(UserAccountStore(
-			account: AccountModelMocks.alanAccount
-		))
+        .environmentObject(mockAppSessionStore())
 }
