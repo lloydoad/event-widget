@@ -27,7 +27,6 @@ struct DeepLinkParser {
         case accounts(AccountListView.Model)
         case subscriptions(AccountListView.Model)
         case composer
-        case signInWithApple
         
         var id: String {
             hashValue.description

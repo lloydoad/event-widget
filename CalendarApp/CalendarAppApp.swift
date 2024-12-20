@@ -160,8 +160,6 @@ struct CalendarAppApp: App {
                 return AnyView(AccountListView(model: model))
             case .composer:
                 return AnyView(ComposerView())
-            case .signInWithApple:
-                return AnyView(SignInWithAppleView())
             }
     }
     
