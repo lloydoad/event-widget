@@ -44,12 +44,12 @@ struct EventListView: View {
 			ButtonModel(
 				title: "create new event",
 				color: .secondary,
-				route: .composeEvent
+                route: .sheet(.composer)
 			),
 			ButtonModel(
 				title: "subscribe to more friends",
 				color: .secondary,
-				route: .subscriptions(model.subscription)
+                route: .push(.subscriptions(model.subscription))
 			),
 		]
 	}

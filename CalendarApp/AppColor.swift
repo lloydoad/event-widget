@@ -23,4 +23,8 @@ enum AppColor: Codable {
 			return UIColor.secondaryLabel
 		}
 	}
+    
+    var asColor: Color {
+        Color(asUIColor)
+    }
 }

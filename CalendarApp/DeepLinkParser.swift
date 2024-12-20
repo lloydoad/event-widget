@@ -17,14 +17,23 @@ struct DeepLinkParser {
 		case sync
 		case invite
 	}
+    
+    enum Page: Codable, Hashable, Identifiable {
+        case events(EventListView.Model)
+        case account(AccountView.Model)
+        case accounts(AccountListView.Model)
+        case subscriptions(AccountListView.Model)
+        case composer
+        
+        var id: String {
+            hashValue.description
+        }
+    }
 
 	enum Route: Codable, Hashable {
-		case events(EventListView.Model)
-		case account(AccountView.Model)
-		case accounts(AccountListView.Model)
-		case subscriptions(AccountListView.Model)
-		case composeEvent
 		case action(RouteAction)
+        case push(Page)
+        case sheet(Page)
 
 		func url(modelParser: ModelParser = .init()) throws -> URL {
 			let dataString = try modelParser.encode(self)

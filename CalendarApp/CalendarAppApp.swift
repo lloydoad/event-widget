@@ -9,7 +9,8 @@ import SwiftUI
 
 @main
 struct CalendarAppApp: App {
-	@State private var path: [DeepLinkParser.Route] = []
+    @State private var navigationPagePath: [DeepLinkParser.Page] = []
+    @State private var sheetPage: DeepLinkParser.Page?
 	@State private var eventListModel: EventListView.Model = EventListView.Model(
 		events: [
 			try! .event(
@@ -105,27 +106,25 @@ struct CalendarAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-			NavigationStack(path: $path) {
+			NavigationStack(path: $navigationPagePath) {
 				EventListView(model: eventListModel)
-					.navigationDestination(for: DeepLinkParser.Route.self) { route in
-						switch route {
-						case .events(let model):
-							EventListView(model: model)
-						case .account(let model):
-							AccountView(model: model)
-						case .accounts(let model):
-							AccountListView(model: model)
-						case .subscriptions(let model):
-							AccountListView(model: model)
-						case .composeEvent:
-							ComposerView()
-						case .action(let action):
-							Text("\(action)")
-						}
+                    .navigationDestination(for: DeepLinkParser.Page.self) { page in
+                        pageView(page)
 					}
+                    .sheet(item: $sheetPage, content: { page in
+                        pageView(page)
+                    })
 					.onOpenURL { url in
 						if let route = deepLinkParser.getRoute(url: url) {
-							path.append(route)
+                            switch route {
+                            case .action(let routeAction):
+                                // handle some action
+								break
+                            case .push(let page):
+                                navigationPagePath.append(page)
+                            case .sheet(let page):
+                                sheetPage = page
+                            }
 						}
 					}
 			}
@@ -135,5 +134,20 @@ struct CalendarAppApp: App {
 				account: AccountModelMocks.lloydAccount
 			))
 		}
+    }
+    
+    func pageView(_ page: DeepLinkParser.Page) -> some View {
+            switch page {
+            case .events(let model):
+                return AnyView(EventListView(model: model))
+            case .account(let model):
+                return AnyView(AccountView(model: model))
+            case .accounts(let model):
+                return AnyView(AccountListView(model: model))
+            case .subscriptions(let model):
+                return AnyView(AccountListView(model: model))
+            case .composer:
+                return AnyView(ComposerView())
+            }
     }
 }

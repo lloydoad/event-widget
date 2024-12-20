@@ -22,7 +22,7 @@ extension ListItemView.Model {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .large)
 		let builder = try AttributedStringBuilder(baseStyle: baseStyle)
 			.bracket("profile",
-					 deeplink: .account(.init(account: account)),
+                     deeplink: .push(.account(.init(account: account))),
 					 color: .appTint)
 		builder.primaryText(" ")
 
@@ -156,7 +156,7 @@ extension ListItemView.Model {
 extension AttributedStringBuilder {
 	func account(_ account: AccountModel) throws -> AttributedStringBuilder {
 		try self.underline(account.username,
-						   deeplink: .account(.init(account: account)),
+						   deeplink: .push(.account(.init(account: account))),
 						   color: .primary)
 	}
 
@@ -176,7 +176,7 @@ extension AttributedStringBuilder {
 				try .account(viewer: viewer, account: account)
 			})
 		)
-		let route = DeepLinkParser.Route.accounts(accounts)
+        let route = DeepLinkParser.Route.push(.accounts(accounts))
 		return try underline(text, deeplink: route, color: .primary)
 	}
 }

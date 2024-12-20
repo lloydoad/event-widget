@@ -9,7 +9,9 @@ import SwiftUI
 import MapKit
 
 struct ComposerView: View {
-	@EnvironmentObject var userAccountStore: UserAccountStore
+    @EnvironmentObject var userAccountStore: UserAccountStore
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var description: String = "description ..."
     @State private var startDate: Date = Date()
     @State private var endDate: Date = Date()
@@ -31,17 +33,16 @@ struct ComposerView: View {
 			DatePicker("starts:",
 					   selection: $startDate,
 					   displayedComponents: [.date, .hourAndMinute])
-			DatePicker(
-				"ends:",
-				selection: $endDate,
-				displayedComponents: [.date, .hourAndMinute])
+			DatePicker("ends:",
+                       selection: $endDate,
+                       displayedComponents: [.date, .hourAndMinute])
 			HStack {
 				Spacer()
 				Button("[\(location?.address ?? "add address")]") {
 					isLocationPickerPresented = true
 				}
 				.font(AppFont.large.asFont)
-				.tint(Color(AppColor.primary.asUIColor))
+                .tint(Color(AppColor.primary.asColor))
 			}
 			HStack {
 				Spacer()
@@ -49,7 +50,7 @@ struct ComposerView: View {
 					saveEvent()
 				}
 				.font(AppFont.large.asFont)
-				.tint(Color(AppColor.primary.asUIColor))
+                .tint(Color(AppColor.primary.asColor))
 				.disabled(validatedEvent == nil)
 			}
 		}
@@ -81,7 +82,7 @@ struct ComposerView: View {
     private func saveEvent() {
         // Implement the logic to save the event
 		print(validatedEvent)
-        // Save the newEvent to your data store
+        dismiss()
     }
 }
 
