@@ -7,8 +7,13 @@
 
 import SwiftUI
 
+enum OnboardingStepType: Hashable {
+    case username
+    case phoneNumber
+}
+
 protocol OnboardingStep {
-    var stepType: OnboardingStepType { get }
+    var stage: OnboardingStepType { get }
     func body(store: OnboardingStore) -> AnyView
     func isApplicable(store: OnboardingStore) -> Bool
 }

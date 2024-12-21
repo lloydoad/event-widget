@@ -65,14 +65,17 @@ struct EventListView: View {
 			events: [
 				try! .event(
 					viewer: AccountModelMocks.catAccount,
+                    following: [AccountModelMocks.alanUUID],
 					event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 				),
 				try! .event(
 					viewer: AccountModelMocks.ivoAccount,
+                    following: [AccountModelMocks.alanUUID],
 					event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 				),
 				try! .event(
 					viewer: AccountModelMocks.lloydAccount,
+                    following: [AccountModelMocks.alanUUID],
 					event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 				)
 			],

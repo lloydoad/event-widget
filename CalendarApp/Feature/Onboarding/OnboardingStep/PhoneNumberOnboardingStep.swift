@@ -24,10 +24,10 @@ struct PhoneNumberField: View {
     }
 }
 
-struct PhoneNumberOnboardingStep: OnboardingStep {
+class PhoneNumberOnboardingStep: OnboardingStep {
     private let formatter = PhoneNumberFormatter()
     
-    var stepType: OnboardingStepType {
+    var stage: OnboardingStepType {
         .phoneNumber
     }
 
@@ -36,13 +36,13 @@ struct PhoneNumberOnboardingStep: OnboardingStep {
             VStack(spacing: 8) {
                 PhoneNumberField(formatter: formatter, text: Binding(
                     get: {
-                        store.phoneNumberEntry
+                        store.entryText
                     },
                     set: { newValue in
-                        store.phoneNumberEntry = newValue
+                        store.entryText = newValue
                     }
                 ))
-                if formatter.isValid(store.phoneNumberEntry) {
+                if formatter.isValid(store.entryText) {
                     if store.isPerformingActivity {
                         HStack {
                             ProgressView()
@@ -55,7 +55,11 @@ struct PhoneNumberOnboardingStep: OnboardingStep {
                         AttributedStringBuilder(baseStyle: .init(appFont: .large))
                             .bracket("create account",
                                      fallbackURL: DeepLinkParser.Route.fallbackURL,
-                                     deeplink: .action(.savePhoneNumberToOnboardingContext(store.phoneNumberEntry)),
+                                     deeplink: .action(
+                                        .createAccount(
+                                            username: username(store: store),
+                                            phoneNumber: store.entryText)
+                                     ),
                                      color: .appTint)
                             .view()
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -67,30 +71,45 @@ struct PhoneNumberOnboardingStep: OnboardingStep {
     }
 
     func isApplicable(store: OnboardingStore) -> Bool {
-        store.hasUsername && !store.hasPhoneNumber
+        switch store.stage {
+        case .enterPhoneNumber:
+            return true
+        default:
+            return false
+        }
+    }
+    
+    func username(store: OnboardingStore) -> String {
+        switch store.stage {
+        case .enterPhoneNumber(username: let username):
+            return username
+        default:
+            return ""
+        }
     }
 }
 
 #Preview("phone number entry") {
     OnboardingView()
         .environmentObject(OnboardingStore(
-            completedSteps: [.username("lloyd")]
+            stage: .enterPhoneNumber(username: "lloyd"),
+            entryText: ""
         ))
 }
 
 #Preview("phone number entry filled") {
     OnboardingView()
         .environmentObject(OnboardingStore(
-            completedSteps: [.username("lloyd")],
-            phoneNumberEntry: "(301) 234-5678")
+            stage: .enterPhoneNumber(username: "lloyd"),
+            entryText: "301-367-8901"
+        ))
+}
+
+#Preview("phone number entry filled") {
+    OnboardingView()
+        .environmentObject(OnboardingStore(
+            stage: .enterPhoneNumber(username: "lloyd"),
+            entryText: "301-367-8901",
+            isPerformingActivity: true)
         )
-}
-
-#Preview("phone number entry filled") {
-    OnboardingView()
-        .environmentObject(OnboardingStore(
-            completedSteps: [.username("lloyd")],
-            phoneNumberEntry: "(301) 234-5678",
-            isPerformingActivity: true
-        ))
 }

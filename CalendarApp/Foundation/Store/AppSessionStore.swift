@@ -8,26 +8,14 @@
 import SwiftUI
 
 class AppSessionStore: ObservableObject {
-	@Published private(set) var userAccount: AccountModel?
-    @Published private(set) var hasSyncedContacts: Bool = false
-    
-    var hasOnboarded: Bool {
-        userAccount != nil
-    }
-
-    func updateUserAccount(_ account: AccountModel) {
-        self.userAccount = account
-    }
-    
-    func updateHasSyncedContacts(_ hasSyncedContacts: Bool) {
-        self.hasSyncedContacts = hasSyncedContacts
-    }
+	@Published var userAccount: AccountModel?
+    @Published var followingUUIds: [UUID] = []
+    @Published var hasSyncedContacts: Bool = false
 }
-
 
 func mockAppSessionStore(account: AccountModel = AccountModelMocks.lloydAccount, hasSyncedContacts: Bool = false) -> AppSessionStore {
     let store = AppSessionStore()
-    store.updateUserAccount(account)
-    store.updateHasSyncedContacts(hasSyncedContacts)
+    store.userAccount = account
+    store.hasSyncedContacts = hasSyncedContacts
     return store
 }

@@ -9,107 +9,22 @@ import SwiftUI
 
 @main
 struct CalendarAppApp: App {
-    @State private var appSessionStore = AppSessionStore()
-    @State private var onboardingStore = OnboardingStore()
+    @StateObject private var appSessionStore = AppSessionStore()
+    @StateObject private var onboardingStore = OnboardingStore()
     
     private let contactSyncWorker = ContactSyncWorker()
-    // TODO: Replace with network store
-    private let accountWorker = AccountWorker(accountStore: MockAccountStore())
+    private let accountWorker = AccountWorker(accountStore: MockAccountStore()) // TODO: Replace with network store
     
     @State private var navigationPagePath: [DeepLinkParser.Page] = []
     @State private var sheetPage: DeepLinkParser.Page?
     @State private var errorMessage: String?
     @State private var isPresentingError: Bool = false
-    
+
 	@State private var eventListModel: EventListView.Model = EventListView.Model(
-		events: [
-			try! .event(
-				viewer: AccountModelMocks.lloydAccount,
-				event: EventModelMocks.event(
-					creator: AccountModelMocks.serenaAccount,
-					description: "meditation at the SF Dharma collective. will be focused on emotions",
-					startDate: DateFormatter().createDate(hour: 19, minute: 30)!,
-					endDate: DateFormatter().createDate(hour: 21, minute: 30)!,
-					guests: [
-						AccountModelMocks.alanAccount,
-						AccountModelMocks.lloydAccount,
-						AccountModelMocks.ivoAccount
-					]
-				)
-			),
-			try! .event(
-				viewer: AccountModelMocks.lloydAccount,
-				event: EventModelMocks.event(
-					creator: AccountModelMocks.nickAccount,
-					description: "building lego till 8pm or later. idk",
-					location: LocationModel(
-						address: "1 haight st",
-						city: "san francisco",
-						state: "california"
-					),
-					startDate: DateFormatter().createDate(hour: 17, minute: 00)!,
-					endDate: DateFormatter().createDate(hour: 21, minute: 00)!,
-					guests: []
-				)
-			),
-			try! .event(
-				viewer: AccountModelMocks.lloydAccount,
-				event: EventModelMocks.event(
-					creator: AccountModelMocks.lloydAccount,
-					description: "thinking about going to a comedy after work. open to ideas",
-					location: LocationModel(
-						address: "250 fell st",
-						city: "san francisco",
-						state: "california"
-					),
-					startDate: DateFormatter().createDate(hour: 12, minute: 00)!,
-					endDate: DateFormatter().createDate(hour: 15, minute: 00)!,
-					guests: []
-				)
-			),
-			try! .event(
-				viewer: AccountModelMocks.lloydAccount,
-				event: EventModelMocks.event(
-					creator: AccountModelMocks.nickAccount,
-					description: "anyone down to smash 👀 (as-in nintendo smash)",
-					location: LocationModel(
-						address: "250 king st",
-						city: "san francisco",
-						state: "california"
-					),
-					startDate: DateFormatter().createDate(hour: 4, minute: 00)!,
-					endDate: DateFormatter().createDate(hour: 7, minute: 00)!,
-					guests: []
-				)
-			),
-			try! .event(
-				viewer: AccountModelMocks.lloydAccount,
-				event: EventModelMocks.event(
-					creator: AccountModelMocks.lloydAccount,
-					description: "lets go around town and be spooky",
-					location: LocationModel(
-						address: "1 california st",
-						city: "san francisco",
-						state: "california"
-					),
-					startDate: DateFormatter().createDate(hour: 1, minute: 30)!,
-					endDate: DateFormatter().createDate(hour: 4, minute: 15)!,
-					guests: [AccountModelMocks.serenaAccount]
-				)
-			)
-		],
+		events: [],
 		subscription: AccountListView.Model.init(
 			variant: .subscriptions,
-			accounts: [
-				try! .account(
-					viewer: AccountModelMocks.lloydAccount,
-					account: AccountModelMocks.serenaAccount
-				),
-				try! .account(
-					viewer: AccountModelMocks.lloydAccount,
-					account: AccountModelMocks.ivoAccount
-				)
-			]
+			accounts: []
 		))
 
 	private let deepLinkParser = DeepLinkParser()
@@ -117,13 +32,13 @@ struct CalendarAppApp: App {
     var body: some Scene {
         WindowGroup {
 			NavigationStack(path: $navigationPagePath) {
-                if appSessionStore.hasOnboarded {
+                if appSessionStore.userAccount == nil {
+                    OnboardingView()
+                } else {
                     EventListView(model: eventListModel)
                         .navigationDestination(for: DeepLinkParser.Page.self) { page in
                             pageView(page)
                         }
-                } else {
-                    OnboardingView()
                 }
 			}
             .sheet(item: $sheetPage, content: { page in
@@ -181,35 +96,37 @@ struct CalendarAppApp: App {
             break
         case .markOnboardingComplete:
             break
-        case .saveUsernameToOnboardingContext(let string):
-            onboardingStore.completedSteps.append(.username(string))
-        case .savePhoneNumberToOnboardingContext(let phoneNumber):
+        case .claimUsername(username: let username):
+            onboardingStore.entryText = ""
+            onboardingStore.stage = .enterPhoneNumber(username: username)
+        case .createAccount(username: let username, phoneNumber: let phoneNumber):
             onboardingStore.isPerformingActivity = true
             accountWorker.createAccount(
-                username: onboardingStore.savedUsername ?? "",
-                phoneNumber: onboardingStore.savedPhoneNumber ?? "",
+                username: username,
+                phoneNumber: phoneNumber,
                 onSuccess: { newUserAccount in
-                    appSessionStore.updateUserAccount(newUserAccount)
+                    appSessionStore.userAccount = newUserAccount
                     onboardingStore.isPerformingActivity = false
-                    onboardingStore.completedSteps.append(.phoneNumber(phoneNumber))
+                    onboardingStore.stage = .enterUsername
                 }, onError: { error in
                     errorMessage = error.localizedDescription
                     isPresentingError = true
                     onboardingStore.isPerformingActivity = false
                 })
         case .syncContacts:
-            onboardingStore.isPerformingActivity = true
-            contactSyncWorker.sync(
-                onSuccess: { contacts in
-                    print(contacts)
-                    onboardingStore.isPerformingActivity = false
-                    onboardingStore.completedSteps.append(.hasSyncedContacts)
-                },
-                onError: { error in
-                    errorMessage = error.localizedDescription
-                    isPresentingError = true
-                    onboardingStore.isPerformingActivity = false
-                })
+            break
+//            onboardingStore.isPerformingActivity = true
+//            contactSyncWorker.sync(
+//                onSuccess: { contacts in
+//                    print(contacts)
+//                    onboardingStore.isPerformingActivity = false
+//                    onboardingStore.completedSteps.append(.hasSyncedContacts)
+//                },
+//                onError: { error in
+//                    errorMessage = error.localizedDescription
+//                    isPresentingError = true
+//                    onboardingStore.isPerformingActivity = false
+//                })
         }
     }
 }

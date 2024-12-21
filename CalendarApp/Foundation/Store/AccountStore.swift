@@ -27,15 +27,23 @@ class MockAccountStore: AccountStoring {
     
     func save(account: AccountModel) async throws {
         try await Task.sleep(nanoseconds: 2_500_000_000) // 2.5 second delay
-        if accounts.contains(where: { $0.uuid == account.uuid }) {
+        if accounts.contains(where: {
+            $0.uuid == account.uuid
+        }) {
             throw StoreError.duplicateAccount
         }
-        if accounts.contains(where: { $0.phoneNumber == account.phoneNumber }) {
+        if accounts.contains(where: {
+            isEqualPhoneNumber(lhs: $0.phoneNumber, rhs: account.phoneNumber)
+        }) {
             throw StoreError.duplicatePhoneNumber
         }
         accounts.append(account)
     }
-    
+
+    private func isEqualPhoneNumber(lhs: String, rhs: String) -> Bool {
+        lhs.filter(\.isNumber) == rhs.filter(\.isNumber)
+    }
+
     func getAccounts(with uuids: [UUID]) async throws -> [AccountModel] {
         try await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 second delay
         return accounts.compactMap { account in

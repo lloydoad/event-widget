@@ -11,13 +11,6 @@ struct AccountModel: Codable, Hashable, Equatable {
 	var uuid: UUID
 	var username: String
 	var phoneNumber: String
-	var subscriberIDs: [UUID]
-}
-
-extension AccountModel {
-	func isSubscriber(viewer: AccountModel) -> Bool {
-		subscriberIDs.contains(viewer.uuid)
-	}
 }
 
 struct AccountModelMocks {
@@ -31,38 +24,32 @@ struct AccountModelMocks {
 	static let nickAccount = AccountModel(
 		uuid: nickUUID,
 		username: "nick",
-		phoneNumber: "301-367-6761",
-		subscriberIDs: [alanUUID, serenaUUID]
+		phoneNumber: "301-367-6761"
 	)
 	static let alanAccount = AccountModel(
 		uuid: alanUUID,
 		username: "alan",
-		phoneNumber: "301-367-6761",
-		subscriberIDs: [nickUUID, serenaUUID]
+		phoneNumber: "301-367-6761"
 	)
 	static let serenaAccount = AccountModel(
 		uuid: serenaUUID,
 		username: "serena",
-		phoneNumber: "301-367-6761",
-		subscriberIDs: [ivoUUID, catUUID, lloydUUID]
+		phoneNumber: "301-367-6761"
 	)
 	static let catAccount = AccountModel(
 		uuid: catUUID,
 		username: "cat",
-		phoneNumber: "301-367-6761",
-		subscriberIDs: [nickUUID, lloydUUID]
+		phoneNumber: "301-367-6761"
 	)
 	static let lloydAccount = AccountModel(
 		uuid: lloydUUID,
 		username: "lloyd",
-		phoneNumber: "301-367-6761",
-		subscriberIDs: [catUUID]
+		phoneNumber: "301-367-6761"
 	)
 	static let ivoAccount = AccountModel(
 		uuid: ivoUUID,
 		username: "ivo",
-		phoneNumber: "301-367-6761",
-		subscriberIDs: [alanUUID]
+		phoneNumber: "301-367-6761"
 	)
 }
 

@@ -83,15 +83,18 @@ struct AccountListView: View {
         accounts: [
             try! .account(
                 viewer: AccountModelMocks.lloydAccount,
-                account: AccountModelMocks.alanAccount
+                account: AccountModelMocks.alanAccount,
+                following: [AccountModelMocks.alanUUID]
             ),
             try! .account(
                 viewer: AccountModelMocks.lloydAccount,
-                account: AccountModelMocks.serenaAccount
+                account: AccountModelMocks.serenaAccount,
+                following: [AccountModelMocks.alanUUID]
             ),
             try! .account(
                 viewer: AccountModelMocks.lloydAccount,
-                account: AccountModelMocks.ivoAccount
+                account: AccountModelMocks.ivoAccount,
+                following: [AccountModelMocks.alanUUID]
             )
         ])
     )

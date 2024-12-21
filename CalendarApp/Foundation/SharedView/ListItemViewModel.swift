@@ -11,14 +11,14 @@ extension ListItemView.Model {
 
 	// MARK: - Account
 
-	static func account(viewer: AccountModel, account: AccountModel) throws -> ListItemView.Model {
+    static func account(viewer: AccountModel, account: AccountModel, following: [UUID]) throws -> ListItemView.Model {
 		ListItemView.Model(
 			content: try ListItemView.Model.accountContent(viewer: viewer, account: account),
-			controls: try ListItemView.Model.accountControls(viewer: viewer, account: account)
+            controls: try ListItemView.Model.accountControls(viewer: viewer, account: account, following: following)
 		)
 	}
 
-	static private func accountControls(viewer: AccountModel, account: AccountModel) throws -> AttributedString {
+	static private func accountControls(viewer: AccountModel, account: AccountModel, following: [UUID]) throws -> AttributedString {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .large)
 		let builder = try AttributedStringBuilder(baseStyle: baseStyle)
 			.bracket("profile",
@@ -27,7 +27,7 @@ extension ListItemView.Model {
 		builder.primaryText(" ")
 
 		guard viewer != account else { return builder.build() }
-		if account.isSubscriber(viewer: viewer) {
+        if following.contains(account.uuid) {
 			try builder
 				.bracket("unsubscribe", deeplink: .action(.unsubscribe), color: .appTint)
 				.primaryText(" ")
@@ -50,7 +50,7 @@ extension ListItemView.Model {
 
 	// MARK: - Event
 
-	static func event(viewer: AccountModel, event: EventModel) throws -> ListItemView.Model {
+    static func event(viewer: AccountModel, following: [UUID], event: EventModel) throws -> ListItemView.Model {
 		if event.endDate < .now {
 			ListItemView.Model(
 				content: try ListItemView.Model.expiredEventContent(event: event),
@@ -58,7 +58,7 @@ extension ListItemView.Model {
 			)
 		} else {
 			ListItemView.Model(
-				content: try ListItemView.Model.eventContent(viewer: viewer, event: event),
+                content: try ListItemView.Model.eventContent(viewer: viewer, following: following, event: event),
 				controls: try ListItemView.Model.eventControls(viewer: viewer, event: event)
 			)
 		}
@@ -101,7 +101,7 @@ extension ListItemView.Model {
 			.build()
 	}
 
-	static private func eventContent(viewer: AccountModel, event: EventModel) throws -> AttributedString {
+    static private func eventContent(viewer: AccountModel, following: [UUID], event: EventModel) throws -> AttributedString {
 		let timeValue = DateFormatter().formattedRange(start: event.startDate,
 													   end: event.endDate)
 		let isNonCreatorGuest = event.isGoing(viewer: viewer) && viewer != event.creator
@@ -120,7 +120,8 @@ extension ListItemView.Model {
 					.primaryText(" and ")
 					.guestList(
 						otherGoingText(isGoing: true, event: event),
-						viewer: viewer,
+                        viewer: viewer,
+                        following: following,
 						event: event
 					)
 					.primaryText(" are going •")
@@ -139,6 +140,7 @@ extension ListItemView.Model {
 					.guestList(
 						otherGoingText(isGoing: false, event: event),
 						viewer: viewer,
+                        following: following,
 						event: event
 					)
 					.primaryText(" are going •")
@@ -169,11 +171,11 @@ extension AttributedStringBuilder {
 							 color: .primary)
 	}
 
-	func guestList(_ text: String, viewer: AccountModel, event: EventModel) throws -> AttributedStringBuilder {
+    func guestList(_ text: String, viewer: AccountModel, following: [UUID], event: EventModel) throws -> AttributedStringBuilder {
 		let accounts = try AccountListView.Model(
 			variant: .guestList,
 			accounts: (event.guests + [event.creator]).map({ account in
-				try .account(viewer: viewer, account: account)
+                try .account(viewer: viewer, account: account, following: following)
 			})
 		)
         let route = DeepLinkParser.Route.push(.accounts(accounts))

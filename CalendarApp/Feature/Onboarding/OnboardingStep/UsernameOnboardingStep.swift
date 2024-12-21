@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UsernameOnboardingStep: OnboardingStep {
-    var stepType: OnboardingStepType {
+    var stage: OnboardingStepType {
         .username
     }
 
@@ -17,52 +17,53 @@ struct UsernameOnboardingStep: OnboardingStep {
             VStack(spacing: 4) {
                 TextField("enter a username", text: Binding(
                     get: {
-                        store.usernameEntry
+                        store.entryText
                     },
                     set: { newValue in
-                        store.usernameEntry = newValue
+                        store.entryText = newValue
                             .trimmingCharacters(in: .whitespaces)
                     }
                 ))
                 .font(AppFont.large.asFont)
                 .autocorrectionDisabled()
                 .textFieldStyle(.roundedBorder)
-                claimUsername(store: store)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                if store.entryText.count >= 3 {
+                    AttributedStringBuilder(baseStyle: .init(appFont: .light))
+                        .bracket("save username",
+                                 fallbackURL: DeepLinkParser.Route.fallbackURL,
+                                 deeplink: .action(.claimUsername(username: store.entryText)),
+                                 color: .appTint)
+                        .view()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    AttributedStringBuilder(baseStyle: .init(appFont: .light))
+                        .text(.init("name cannot be shorter than 3 characters",
+                                    segmentStyle: .init(underline: false, color: .secondary)))
+                        .view()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         )
     }
 
-    func claimUsername(store: OnboardingStore) -> Text {
-        let builder = AttributedStringBuilder(baseStyle: .init(appFont: .light))
-        if store.usernameEntry.count >= 3 {
-            return builder
-                .bracket("save username",
-                         fallbackURL: DeepLinkParser.Route.fallbackURL,
-                         deeplink: .action(.saveUsernameToOnboardingContext(store.usernameEntry)),
-                         color: .appTint)
-                .view()
-        } else {
-            return builder
-                .text(.init("name cannot be shorter than 3 characters",
-                            segmentStyle: .init(underline: false, color: .secondary)))
-                .view()
-        }
-    }
-
     func isApplicable(store: OnboardingStore) -> Bool {
-        store.completedSteps.isEmpty
+        switch store.stage {
+        case .enterUsername:
+            true
+        default:
+            false
+        }
     }
 }
 
 #Preview("username step") {
-    @Previewable @State var store = OnboardingStore()
+    @Previewable @State var store = OnboardingStore(stage: .enterUsername)
     OnboardingView()
         .environmentObject(store)
 }
 
 #Preview("username step filled") {
-    @Previewable @State var store = OnboardingStore(usernameEntry: "lloyd")
+    @Previewable @State var store = OnboardingStore(stage: .enterUsername, entryText: "lloydd")
     OnboardingView()
         .environmentObject(store)
 }

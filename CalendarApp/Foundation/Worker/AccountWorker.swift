@@ -21,7 +21,7 @@ class AccountWorker {
         onSuccess: @escaping (AccountModel) -> Void,
         onError: @escaping (Error) -> Void
     ) {
-        let account = AccountModel(uuid: UUID(), username: username, phoneNumber: phoneNumber, subscriberIDs: [])
+        let account = AccountModel(uuid: UUID(), username: username, phoneNumber: phoneNumber)
         accountCreationTask?.cancel()
         accountCreationTask = Task { @MainActor in
             do {

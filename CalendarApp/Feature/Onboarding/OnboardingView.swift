@@ -21,7 +21,7 @@ struct OnboardingView: View {
                 .view()
                 .frame(maxWidth: .infinity, alignment: .leading)
             withAnimation(.easeInOut) {
-                ForEach(steps, id: \.stepType) { step in
+                ForEach(steps, id: \.stage) { step in
                     if step.isApplicable(store: onboardingStore) {
                         step.body(store: onboardingStore)
                             .frame(maxWidth: .infinity, alignment: .leading)
