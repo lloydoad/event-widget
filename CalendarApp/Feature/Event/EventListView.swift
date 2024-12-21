@@ -14,7 +14,7 @@ struct EventListView: View {
 	}
 
     var viewingAccount: AccountModel
-    var worker: EventWorking
+    var eventWorker: EventWorking
 
     @State private var error: Error?
     @State private var model: Model = .loading
@@ -51,7 +51,9 @@ struct EventListView: View {
 		.padding(.bottom, 16)
         .errorAlert(error: $error)
         .onAppear {
-            fetchLatestData()
+            Task {
+                await fetchLatestData()
+            }
         }
 	}
     
@@ -74,44 +76,37 @@ struct EventListView: View {
 		"untitled events widget"
 	}
     
-    private func fetchLatestData() {
-        worker.fetchEventList(
-            viewingAccount: viewingAccount,
-            onSuccess: { events, following in
-                do {
-                    let eventViewModels = try events.map {
-                        try ListItemView.Model.event(
-                            viewer: viewingAccount,
-                            following: following.map(\.uuid),
-                            event: $0
-                        )
-                    }
-                    let followingViewModels = try following.map {
-                        try ListItemView.Model.account(
-                            viewer: viewingAccount,
-                            account: $0,
-                            following: following.map(\.uuid)
-                        )
-                    }
-                    model = .success(
-                        events: eventViewModels,
-                        subscription: .init(variant: .subscriptions, accounts: followingViewModels)
-                    )
-                } catch {
-                    self.error = error
-                }
-            },
-            onError: { error in
-                self.error = error
+    private func fetchLatestData() async {
+        do {
+            let result = try await eventWorker.fetchEventList(viewingAccount: viewingAccount)
+            let eventViewModels = try result.events.map {
+                try ListItemView.Model.event(
+                    viewer: viewingAccount,
+                    following: result.following.map(\.uuid),
+                    event: $0
+                )
             }
-        )
+            let followingViewModels = try result.following.map {
+                try ListItemView.Model.account(
+                    viewer: viewingAccount,
+                    account: $0,
+                    following: result.following.map(\.uuid)
+                )
+            }
+            model = .success(
+                events: eventViewModels,
+                subscription: .init(variant: .subscriptions, accounts: followingViewModels)
+            )
+        } catch {
+            self.error = error
+        }
     }
 }
 
 #Preview {
     EventListView(
         viewingAccount: AccountModelMocks.catAccount,
-        worker: MockEventWorker(
+        eventWorker: MockEventWorker(
             events: [
                 EventModelMocks.event(
                     creator: AccountModelMocks.lloydAccount,
@@ -128,7 +123,7 @@ struct EventListView: View {
     )
     EventListView(
         viewingAccount: AccountModelMocks.catAccount,
-        worker: MockEventWorker(
+        eventWorker: MockEventWorker(
             events: [
                 EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [AccountModelMocks.catAccount])
             ],
@@ -137,7 +132,7 @@ struct EventListView: View {
     )
     EventListView(
         viewingAccount: AccountModelMocks.catAccount,
-        worker: MockEventWorker(
+        eventWorker: MockEventWorker(
             events: [
                 EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
             ],

@@ -17,5 +17,3 @@ protocol OnboardingStep {
     func body(store: OnboardingStore) -> AnyView
     func isApplicable(store: OnboardingStore) -> Bool
 }
-
-

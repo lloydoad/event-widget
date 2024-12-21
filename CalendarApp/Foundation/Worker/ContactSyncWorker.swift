@@ -17,36 +17,34 @@ struct Contact {
 }
 
 @MainActor
-class ContactSyncWorker {
+protocol ContactSyncWorking {
+    func sync() async throws -> [Contact]
+}
+
+struct MockContactSyncWorker: ContactSyncWorking {
+    var contacts: [Contact]
+    func sync() async throws -> [Contact] {
+        contacts
+    }
+}
+
+@MainActor
+class ContactSyncWorker: ContactSyncWorking {
     private let store = CNContactStore()
-    private let keysToFetch = [
-        CNContactPhoneNumbersKey,
-    ] as [CNKeyDescriptor]
+    private let keysToFetch = [CNContactPhoneNumbersKey] as [CNKeyDescriptor]
+    private var currentTask: Task<[Contact], Error>?
 
-    private var syncTask: Task<Void, Never>?
-
-    func sync(
-        onSuccess: @escaping ([Contact]) -> Void,
-        onError: @escaping (Error) -> Void
-    ) {
-        syncTask?.cancel()
-        syncTask = Task { @MainActor in
-            do {
-                let hasAccess = try await store.requestAccess(for: .contacts)
-                guard hasAccess else {
-                    onError(ContactError.accessDenied)
-                    return
-                }
-                let contacts = try await fetchContacts()
-                if !Task.isCancelled {
-                    onSuccess(contacts)
-                }
-            } catch {
-                if !Task.isCancelled {
-                    onError(error)
-                }
+    func sync() async throws -> [Contact] {
+        currentTask?.cancel()
+        let task = Task { @MainActor in
+            let hasAccess = try await store.requestAccess(for: .contacts)
+            guard hasAccess else {
+                throw ContactError.accessDenied
             }
+            return try await fetchContacts()
         }
+        currentTask = task
+        return try await task.value
     }
 
     private func fetchContacts() async throws -> [Contact] {
@@ -62,7 +60,6 @@ class ContactSyncWorker {
                 }
                 return Contact(phoneNumber: phoneNumber)
             }
-            
             contacts.append(contentsOf: mappedContacts)
         }
 

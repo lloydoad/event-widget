@@ -27,7 +27,7 @@ struct CalendarAppApp: App {
         WindowGroup {
 			NavigationStack(path: $navigationPagePath) {
                 if let userAccount = appSessionStore.userAccount {
-                    EventListView(viewingAccount: userAccount, worker: eventWorker)
+                    EventListView(viewingAccount: userAccount, eventWorker: eventWorker)
                         .navigationDestination(for: DeepLinkParser.Page.self) { page in
                             pageView(page)
                         }
@@ -58,20 +58,20 @@ struct CalendarAppApp: App {
             .environmentObject(onboardingStore)
 		}
     }
-    
+
     func pageView(_ page: DeepLinkParser.Page) -> some View {
-            switch page {
-            case .events(let viewingAccount):
-                return AnyView(EventListView(viewingAccount: viewingAccount, worker: eventWorker))
-            case .account(let model):
-                return AnyView(AccountView(model: model))
-            case .accounts(let model):
-                return AnyView(AccountListView(model: model))
-            case .subscriptions(let model):
-                return AnyView(AccountListView(model: model))
-            case .composer:
-                return AnyView(ComposerView())
-            }
+        switch page {
+        case .events(let viewingAccount):
+            return AnyView(EventListView(viewingAccount: viewingAccount, eventWorker: eventWorker))
+        case .account(let model):
+            return AnyView(AccountView(model: model))
+        case .accounts(let model):
+            return AnyView(AccountListView(model: model))
+        case .subscriptions(let model):
+            return AnyView(AccountListView(model: model))
+        case .composer:
+            return AnyView(ComposerView())
+        }
     }
     
     func handleAction(_ action: DeepLinkParser.RouteAction) {
