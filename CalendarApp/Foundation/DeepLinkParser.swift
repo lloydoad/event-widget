@@ -22,7 +22,7 @@ struct DeepLinkParser {
 	}
     
     enum Page: Codable, Hashable, Identifiable {
-        case events(EventListView.Model)
+        case events(AccountModel)
         case account(AccountView.Model)
         case accounts(AccountListView.Model)
         case subscriptions(AccountListView.Model)

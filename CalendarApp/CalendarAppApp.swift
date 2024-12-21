@@ -13,32 +13,26 @@ struct CalendarAppApp: App {
     @StateObject private var onboardingStore = OnboardingStore()
     
     private let contactSyncWorker = ContactSyncWorker()
-    private let accountWorker = AccountWorker(accountStore: MockAccountStore()) // TODO: Replace with network store
+    private let accountWorker = AccountWorker(dataStore: MockDataStore()) // TODO: Replace with network store
+    private let eventWorker = EventWorker(dataStore: MockDataStore()) // TODO: Replace with network store
     
     @State private var navigationPagePath: [DeepLinkParser.Page] = []
     @State private var sheetPage: DeepLinkParser.Page?
     @State private var errorMessage: String?
     @State private var isPresentingError: Bool = false
 
-	@State private var eventListModel: EventListView.Model = EventListView.Model(
-		events: [],
-		subscription: AccountListView.Model.init(
-			variant: .subscriptions,
-			accounts: []
-		))
-
 	private let deepLinkParser = DeepLinkParser()
 
     var body: some Scene {
         WindowGroup {
 			NavigationStack(path: $navigationPagePath) {
-                if appSessionStore.userAccount == nil {
-                    OnboardingView()
-                } else {
-                    EventListView(model: eventListModel)
+                if let userAccount = appSessionStore.userAccount {
+                    EventListView(viewingAccount: userAccount, worker: eventWorker)
                         .navigationDestination(for: DeepLinkParser.Page.self) { page in
                             pageView(page)
                         }
+                } else {
+                    OnboardingView()
                 }
 			}
             .sheet(item: $sheetPage, content: { page in
@@ -67,8 +61,8 @@ struct CalendarAppApp: App {
     
     func pageView(_ page: DeepLinkParser.Page) -> some View {
             switch page {
-            case .events(let model):
-                return AnyView(EventListView(model: model))
+            case .events(let viewingAccount):
+                return AnyView(EventListView(viewingAccount: viewingAccount, worker: eventWorker))
             case .account(let model):
                 return AnyView(AccountView(model: model))
             case .accounts(let model):

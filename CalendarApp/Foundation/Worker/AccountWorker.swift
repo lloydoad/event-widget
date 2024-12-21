@@ -9,10 +9,10 @@ import SwiftUI
 
 @MainActor
 class AccountWorker {
-    let accountStore: AccountStoring
+    let dataStore: DataStoring
 
-    init(accountStore: AccountStoring) {
-        self.accountStore = accountStore
+    init(dataStore: DataStoring) {
+        self.dataStore = dataStore
     }
 
     private var accountCreationTask: Task<Void, Never>?
@@ -25,7 +25,7 @@ class AccountWorker {
         accountCreationTask?.cancel()
         accountCreationTask = Task { @MainActor in
             do {
-                try await accountStore.save(account: account)
+                try await dataStore.save(account: account)
                 if !Task.isCancelled {
                     onSuccess(account)
                 }
@@ -37,20 +37,20 @@ class AccountWorker {
         }
     }
 
-    private var getOnboardedContactsTask: Task<Void, Never>?
-    func getOnboardedContacts(onSuccess: @escaping ([AccountModel]) -> Void, onError: @escaping (Error) -> Void) {
-        getOnboardedContactsTask?.cancel()
-        getOnboardedContactsTask = Task { @MainActor in
-            do {
-                let contacts = try await accountStore.getAccounts(with: [])
-                if !Task.isCancelled {
-                    onSuccess(contacts)
-                }
-            } catch {
-                if !Task.isCancelled {
-                    onError(error)
-                }
-            }
-        }
-    }
+//    private var getOnboardedContactsTask: Task<Void, Never>?
+//    func getOnboardedContacts(onSuccess: @escaping ([AccountModel]) -> Void, onError: @escaping (Error) -> Void) {
+//        getOnboardedContactsTask?.cancel()
+//        getOnboardedContactsTask = Task { @MainActor in
+//            do {
+//                let contacts = try await dataStore.getAccounts(with: [])
+//                if !Task.isCancelled {
+//                    onSuccess(contacts)
+//                }
+//            } catch {
+//                if !Task.isCancelled {
+//                    onError(error)
+//                }
+//            }
+//        }
+//    }
 }
