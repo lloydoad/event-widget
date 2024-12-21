@@ -88,27 +88,27 @@ class PhoneNumberOnboardingStep: OnboardingStep {
     }
 }
 
-#Preview("phone number entry") {
-    OnboardingView()
-        .environmentObject(OnboardingStore(
-            stage: .enterPhoneNumber(username: "lloyd"),
-            entryText: ""
-        ))
-}
-
-#Preview("phone number entry filled") {
-    OnboardingView()
-        .environmentObject(OnboardingStore(
-            stage: .enterPhoneNumber(username: "lloyd"),
-            entryText: "301-367-8901"
-        ))
-}
-
-#Preview("phone number entry filled") {
-    OnboardingView()
-        .environmentObject(OnboardingStore(
-            stage: .enterPhoneNumber(username: "lloyd"),
-            entryText: "301-367-8901",
-            isPerformingActivity: true)
-        )
-}
+//#Preview("phone number entry") {
+//    OnboardingView()
+//        .environmentObject(OnboardingStore(
+//            stage: .enterPhoneNumber(username: "lloyd"),
+//            entryText: ""
+//        ))
+//}
+//
+//#Preview("phone number entry filled") {
+//    OnboardingView()
+//        .environmentObject(OnboardingStore(
+//            stage: .enterPhoneNumber(username: "lloyd"),
+//            entryText: "301-367-8901"
+//        ))
+//}
+//
+//#Preview("phone number entry filled") {
+//    OnboardingView()
+//        .environmentObject(OnboardingStore(
+//            stage: .enterPhoneNumber(username: "lloyd"),
+//            entryText: "301-367-8901",
+//            isPerformingActivity: true)
+//        )
+//}

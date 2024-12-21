@@ -42,7 +42,7 @@ struct EventListView: View {
                 }
             }
             VStack {
-                ForEach(buttons, id: \.self) { button in
+                ForEach(buttons, id: \.identifier) { button in
                     Text(button.asAttributedString)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(4)
@@ -62,11 +62,13 @@ struct EventListView: View {
     private var buttons: [ButtonModel] {
         [
             ButtonModel(
+                identifier: UUID().uuidString,
                 title: "create new event",
                 color: .secondary,
                 route: .sheet(.composer)
             ),
             ButtonModel(
+                identifier: UUID().uuidString,
                 title: "subscribe to more friends",
                 color: .secondary,
                 route: .push(.subscriptions)

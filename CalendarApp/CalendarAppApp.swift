@@ -11,6 +11,7 @@ import SwiftUI
 struct CalendarAppApp: App {
     @StateObject private var appSessionStore = AppSessionStore()
     @StateObject private var onboardingStore = OnboardingStore()
+    @StateObject private var actionCoordinator = AppActionCoordinator()
     @StateObject private var dataStoreProvider = DataStoreProvider(dataStore: MockDataStore()) // TODO: Replace with network store
     
     private var accountWorker = AccountWorker()
@@ -27,6 +28,7 @@ struct CalendarAppApp: App {
             .environmentObject(appSessionStore)
             .environmentObject(onboardingStore)
             .environmentObject(dataStoreProvider)
+            .environmentObject(actionCoordinator)
 		}
     }
 }

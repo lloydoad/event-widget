@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct ButtonModel: Hashable, Codable {
+struct ButtonModel: Codable {
+    var identifier: String
 	var title: String
 	var color: AppColor
 	var route: DeepLinkParser.Route

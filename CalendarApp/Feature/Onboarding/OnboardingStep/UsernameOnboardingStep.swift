@@ -56,14 +56,14 @@ struct UsernameOnboardingStep: OnboardingStep {
     }
 }
 
-#Preview("username step") {
-    @Previewable @State var store = OnboardingStore(stage: .enterUsername)
-    OnboardingView()
-        .environmentObject(store)
-}
-
-#Preview("username step filled") {
-    @Previewable @State var store = OnboardingStore(stage: .enterUsername, entryText: "lloydd")
-    OnboardingView()
-        .environmentObject(store)
-}
+//#Preview("username step") {
+//    @Previewable @State var store = OnboardingStore(stage: .enterUsername)
+//    OnboardingView()
+//        .environmentObject(store)
+//}
+//
+//#Preview("username step filled") {
+//    @Previewable @State var store = OnboardingStore(stage: .enterUsername, entryText: "lloydd")
+//    OnboardingView()
+//        .environmentObject(store)
+//}

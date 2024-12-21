@@ -9,8 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var appSessionStore: AppSessionStore
-    @EnvironmentObject var onboardingStore: OnboardingStore
-    @EnvironmentObject var dataStoreProvider: DataStoreProvider
+    @EnvironmentObject var actionCoordinator: AppActionCoordinator
     
     var accountWorker: AccountWorking
     var eventWorker: EventWorking
@@ -30,7 +29,7 @@ struct MainView: View {
                         pageView(page)
                     }
             } else {
-                OnboardingView()
+                OnboardingView(accountWorker: accountWorker)
             }
         }
         .sheet(item: $sheetPage, content: { page in
@@ -40,7 +39,7 @@ struct MainView: View {
             if let route = deepLinkParser.getRoute(url: url) {
                 switch route {
                 case .action(let action):
-                    handleAction(action)
+                    handle(action: action)
                 case .push(let page):
                     navigationPagePath.append(page)
                 case .sheet(let page):
@@ -50,9 +49,16 @@ struct MainView: View {
         }
         .errorAlert(error: $error)
         .tint(Color(AppColor.appTint.asUIColor))
-        .environmentObject(appSessionStore)
-        .environmentObject(onboardingStore)
-        .environmentObject(dataStoreProvider)
+    }
+    
+    func handle(action: AppAction) {
+        Task {
+            do {
+                try await actionCoordinator.handle(action)
+            } catch {
+                self.error = error
+            }
+        }
     }
     
     func pageView(_ page: DeepLinkParser.Page) -> some View {
@@ -72,60 +78,6 @@ struct MainView: View {
             ))
         case .composer:
             return AnyView(ComposerView())
-        }
-    }
-    
-    func handleAction(_ action: DeepLinkParser.RouteAction) {
-        switch action {
-        case .join:
-            break
-        case .cantGo:
-            break
-        case .delete:
-            break
-        case .subscribe:
-            break
-        case .unsubscribe:
-            break
-        case .invite:
-            break
-        case .markOnboardingComplete:
-            break
-        case .claimUsername(username: let username):
-            onboardingStore.entryText = ""
-            onboardingStore.stage = .enterPhoneNumber(username: username)
-        case .createAccount(username: let username, phoneNumber: let phoneNumber):
-            onboardingStore.isPerformingActivity = true
-            Task {
-                do {
-                    let newUserAccount = try await accountWorker
-                        .createAccount(
-                            username: username,
-                            phoneNumber: phoneNumber,
-                            dataStore: dataStoreProvider.dataStore
-                        )
-                    appSessionStore.userAccount = newUserAccount
-                    onboardingStore.isPerformingActivity = false
-                    onboardingStore.stage = .enterUsername
-                } catch {
-                    self.error = error
-                    onboardingStore.isPerformingActivity = false
-                }
-            }
-        case .syncContacts:
-            break
-//            onboardingStore.isPerformingActivity = true
-//            contactSyncWorker.sync(
-//                onSuccess: { contacts in
-//                    print(contacts)
-//                    onboardingStore.isPerformingActivity = false
-//                    onboardingStore.completedSteps.append(.hasSyncedContacts)
-//                },
-//                onError: { error in
-//                    errorMessage = error.localizedDescription
-//                    isPresentingError = true
-//                    onboardingStore.isPerformingActivity = false
-//                })
         }
     }
 }
