@@ -25,7 +25,7 @@ struct DeepLinkParser {
         case events(AccountModel)
         case account(AccountView.Model)
         case accounts(AccountListView.Model)
-        case subscriptions(AccountListView.Model)
+        case subscriptions
         case composer
         
         var id: String {

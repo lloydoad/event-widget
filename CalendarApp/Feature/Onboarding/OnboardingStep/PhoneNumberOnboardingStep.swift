@@ -64,7 +64,6 @@ class PhoneNumberOnboardingStep: OnboardingStep {
                             .view()
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    
                 }
             }
         )

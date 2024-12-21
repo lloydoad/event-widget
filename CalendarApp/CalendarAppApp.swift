@@ -11,15 +11,15 @@ import SwiftUI
 struct CalendarAppApp: App {
     @StateObject private var appSessionStore = AppSessionStore()
     @StateObject private var onboardingStore = OnboardingStore()
-    
-    private let contactSyncWorker = ContactSyncWorker()
+    private let dataStore = MockDataStore() // TODO: Replace with network store
+
+//    private let contactSyncWorker = ContactSyncWorker()
     private let accountWorker = AccountWorker(dataStore: MockDataStore()) // TODO: Replace with network store
-    private let eventWorker = EventWorker(dataStore: MockDataStore()) // TODO: Replace with network store
+//    private let eventWorker = EventWorker(dataStore: MockDataStore()) // TODO: Replace with network store
     
     @State private var navigationPagePath: [DeepLinkParser.Page] = []
     @State private var sheetPage: DeepLinkParser.Page?
-    @State private var errorMessage: String?
-    @State private var isPresentingError: Bool = false
+    @State private var error: Error?
 
 	private let deepLinkParser = DeepLinkParser()
 
@@ -27,7 +27,7 @@ struct CalendarAppApp: App {
         WindowGroup {
 			NavigationStack(path: $navigationPagePath) {
                 if let userAccount = appSessionStore.userAccount {
-                    EventListView(viewingAccount: userAccount, eventWorker: eventWorker)
+                    pageView(.events(userAccount))
                         .navigationDestination(for: DeepLinkParser.Page.self) { page in
                             pageView(page)
                         }
@@ -50,9 +50,7 @@ struct CalendarAppApp: App {
                     }
                 }
             }
-            .alert(errorMessage ?? "something went wrong", isPresented: $isPresentingError, actions: {
-                Button("OK", role: .cancel) { }
-            })
+            .errorAlert(error: $error)
 			.tint(Color(AppColor.appTint.asUIColor))
             .environmentObject(appSessionStore)
             .environmentObject(onboardingStore)
@@ -62,13 +60,20 @@ struct CalendarAppApp: App {
     func pageView(_ page: DeepLinkParser.Page) -> some View {
         switch page {
         case .events(let viewingAccount):
-            return AnyView(EventListView(viewingAccount: viewingAccount, eventWorker: eventWorker))
+            return AnyView(EventListView(
+                viewingAccount: viewingAccount,
+                eventWorker: EventWorker(dataStore: dataStore),
+                dataStore: dataStore
+            ))
         case .account(let model):
             return AnyView(AccountView(model: model))
         case .accounts(let model):
             return AnyView(AccountListView(model: model))
-        case .subscriptions(let model):
-            return AnyView(AccountListView(model: model))
+        case .subscriptions:
+            return AnyView(SubscriptionsView(
+                contactSyncWorker: ContactSyncWorker(),
+                dataStore: dataStore
+            ))
         case .composer:
             return AnyView(ComposerView())
         }
@@ -95,18 +100,21 @@ struct CalendarAppApp: App {
             onboardingStore.stage = .enterPhoneNumber(username: username)
         case .createAccount(username: let username, phoneNumber: let phoneNumber):
             onboardingStore.isPerformingActivity = true
-            accountWorker.createAccount(
-                username: username,
-                phoneNumber: phoneNumber,
-                onSuccess: { newUserAccount in
+            Task {
+                do {
+                    let newUserAccount = try await accountWorker
+                        .createAccount(
+                            username: username,
+                            phoneNumber: phoneNumber
+                        )
                     appSessionStore.userAccount = newUserAccount
                     onboardingStore.isPerformingActivity = false
                     onboardingStore.stage = .enterUsername
-                }, onError: { error in
-                    errorMessage = error.localizedDescription
-                    isPresentingError = true
+                } catch {
+                    self.error = error
                     onboardingStore.isPerformingActivity = false
-                })
+                }
+            }
         case .syncContacts:
             break
 //            onboardingStore.isPerformingActivity = true

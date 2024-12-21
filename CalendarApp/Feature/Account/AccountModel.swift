@@ -24,12 +24,12 @@ struct AccountModelMocks {
 	static let nickAccount = AccountModel(
 		uuid: nickUUID,
 		username: "nick",
-		phoneNumber: "301-367-6761"
+		phoneNumber: "(555) 564-8583"
 	)
 	static let alanAccount = AccountModel(
 		uuid: alanUUID,
 		username: "alan",
-		phoneNumber: "301-367-6762"
+		phoneNumber: "555-478-7672"
 	)
 	static let serenaAccount = AccountModel(
 		uuid: serenaUUID,
@@ -39,7 +39,7 @@ struct AccountModelMocks {
 	static let catAccount = AccountModel(
 		uuid: catUUID,
 		username: "cat",
-		phoneNumber: "301-367-6764"
+		phoneNumber: "(555) 766-4823"
 	)
 	static let lloydAccount = AccountModel(
 		uuid: lloydUUID,

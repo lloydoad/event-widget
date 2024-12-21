@@ -8,49 +8,36 @@
 import SwiftUI
 
 @MainActor
-class AccountWorker {
+protocol AccountWorking {
+    func createAccount(username: String, phoneNumber: String) async throws -> AccountModel
+}
+
+struct MockAccountWorker: AccountWorking {
+    var createdAccount: AccountModel = AccountModelMocks.lloydAccount
+
+    func createAccount(username: String, phoneNumber: String) async throws -> AccountModel {
+        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+        return createdAccount
+    }
+}
+
+@MainActor
+class AccountWorker: AccountWorking {
     let dataStore: DataStoring
 
     init(dataStore: DataStoring) {
         self.dataStore = dataStore
     }
 
-    private var accountCreationTask: Task<Void, Never>?
-    func createAccount(
-        username: String, phoneNumber: String,
-        onSuccess: @escaping (AccountModel) -> Void,
-        onError: @escaping (Error) -> Void
-    ) {
-        let account = AccountModel(uuid: UUID(), username: username, phoneNumber: phoneNumber)
-        accountCreationTask?.cancel()
-        accountCreationTask = Task { @MainActor in
-            do {
-                try await dataStore.save(account: account)
-                if !Task.isCancelled {
-                    onSuccess(account)
-                }
-            } catch {
-                if !Task.isCancelled {
-                    onError(error)
-                }
-            }
+    private var createAccountTask: Task<AccountModel, Error>?
+    func createAccount(username: String, phoneNumber: String) async throws -> AccountModel {
+        createAccountTask?.cancel()
+        let task = Task { @MainActor in
+            let account = AccountModel(uuid: UUID(), username: username, phoneNumber: phoneNumber)
+            try await dataStore.save(account: account)
+            return account
         }
+        createAccountTask = task
+        return try await task.value
     }
-
-//    private var getOnboardedContactsTask: Task<Void, Never>?
-//    func getOnboardedContacts(onSuccess: @escaping ([AccountModel]) -> Void, onError: @escaping (Error) -> Void) {
-//        getOnboardedContactsTask?.cancel()
-//        getOnboardedContactsTask = Task { @MainActor in
-//            do {
-//                let contacts = try await dataStore.getAccounts(with: [])
-//                if !Task.isCancelled {
-//                    onSuccess(contacts)
-//                }
-//            } catch {
-//                if !Task.isCancelled {
-//                    onError(error)
-//                }
-//            }
-//        }
-//    }
 }

@@ -10,24 +10,24 @@ import SwiftUI
 struct EventListView: View {
 	private enum Model {
         case loading
-        case success(events: [ListItemView.Model], subscription: AccountListView.Model)
+        case success(events: [ListItemView.Model])
 	}
 
     var viewingAccount: AccountModel
-    var eventWorker: EventWorking
+    let eventWorker: EventWorking
+    let dataStore: DataStoring
 
     @State private var error: Error?
     @State private var model: Model = .loading
 
 	var body: some View {
-        
 		VStack {
             switch model {
             case .loading:
                 ZStack {
                     ProgressView()
                 }
-            case .success(let events, let subscription):
+            case .success(let events):
                 ScrollView {
                     VStack(spacing: 16) {
                         ListTitleView(title: title)
@@ -39,7 +39,7 @@ struct EventListView: View {
                     .frame(maxWidth: .infinity)
                 }
                 VStack {
-                    ForEach(buttons(subscription: subscription), id: \.self) { button in
+                    ForEach(buttons, id: \.self) { button in
                         Text(button.asAttributedString)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                             .padding(4)
@@ -57,7 +57,7 @@ struct EventListView: View {
         }
 	}
     
-    private func buttons(subscription: AccountListView.Model) -> [ButtonModel] {
+    private var buttons: [ButtonModel] {
         [
             ButtonModel(
                 title: "create new event",
@@ -67,7 +67,7 @@ struct EventListView: View {
             ButtonModel(
                 title: "subscribe to more friends",
                 color: .secondary,
-                route: .push(.subscriptions(subscription))
+                route: .push(.subscriptions)
             ),
         ]
     }
@@ -79,24 +79,15 @@ struct EventListView: View {
     private func fetchLatestData() async {
         do {
             let result = try await eventWorker.fetchEventList(viewingAccount: viewingAccount)
-            let eventViewModels = try result.events.map {
+            let followingUUIDs = try await dataStore.getFollowingAccounts(userAccount: viewingAccount)
+            let eventViewModels = try result.map { event in
                 try ListItemView.Model.event(
                     viewer: viewingAccount,
-                    following: result.following.map(\.uuid),
-                    event: $0
+                    following: followingUUIDs,
+                    event: event
                 )
             }
-            let followingViewModels = try result.following.map {
-                try ListItemView.Model.account(
-                    viewer: viewingAccount,
-                    account: $0,
-                    following: result.following.map(\.uuid)
-                )
-            }
-            model = .success(
-                events: eventViewModels,
-                subscription: .init(variant: .subscriptions, accounts: followingViewModels)
-            )
+            model = .success(events: eventViewModels)
         } catch {
             self.error = error
         }
@@ -115,28 +106,26 @@ struct EventListView: View {
                     endDate: DateFormatter().createDate(hour: 21, minute: 30)!,
                     guests: []
                 )
-            ],
-            following: [
-                AccountModelMocks.lloydAccount
             ]
-        )
+        ),
+        dataStore: MockDataStore()
     )
     EventListView(
         viewingAccount: AccountModelMocks.catAccount,
         eventWorker: MockEventWorker(
             events: [
                 EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [AccountModelMocks.catAccount])
-            ],
-            following: [AccountModelMocks.lloydAccount]
-        )
+            ]
+        ),
+        dataStore: MockDataStore()
     )
     EventListView(
         viewingAccount: AccountModelMocks.catAccount,
         eventWorker: MockEventWorker(
             events: [
                 EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
-            ],
-            following: []
-        )
+            ]
+        ),
+        dataStore: MockDataStore()
     )
 }

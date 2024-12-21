@@ -1,14 +1,42 @@
-////
-////  SyncContactsOnboardingStep.swift
-////  CalendarApp
-////
-////  Created by Lloyd Dapaah on 12/20/24.
-////
 //
+//  SyncContactsOnboardingStep.swift
+//  CalendarApp
+//
+//  Created by Lloyd Dapaah on 12/20/24.
+//
+
 //import SwiftUI
 //import Contacts
 //
+//enum SyncContactStatus {
+//    case noAccessToContacts
+//    case contactsAvailable([String])
+//    case contactsOnline([String])
+//}
+//
 //struct SyncContactsOnboardingStep: OnboardingStep {
+//    var stage: OnboardingStepType {
+//        .syncContacts
+//    }
+//    
+//    func body(store: OnboardingStore) -> AnyView {
+//        let builder = AttributedStringBuilder(baseStyle: .init(appFont: .large))
+//        return AnyView(
+//            VStack {
+//                
+//            }
+//        )
+//    }
+//    
+//    func isApplicable(store: OnboardingStore) -> Bool {
+//        switch store.stage {
+//        case .selectInitialSubscriptions:
+//            return true
+//        default:
+//            return false
+//        }
+//    }
+    
 //    var stepType: OnboardingStepType {
 //        .syncContacts
 //    }

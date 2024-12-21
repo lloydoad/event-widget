@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-typealias FetchEventResult = (events: [EventModel], following: [AccountModel])
+typealias FetchEventResult = ([EventModel])
 
 @MainActor
 protocol EventWorking {
@@ -16,10 +16,9 @@ protocol EventWorking {
 
 struct MockEventWorker: EventWorking {
     var events: [EventModel]
-    var following: [AccountModel]
     
     func fetchEventList(viewingAccount: AccountModel) async throws -> FetchEventResult {
-        (events, following)
+        (events)
     }
 }
 
@@ -37,7 +36,7 @@ class EventWorker: EventWorking {
         let task: Task<FetchEventResult, Error> = Task { @MainActor in
             let followingAccounts = try await dataStore.getFollowingAccounts(userAccount: viewingAccount)
             let events = try await dataStore.getEvents(viewing: viewingAccount, following: followingAccounts)
-            return (events, followingAccounts)
+            return (events)
         }
         currentTask = task
         return try await task.value

@@ -32,8 +32,8 @@ struct MockContactSyncWorker: ContactSyncWorking {
 class ContactSyncWorker: ContactSyncWorking {
     private let store = CNContactStore()
     private let keysToFetch = [CNContactPhoneNumbersKey] as [CNKeyDescriptor]
+    
     private var currentTask: Task<[Contact], Error>?
-
     func sync() async throws -> [Contact] {
         currentTask?.cancel()
         let task = Task { @MainActor in
