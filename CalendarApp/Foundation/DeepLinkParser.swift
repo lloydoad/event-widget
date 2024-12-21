@@ -11,7 +11,7 @@ struct DeepLinkParser {
     enum Page: Codable, Hashable, Identifiable {
         case events(AccountModel)
         case account(AccountView.Model)
-        case accounts(AccountListView.Model)
+        case guestList([AccountModel])
         case subscriptions
         case composer
         

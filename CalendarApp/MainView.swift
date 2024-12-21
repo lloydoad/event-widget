@@ -70,8 +70,8 @@ struct MainView: View {
             ))
         case .account(let model):
             return AnyView(AccountView(model: model))
-        case .accounts(let model):
-            return AnyView(AccountListView(model: model))
+        case .guestList(let guests):
+            return AnyView(GuestListView(guests: guests))
         case .subscriptions:
             return AnyView(SubscriptionsView(
                 contactSyncWorker: contactSyncWorker

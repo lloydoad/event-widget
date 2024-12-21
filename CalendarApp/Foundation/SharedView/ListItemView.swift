@@ -32,37 +32,31 @@ struct ListItemView: View {
 		Text("View: Cat")
 		ListItemView(model: try! .event(
             viewer: AccountModelMocks.catAccount,
-            following: [AccountModelMocks.alanUUID, AccountModelMocks.ivoUUID],
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 		))
 		Text("View: Ivo")
 		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.ivoAccount,
-            following: [AccountModelMocks.alanUUID],
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 		))
 		Text("View: Lloyd")
 		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.lloydAccount,
-            following: [AccountModelMocks.alanUUID],
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
 		))
 		Text("View: Cat")
 		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.catAccount,
-            following: [AccountModelMocks.alanUUID],
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
 		))
 		Text("View: Ivo")
 		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.ivoAccount,
-            following: [AccountModelMocks.alanUUID],
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
 		))
 		Text("View: Lloyd")
 		ListItemView(model: try! .event(
 			viewer: AccountModelMocks.lloydAccount,
-            following: [AccountModelMocks.alanUUID],
 			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
 		))
 	}

@@ -79,18 +79,13 @@ struct EventListView: View {
 	private var title: String {
 		"untitled events widget"
 	}
-    
+
     private func fetchLatestData() async {
         do {
             let dataStore = dataStoreProvider.dataStore
             let result = try await eventWorker.fetchEventList(viewingAccount: viewingAccount, dataStore: dataStore)
-            let followingUUIDs = try await dataStore.getFollowingAccounts(userAccount: viewingAccount)
             let eventViewModels = try result.map { event in
-                try ListItemView.Model.event(
-                    viewer: viewingAccount,
-                    following: followingUUIDs,
-                    event: event
-                )
+                try ListItemView.Model.event(viewer: viewingAccount, event: event)
             }
             model = .success(events: eventViewModels)
         } catch {
