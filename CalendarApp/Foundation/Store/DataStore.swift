@@ -15,13 +15,13 @@ protocol DataStoring {
     func getFollowingAccounts(userAccount: AccountModel) async throws -> [UUID]
 }
 
-/**
- protocol FollowingGraphStoring {
-     func createFollowing(account: AccountModel, following: AccountModel) async throws
-     func getFollowing(account: AccountModel) async throws -> [AccountModel]
-     func removeFollowing(account: AccountModel, following: AccountModel) async throws
- }
- */
+class DataStoreProvider: ObservableObject {
+    @Published var dataStore: DataStoring
+
+    init(dataStore: DataStoring) {
+        self.dataStore = dataStore
+    }
+}
 
 class MockDataStore: DataStoring {
     enum StoreError: Error {
@@ -201,3 +201,11 @@ class MockDataStore: DataStoring {
         return Array(phoneNumberAccounts)
     }
 }
+
+/**
+ protocol FollowingGraphStoring {
+     func createFollowing(account: AccountModel, following: AccountModel) async throws
+     func getFollowing(account: AccountModel) async throws -> [AccountModel]
+     func removeFollowing(account: AccountModel, following: AccountModel) async throws
+ }
+ */
