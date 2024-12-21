@@ -13,24 +13,26 @@ struct EventListView: View {
         case success(events: [ListItemView.Model])
 	}
 
-    var viewingAccount: AccountModel
+    @EnvironmentObject var dataStoreProvider: DataStoreProvider
+    let viewingAccount: AccountModel
     let eventWorker: EventWorking
-    let dataStore: DataStoring
 
     @State private var error: Error?
     @State private var model: Model = .loading
 
 	var body: some View {
 		VStack {
+            ListTitleView(title: title)
             switch model {
             case .loading:
-                ZStack {
+                VStack {
+                    Spacer().frame(maxHeight: .infinity)
                     ProgressView()
+                    Spacer().frame(maxHeight: .infinity)
                 }
             case .success(let events):
                 ScrollView {
                     VStack(spacing: 16) {
-                        ListTitleView(title: title)
                         ForEach(events, id: \.hashValue) { event in
                             ListItemView(model: event)
                                 .padding(.bottom, 16)
@@ -38,12 +40,12 @@ struct EventListView: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
-                VStack {
-                    ForEach(buttons, id: \.self) { button in
-                        Text(button.asAttributedString)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .padding(4)
-                    }
+            }
+            VStack {
+                ForEach(buttons, id: \.self) { button in
+                    Text(button.asAttributedString)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(4)
                 }
             }
 		}
@@ -78,7 +80,8 @@ struct EventListView: View {
     
     private func fetchLatestData() async {
         do {
-            let result = try await eventWorker.fetchEventList(viewingAccount: viewingAccount)
+            let dataStore = dataStoreProvider.dataStore
+            let result = try await eventWorker.fetchEventList(viewingAccount: viewingAccount, dataStore: dataStore)
             let followingUUIDs = try await dataStore.getFollowingAccounts(userAccount: viewingAccount)
             let eventViewModels = try result.map { event in
                 try ListItemView.Model.event(
@@ -107,25 +110,25 @@ struct EventListView: View {
                     guests: []
                 )
             ]
-        ),
-        dataStore: MockDataStore()
+        )
     )
+    .environmentObject(DataStoreProvider(dataStore: MockDataStore()))
     EventListView(
         viewingAccount: AccountModelMocks.catAccount,
         eventWorker: MockEventWorker(
             events: [
                 EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [AccountModelMocks.catAccount])
             ]
-        ),
-        dataStore: MockDataStore()
+        )
     )
+    .environmentObject(DataStoreProvider(dataStore: MockDataStore()))
     EventListView(
         viewingAccount: AccountModelMocks.catAccount,
         eventWorker: MockEventWorker(
             events: [
                 EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
             ]
-        ),
-        dataStore: MockDataStore()
+        )
     )
+    .environmentObject(DataStoreProvider(dataStore: MockDataStore()))
 }

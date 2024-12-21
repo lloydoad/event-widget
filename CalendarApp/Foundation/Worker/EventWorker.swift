@@ -11,27 +11,21 @@ typealias FetchEventResult = ([EventModel])
 
 @MainActor
 protocol EventWorking {
-    func fetchEventList(viewingAccount: AccountModel) async throws -> FetchEventResult
+    func fetchEventList(viewingAccount: AccountModel, dataStore: DataStoring) async throws -> FetchEventResult
 }
 
 struct MockEventWorker: EventWorking {
     var events: [EventModel]
     
-    func fetchEventList(viewingAccount: AccountModel) async throws -> FetchEventResult {
+    func fetchEventList(viewingAccount: AccountModel, dataStore: DataStoring) async throws -> FetchEventResult {
         (events)
     }
 }
 
 @MainActor
 class EventWorker: EventWorking {
-    let dataStore: DataStoring
     private var currentTask: Task<FetchEventResult, Error>?
-
-    init(dataStore: DataStoring) {
-        self.dataStore = dataStore
-    }
-
-    func fetchEventList(viewingAccount: AccountModel) async throws -> FetchEventResult {
+    func fetchEventList(viewingAccount: AccountModel, dataStore: DataStoring) async throws -> FetchEventResult {
         currentTask?.cancel()
         let task: Task<FetchEventResult, Error> = Task { @MainActor in
             let followingAccounts = try await dataStore.getFollowingAccounts(userAccount: viewingAccount)

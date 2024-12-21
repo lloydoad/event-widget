@@ -60,8 +60,7 @@ struct MainView: View {
         case .events(let viewingAccount):
             return AnyView(EventListView(
                 viewingAccount: viewingAccount,
-                eventWorker: eventWorker,
-                dataStore: dataStoreProvider.dataStore
+                eventWorker: eventWorker
             ))
         case .account(let model):
             return AnyView(AccountView(model: model))
@@ -69,8 +68,7 @@ struct MainView: View {
             return AnyView(AccountListView(model: model))
         case .subscriptions:
             return AnyView(SubscriptionsView(
-                contactSyncWorker: contactSyncWorker,
-                dataStore: dataStoreProvider.dataStore
+                contactSyncWorker: contactSyncWorker
             ))
         case .composer:
             return AnyView(ComposerView())
@@ -103,7 +101,8 @@ struct MainView: View {
                     let newUserAccount = try await accountWorker
                         .createAccount(
                             username: username,
-                            phoneNumber: phoneNumber
+                            phoneNumber: phoneNumber,
+                            dataStore: dataStoreProvider.dataStore
                         )
                     appSessionStore.userAccount = newUserAccount
                     onboardingStore.isPerformingActivity = false

@@ -13,9 +13,9 @@ struct SubscriptionsView: View {
         case loading
     }
     
+    @EnvironmentObject var dataStoreProvider: DataStoreProvider
     @EnvironmentObject var appSessionStore: AppSessionStore
     let contactSyncWorker: ContactSyncWorking
-    let dataStore: DataStoring
     
     @State private var model: Model = .loading
     @State private var error: Error?
@@ -67,6 +67,7 @@ struct SubscriptionsView: View {
     private func fetchFollowingAccounts(viewer: AccountModel) async {
         do {
             let contacts = try await contactSyncWorker.sync()
+            let dataStore = dataStoreProvider.dataStore
             let following = try await dataStore.getFollowingAccounts(userAccount: viewer)
             let accounts = try await dataStore.getAccounts(with: contacts.map(\.phoneNumber), and: following)
 
@@ -88,12 +89,10 @@ struct SubscriptionsView: View {
             Contact(phoneNumber: AccountModelMocks.nickAccount.phoneNumber),
             Contact(phoneNumber: AccountModelMocks.serenaAccount.phoneNumber),
             Contact(phoneNumber: AccountModelMocks.catAccount.phoneNumber)
-        ]),
-        dataStore: MockDataStore(followings: [
-            AccountModelMocks.lloydUUID: [AccountModelMocks.nickUUID, AccountModelMocks.ivoUUID]
         ])
     )
     .environmentObject(mockAppSessionStore(account: AccountModelMocks.lloydAccount))
+    .environmentObject(DataStoreProvider(dataStore: dataStore))
 }
 
 #Preview("no accounts - contacts synced") {
@@ -101,8 +100,8 @@ struct SubscriptionsView: View {
         AccountModelMocks.lloydUUID: []
     ])
     SubscriptionsView(
-        contactSyncWorker: MockContactSyncWorker(contacts: []),
-        dataStore: dataStore
+        contactSyncWorker: MockContactSyncWorker(contacts: [])
     )
     .environmentObject(mockAppSessionStore(account: AccountModelMocks.lloydAccount))
+    .environmentObject(DataStoreProvider(dataStore: dataStore))
 }
