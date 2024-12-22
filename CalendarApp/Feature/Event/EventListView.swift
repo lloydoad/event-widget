@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct EventListView: View {
-	private enum Model {
-        case loading
+    private enum Model: Equatable {
         case success(events: [ListItemView.Model])
+        case loading
 	}
 
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
@@ -30,6 +30,7 @@ struct EventListView: View {
                     ProgressView()
                     Spacer().frame(maxHeight: .infinity)
                 }
+                .transition(.blurReplace)
             case .success(let events):
                 ScrollView {
                     VStack(spacing: 16) {
@@ -40,6 +41,7 @@ struct EventListView: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
+                .transition(.blurReplace)
             }
             VStack {
                 ForEach(buttons, id: \.identifier) { button in
@@ -49,6 +51,7 @@ struct EventListView: View {
                 }
             }
 		}
+        .animation(.easeInOut, value: model)
 		.padding(.horizontal, 16)
 		.padding(.bottom, 16)
         .errorAlert(error: $error)

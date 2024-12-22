@@ -12,8 +12,17 @@ protocol DataStoring {
     
     func getAccounts(with phoneNumbers: [String], and uuids: [UUID]) async throws -> [AccountModel]
     func getEvents(viewing account: AccountModel, following: [UUID]) async throws -> [EventModel]
+    func getEvents(creator account: AccountModel) async throws -> [EventModel]
     func getFollowingAccounts(userAccount: AccountModel) async throws -> [UUID]
 }
+
+/**
+ protocol FollowingGraphStoring {
+     func createFollowing(account: AccountModel, following: AccountModel) async throws
+     func getFollowing(account: AccountModel) async throws -> [AccountModel]
+     func removeFollowing(account: AccountModel, following: AccountModel) async throws
+ }
+ */
 
 class DataStoreProvider: ObservableObject {
     @Published var dataStore: DataStoring
@@ -21,6 +30,78 @@ class DataStoreProvider: ObservableObject {
     init(dataStore: DataStoring) {
         self.dataStore = dataStore
     }
+}
+
+// MARK: - Mocks
+
+struct EventModelMocks {
+    static func event(
+        creator: AccountModel,
+        description: String = "building lego till 8 or later. I'm not sure",
+        location: LocationModel = LocationModel(
+            address: "235 Valencia St",
+            city: "San Francisco",
+            state: "California"
+        ),
+        startDate: Date = .now,
+        endDate: Date = .now,
+        guests: [AccountModel] = [
+            AccountModelMocks.nickAccount,
+            AccountModelMocks.alanAccount,
+            AccountModelMocks.serenaAccount,
+            AccountModelMocks.catAccount
+        ]
+    ) -> EventModel {
+        EventModel(
+            uuid: .init(),
+            creator: creator,
+            description: description,
+            startDate: startDate,
+            endDate: endDate,
+            location: location,
+            guests: guests
+        )
+    }
+}
+
+struct AccountModelMocks {
+    static let alanUUID = UUID()
+    static let serenaUUID = UUID()
+    static let nickUUID = UUID()
+    static let catUUID = UUID()
+    static let lloydUUID = UUID()
+    static let ivoUUID = UUID()
+
+    static let nickAccount = AccountModel(
+        uuid: nickUUID,
+        username: "nick",
+        phoneNumber: "(555) 564-8583"
+    )
+    static let alanAccount = AccountModel(
+        uuid: alanUUID,
+        username: "alan",
+        phoneNumber: "555-478-7672"
+    )
+    static let serenaAccount = AccountModel(
+        uuid: serenaUUID,
+        username: "serena",
+        phoneNumber: "301-367-6763"
+    )
+    static let catAccount = AccountModel(
+        uuid: catUUID,
+        username: "cat",
+        phoneNumber: "(555) 766-4823"
+    )
+    static let lloydAccount = AccountModel(
+        uuid: lloydUUID,
+        username: "lloyd",
+        phoneNumber: "301-367-6765"
+    )
+    static let ivoAccount = AccountModel(
+        uuid: ivoUUID,
+        username: "ivo",
+        phoneNumber: "301-367-6766"
+    )
 }
 
 class MockDataStore: DataStoring {
@@ -32,7 +113,7 @@ class MockDataStore: DataStoring {
     var accounts: [AccountModel]
     var followings: [UUID: [UUID]]
     var events: [EventModel]
-    
+
     init(
         accounts: [AccountModel] = [
             AccountModelMocks.alanAccount,
@@ -151,12 +232,20 @@ class MockDataStore: DataStoring {
             lhs.endDate > rhs.endDate
         }
     }
-    
+
+    func getEvents(creator account: AccountModel) async throws -> [EventModel] {
+        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+        let eventsFromCreator = events.filter { $0.creator.uuid == account.uuid }
+        return eventsFromCreator.sorted { lhs, rhs in
+            lhs.endDate > rhs.endDate
+        }
+    }
+
     func getFollowingAccounts(userAccount: AccountModel) async throws -> [UUID] {
         try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
         return followings[userAccount.uuid] ?? []
     }
-    
+
     func save(account: AccountModel) async throws {
         try await Task.sleep(nanoseconds: 2_500_000_000) // 2.5 second delay
         if accounts.contains(where: {
@@ -182,7 +271,7 @@ class MockDataStore: DataStoring {
             uuids.contains(account.uuid) ? account : nil
         }
     }
-    
+
     func getAccounts(with phoneNumbers: [String], and uuids: [UUID]) async throws -> [AccountModel] {
         try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
         var phoneNumberAccounts = Set(
@@ -201,11 +290,3 @@ class MockDataStore: DataStoring {
         return Array(phoneNumberAccounts)
     }
 }
-
-/**
- protocol FollowingGraphStoring {
-     func createFollowing(account: AccountModel, following: AccountModel) async throws
-     func getFollowing(account: AccountModel) async throws -> [AccountModel]
-     func removeFollowing(account: AccountModel, following: AccountModel) async throws
- }
- */

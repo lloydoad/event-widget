@@ -68,8 +68,8 @@ struct MainView: View {
                 viewingAccount: viewingAccount,
                 eventWorker: eventWorker
             ))
-        case .account(let model):
-            return AnyView(AccountView(model: model))
+        case .profile(let account):
+            return AnyView(ProfileView(account: account))
         case .guestList(let guests):
             return AnyView(GuestListView(guests: guests))
         case .subscriptions:

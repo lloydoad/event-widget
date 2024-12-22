@@ -49,13 +49,15 @@ struct GuestListView: View {
 
     private func setViewModels() {
         viewModelsController.setViewModels(
-            guests.map { guest in
-                GuestViewModel(
-                    dataStore: dataStoreProvider.dataStore,
-                    appSessionStore: appSessionStore,
-                    guest: guest
-                )
-            }
+            guests
+                .sorted()
+                .map { guest in
+                    GuestViewModel(
+                        dataStore: dataStoreProvider.dataStore,
+                        appSessionStore: appSessionStore,
+                        guest: guest
+                    )
+                }
         )
     }
 }

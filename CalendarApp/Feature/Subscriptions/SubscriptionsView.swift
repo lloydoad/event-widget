@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SubscriptionsView: View {
-    private enum Model {
+    private enum Model: Equatable {
         case success([ListItemView.Model])
         case loading
     }
@@ -37,19 +37,23 @@ struct SubscriptionsView: View {
                                     color: .appTint)
                                 .view()
                                 .frame(maxWidth: .infinity, alignment: .leading)
+                                .transition(.blurReplace)
                         } else {
                             ForEach(accounts, id: \.hashValue) { account in
                                 ListItemView(model: account)
                                     .padding(.bottom, 4)
                             }
+                            .transition(.blurReplace)
                         }
                     case .loading:
                         ZStack {
                             ProgressView()
                         }
+                        .transition(.blurReplace)
                     }
                 }
                 .frame(maxWidth: .infinity)
+                .animation(.easeInOut, value: model)
             }
         }
         .padding(.horizontal, 16)
@@ -69,7 +73,9 @@ struct SubscriptionsView: View {
             let contacts = try await contactSyncWorker.sync()
             let dataStore = dataStoreProvider.dataStore
             let following = try await dataStore.getFollowingAccounts(userAccount: viewer)
-            let accounts = try await dataStore.getAccounts(with: contacts.map(\.phoneNumber), and: following)
+            let accounts = try await dataStore
+                .getAccounts(with: contacts.map(\.phoneNumber), and: following)
+                .sorted()
 
             model = try .success(accounts.map({ account in
                 try ListItemView.Model.account(viewer: viewer, account: account, following: following)

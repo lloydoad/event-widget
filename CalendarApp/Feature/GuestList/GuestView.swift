@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GuestView: View {
-    @ObservedObject var viewModel: GuestViewModel
+    @StateObject var viewModel: GuestViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -24,6 +24,8 @@ struct GuestView: View {
                 }
             }
         }
+        .transition(.blurReplace)
+        .animation(.easeInOut, value: viewModel.content)
         .padding(.bottom, 4)
     }
 }

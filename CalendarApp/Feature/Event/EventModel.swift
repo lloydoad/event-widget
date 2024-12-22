@@ -34,33 +34,3 @@ extension EventModel {
 		creator == viewer
 	}
 }
-
-struct EventModelMocks {
-	static func event(
-		creator: AccountModel,
-		description: String = "building lego till 8 or later. I'm not sure",
-		location: LocationModel = LocationModel(
-			address: "235 Valencia St",
-			city: "San Francisco",
-			state: "California"
-		),
-		startDate: Date = .now,
-		endDate: Date = .now,
-		guests: [AccountModel] = [
-			AccountModelMocks.nickAccount,
-			AccountModelMocks.alanAccount,
-			AccountModelMocks.serenaAccount,
-			AccountModelMocks.catAccount
-		]
-	) -> EventModel {
-		EventModel(
-            uuid: .init(),
-			creator: creator,
-			description: description,
-			startDate: startDate,
-			endDate: endDate,
-			location: location,
-			guests: guests
-		)
-	}
-}

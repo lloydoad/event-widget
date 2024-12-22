@@ -8,7 +8,6 @@
 import SwiftUI
 
 extension ListItemView.Model {
-
 	// MARK: - Account
 
     static func account(viewer: AccountModel, account: AccountModel, following: [UUID]) throws -> ListItemView.Model {
@@ -21,9 +20,7 @@ extension ListItemView.Model {
 	static func accountControls(viewer: AccountModel, account: AccountModel, following: [UUID]) throws -> AttributedString {
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .large)
 		let builder = try AttributedStringBuilder(baseStyle: baseStyle)
-			.bracket("profile",
-                     deeplink: .push(.account(.init(account: account))),
-					 color: .appTint)
+			.bracket("profile", deeplink: .push(.profile(account)), color: .appTint)
 		builder.primaryText(" ")
 
 		guard viewer != account else { return builder.build() }
@@ -155,18 +152,14 @@ extension ListItemView.Model {
 
 extension AttributedStringBuilder {
 	func account(_ account: AccountModel) throws -> AttributedStringBuilder {
-		try self.underline(account.username,
-						   deeplink: .push(.account(.init(account: account))),
-						   color: .primary)
+		try self.underline(account.username, deeplink: .push(.profile(account)), color: .primary)
 	}
 
 	func location(_ location: LocationModel) throws -> AttributedStringBuilder {
 		guard let url = location.appleMapsDeepLink else {
 			throw NSError(domain: "calendarApp", code: 1)
 		}
-		return try underline(location.address,
-							 url: url,
-							 color: .primary)
+		return try underline(location.address, url: url, color: .primary)
 	}
 
     func guestList(_ text: String, viewer: AccountModel, event: EventModel) throws -> AttributedStringBuilder {
