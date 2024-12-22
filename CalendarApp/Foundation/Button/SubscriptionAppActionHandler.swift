@@ -13,20 +13,31 @@ struct SubscriptionAppActionHandler: AppActionHandler {
         case unhandledAction
     }
 
+    enum Message: Equatable {
+        case loading
+        case subscribe
+        case unsubscribe
+    }
+
     let account: AccountModel
     let appSessionStore: AppSessionStore
     let dataStoreProvider: DataStoreProvider
-    let onComplete: () -> Void
+    @Binding var message: Message
 
     var id: String {
         "SubscriptionAppActionHandler"
     }
 
-    init(account: AccountModel, appSessionStore: AppSessionStore, dataStoreProvider: DataStoreProvider, onComplete: @escaping () -> Void) {
+    init(
+        account: AccountModel,
+        appSessionStore: AppSessionStore,
+        dataStoreProvider: DataStoreProvider,
+        message: Binding<Message>
+    ) {
         self.account = account
         self.appSessionStore = appSessionStore
         self.dataStoreProvider = dataStoreProvider
-        self.onComplete = onComplete
+        self._message = message
     }
 
     func canHandle(_ action: AppAction) -> Bool {
@@ -40,13 +51,14 @@ struct SubscriptionAppActionHandler: AppActionHandler {
 
     func handle(_ action: AppAction) async throws {
         guard let userAccount = appSessionStore.userAccount else { return }
+        message = .loading
         switch action {
         case .subscribe:
             try await dataStoreProvider.dataStore.addFollowing(account: userAccount, following: account)
-            onComplete()
+            message = .unsubscribe
         case .unsubscribe:
             try await dataStoreProvider.dataStore.removeFollowing(account: userAccount, following: account)
-            onComplete()
+            message = .subscribe
         default:
             throw ActionError.unhandledAction
         }

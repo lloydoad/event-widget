@@ -13,18 +13,12 @@ struct ProfileView: View {
         case success([ListItemView.Model])
     }
 
-    private enum SubscriptionButtonModel: Equatable {
-        case loading
-        case subscribe
-        case unsubscribe
-    }
-
     @EnvironmentObject var appSessionStore: AppSessionStore
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
     let account: AccountModel
 
     @State private var eventViewModels: Model = .loading
-    @State private var subscriptionButtonModel: SubscriptionButtonModel?
+    @State private var subscriptionButtonModel: SubscriptionAppActionHandler.Message = .loading
     @State private var error: Error?
 
     var titleView: some View {
@@ -48,7 +42,7 @@ struct ProfileView: View {
 			ScrollView {
 				VStack(spacing: 16) {
                     titleView
-                    if let subscriptionButtonModel {
+                    if appSessionStore.userAccount != account {
                         HStack {
                             switch subscriptionButtonModel {
                             case .loading:
@@ -59,9 +53,7 @@ struct ProfileView: View {
                                     account: account,
                                     appSessionStore: appSessionStore,
                                     dataStoreProvider: dataStoreProvider,
-                                    onComplete: {
-                                        fetchSubscription()
-                                    }
+                                    message: $subscriptionButtonModel
                                 )
                                 .transition(.blurReplace)
                             case .unsubscribe:
@@ -69,9 +61,7 @@ struct ProfileView: View {
                                     account: account,
                                     appSessionStore: appSessionStore,
                                     dataStoreProvider: dataStoreProvider,
-                                    onComplete: {
-                                        fetchSubscription()
-                                    }
+                                    message: $subscriptionButtonModel
                                 )
                                 .transition(.blurReplace)
                             }

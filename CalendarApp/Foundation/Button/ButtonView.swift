@@ -31,7 +31,12 @@ struct ButtonView: View {
 // MARK: Convenience inits
 
 extension ButtonView {
-    static func subscribe(account: AccountModel, appSessionStore: AppSessionStore, dataStoreProvider: DataStoreProvider, onComplete: @escaping () -> Void) -> ButtonView {
+    static func subscribe(
+        account: AccountModel,
+        appSessionStore: AppSessionStore,
+        dataStoreProvider: DataStoreProvider,
+        message: Binding<SubscriptionAppActionHandler.Message>
+    ) -> ButtonView {
         ButtonView(
             text: "subscribe",
             baseStyle: .init(appFont: .light),
@@ -40,12 +45,17 @@ extension ButtonView {
                 account: account,
                 appSessionStore: appSessionStore,
                 dataStoreProvider: dataStoreProvider,
-                onComplete: onComplete
+                message: message
             )
         )
     }
 
-    static func unsubscribe(account: AccountModel, appSessionStore: AppSessionStore, dataStoreProvider: DataStoreProvider, onComplete: @escaping () -> Void) -> ButtonView {
+    static func unsubscribe(
+        account: AccountModel,
+        appSessionStore: AppSessionStore,
+        dataStoreProvider: DataStoreProvider,
+        message: Binding<SubscriptionAppActionHandler.Message>
+    ) -> ButtonView {
         ButtonView(
             text: "unsubscribe",
             baseStyle: .init(appFont: .light),
@@ -54,7 +64,7 @@ extension ButtonView {
                 account: account,
                 appSessionStore: appSessionStore,
                 dataStoreProvider: dataStoreProvider,
-                onComplete: onComplete
+                message: message
             )
         )
     }
