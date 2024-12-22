@@ -17,6 +17,9 @@ class AppActionCoordinator: ObservableObject {
     private var handlers: [AppActionHandler] = []
 
     func register(_ handler: AppActionHandler) {
+        handlers.removeAll { existingHandler in
+            existingHandler.id == handler.id
+        }
         handlers.append(handler)
     }
 

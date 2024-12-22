@@ -13,11 +13,16 @@ struct OnboardingAppActionHandler: AppActionHandler {
         case unhandledAction
     }
 
+    let onComplete: () -> Void = { } // TODO: pass via init
     let accountWorker: AccountWorking
     let appSessionStore: AppSessionStore
     let onboardingStore: OnboardingStore
     let dataStoreProvider: DataStoreProvider
-    
+
+    var id: String {
+        "OnboardingAppActionHandler"
+    }
+
     init(
         accountWorker: AccountWorking,
         appSessionStore: AppSessionStore,

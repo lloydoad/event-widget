@@ -14,15 +14,9 @@ protocol DataStoring {
     func getEvents(viewing account: AccountModel, following: [UUID]) async throws -> [EventModel]
     func getEvents(creator account: AccountModel) async throws -> [EventModel]
     func getFollowingAccounts(userAccount: AccountModel) async throws -> [UUID]
+    func addFollowing(account: AccountModel, following: AccountModel) async throws
+    func removeFollowing(account: AccountModel, following: AccountModel) async throws
 }
-
-/**
- protocol FollowingGraphStoring {
-     func createFollowing(account: AccountModel, following: AccountModel) async throws
-     func getFollowing(account: AccountModel) async throws -> [AccountModel]
-     func removeFollowing(account: AccountModel, following: AccountModel) async throws
- }
- */
 
 class DataStoreProvider: ObservableObject {
     @Published var dataStore: DataStoring
@@ -244,6 +238,20 @@ class MockDataStore: DataStoring {
     func getFollowingAccounts(userAccount: AccountModel) async throws -> [UUID] {
         try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
         return followings[userAccount.uuid] ?? []
+    }
+
+    func addFollowing(account: AccountModel, following: AccountModel) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000)
+        var newList = followings[account.uuid, default: []]
+        newList.append(following.uuid)
+        followings[account.uuid] = newList
+    }
+
+    func removeFollowing(account: AccountModel, following: AccountModel) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000)
+        var newList = followings[account.uuid, default: []]
+        newList.removeAll { $0 == following.uuid }
+        followings[account.uuid] = newList
     }
 
     func save(account: AccountModel) async throws {
