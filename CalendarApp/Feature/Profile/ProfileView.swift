@@ -44,27 +44,7 @@ struct ProfileView: View {
                     titleView
                     if appSessionStore.userAccount != account {
                         HStack {
-                            switch subscriptionButtonModel {
-                            case .loading:
-                                ProgressView()
-                                    .transition(.blurReplace)
-                            case .subscribe:
-                                ButtonView.subscribe(
-                                    account: account,
-                                    appSessionStore: appSessionStore,
-                                    dataStoreProvider: dataStoreProvider,
-                                    message: $subscriptionButtonModel
-                                )
-                                .transition(.blurReplace)
-                            case .unsubscribe:
-                                ButtonView.unsubscribe(
-                                    account: account,
-                                    appSessionStore: appSessionStore,
-                                    dataStoreProvider: dataStoreProvider,
-                                    message: $subscriptionButtonModel
-                                )
-                                .transition(.blurReplace)
-                            }
+                            SubscriptionButtonView(account: account, message: $subscriptionButtonModel)
                             Spacer()
                         }
                     }

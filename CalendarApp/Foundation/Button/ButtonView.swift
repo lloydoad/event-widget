@@ -8,64 +8,26 @@
 import SwiftUI
 
 struct ButtonView: View {
-    @EnvironmentObject var actionCoordinator: AppActionCoordinator
-    var text: String
-    var baseStyle: AttributedStringBuilder.BaseStyle
-    var route: DeepLinkParser.Route
-    var actionHandler: AppActionHandler
+    let action: AppAction
+    let font: AppFont
+    let actionCoordinator: AppActionCoordinator
 
     var body: some View {
-        Text(title(text, route: route))
-            .onAppear {
-                actionCoordinator.register(actionHandler)
-            }
+        Text(text(
+            action.defaultTitle,
+            baseStyle: .init(appFont: font),
+            action: action
+        ))
     }
 
-    private func title(_ text: String, route: DeepLinkParser.Route) -> AttributedString {
+    private func text(_ value: String, baseStyle: AttributedStringBuilder.BaseStyle, action: AppAction) -> AttributedString {
         AttributedStringBuilder(baseStyle: baseStyle)
-            .bracket(text, fallbackURL: DeepLinkParser.Route.fallbackURL, deeplink: route, color: .appTint)
+            .bracket(value, fallbackURL: DeepLinkParser.Route.fallbackURL, deeplink: .action(action), color: .appTint)
             .build()
     }
-}
 
-// MARK: Convenience inits
-
-extension ButtonView {
-    static func subscribe(
-        account: AccountModel,
-        appSessionStore: AppSessionStore,
-        dataStoreProvider: DataStoreProvider,
-        message: Binding<SubscriptionAppActionHandler.Message>
-    ) -> ButtonView {
-        ButtonView(
-            text: "subscribe",
-            baseStyle: .init(appFont: .light),
-            route: .action(.subscribe),
-            actionHandler: SubscriptionAppActionHandler(
-                account: account,
-                appSessionStore: appSessionStore,
-                dataStoreProvider: dataStoreProvider,
-                message: message
-            )
-        )
-    }
-
-    static func unsubscribe(
-        account: AccountModel,
-        appSessionStore: AppSessionStore,
-        dataStoreProvider: DataStoreProvider,
-        message: Binding<SubscriptionAppActionHandler.Message>
-    ) -> ButtonView {
-        ButtonView(
-            text: "unsubscribe",
-            baseStyle: .init(appFont: .light),
-            route: .action(.unsubscribe),
-            actionHandler: SubscriptionAppActionHandler(
-                account: account,
-                appSessionStore: appSessionStore,
-                dataStoreProvider: dataStoreProvider,
-                message: message
-            )
-        )
+    func onAction(handler: AppActionHandler) -> Self {
+        actionCoordinator.register(handler)
+        return self
     }
 }
