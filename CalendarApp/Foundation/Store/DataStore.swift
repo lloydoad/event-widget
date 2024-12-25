@@ -213,7 +213,6 @@ class MockDataStore: DataStoring {
 
     func getEvents(viewing account: AccountModel, following: [UUID]) async throws -> [EventModel] {
         try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
-        var dedupedEvents = [UUID: EventModel]()
         let eventsFromFollowing = events.filter { event in
             following.contains(event.creator.uuid)
         }
@@ -223,10 +222,8 @@ class MockDataStore: DataStoring {
         let myEvents = events.filter { event in
             event.creator.uuid == account.uuid
         }
-        (eventsFromFollowing + eventsFromAttending + myEvents).forEach {
-            dedupedEvents[$0.uuid] = $0
-        }
-        return dedupedEvents.map(\.value).sorted { lhs, rhs in
+        let dedupedEvents = Array(Set(eventsFromFollowing + eventsFromAttending + myEvents))
+        return dedupedEvents.sorted { lhs, rhs in
             lhs.endDate > rhs.endDate
         }
     }

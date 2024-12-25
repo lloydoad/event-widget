@@ -9,7 +9,6 @@ import SwiftUI
 
 class AppSessionStore: ObservableObject {
     @Published var userAccount: AccountModel? = AccountModelMocks.lloydAccount
-    @Published var followingUUIds: [UUID] = []
     @Published var hasSyncedContacts: Bool = false
 }
 
