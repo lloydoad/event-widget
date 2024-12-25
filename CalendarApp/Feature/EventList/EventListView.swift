@@ -21,7 +21,6 @@ struct EventListView: View {
 
     @State private var error: Error?
     @State private var model: Model = .loading
-    @State private var eventActionMessage: EventActionHandler.ListMessage = .none
 
     var body: some View {
         VStack {
@@ -37,7 +36,11 @@ struct EventListView: View {
                 ScrollView {
                     VStack(spacing: 16) {
                         ForEach(events, id: \.uuid.uuidString) { event in
-                            EventView(event: event, listMessage: $eventActionMessage)
+                            EventView(
+                                event: event,
+                                removeEvent: { eventID in
+                                    removeEvent(eventID: eventID)
+                                })
                                 .padding(.bottom, 16)
                         }
                     }
@@ -49,27 +52,29 @@ struct EventListView: View {
         .animation(.easeInOut, value: model)
         .errorAlert(error: $error)
         .onAppear {
-            Task {
-                await reloadData()
-            }
-        }
-        .onChange(of: eventActionMessage) { oldValue, newValue in
-            if newValue == .refresh {
-                Task {
-                    await reloadData()
-                    eventActionMessage = .none
-                }
-            }
+            reloadData()
         }
     }
 
-    private func reloadData() async {
-        Task {
+    private func removeEvent(eventID: UUID) {
+        guard case var .success(events: events) = model else { return }
+        events.removeAll(where: { $0.uuid == eventID })
+        model = .success(events: events)
+    }
+
+    @State private var currentTask: Task<Void, Never>?
+    func reloadData() {
+        currentTask?.cancel()
+        currentTask = Task {
             do {
                 let events = try await eventListFetcher.fetchLatestData()
-                model = .success(events: events)
+                await MainActor.run {
+                    model = .success(events: events)
+                }
             } catch {
-                self.error = error
+                await MainActor.run {
+                    self.error = error
+                }
             }
         }
     }
