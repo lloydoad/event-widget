@@ -94,9 +94,7 @@ class AccountViewModel: ObservableObject, Identifiable {
 
     static func getContent(account: AccountModel, appSessionStore: AppSessionStore) -> AttributedString {
         guard let userAccount = appSessionStore.userAccount else { return "" }
-        return ListItemView.Model.accountContent(
-            viewer: userAccount,
-            account: account
-        )
+        let accountTransformer = AccountTransformer(viewer: userAccount)
+        return accountTransformer.transform(account: account)
     }
 }

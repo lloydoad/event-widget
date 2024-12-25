@@ -129,11 +129,12 @@ class EventViewModel: ObservableObject, Identifiable {
 
     static func getContent(event: EventModel, appSessionStore: AppSessionStore) -> AttributedString {
         guard let userAccount = appSessionStore.userAccount else { return "" }
+        let eventTransformer = EventTransformer(viewer: userAccount)
         do {
             if event.isActive() {
-                return try ListItemView.Model.eventContent(viewer: userAccount, event: event)
+                return try eventTransformer.content(event: event)
             } else {
-                return try ListItemView.Model.expiredEventContent(event: event)
+                return try eventTransformer.expiredContent(event: event)
             }
         } catch {
             return "event details unavailable"
