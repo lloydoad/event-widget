@@ -44,8 +44,9 @@ struct MainView: View {
                 case .sheet(let page):
                     sheetPage = page
                 }
+            } else {
+                ActionCentralDispatch.shared.handle(url: url)
             }
-            ActionCentralDispatch.shared.handle(url: url)
         }
         .errorAlert(error: $error)
         .tint(Color(AppColor.appTint.asUIColor))

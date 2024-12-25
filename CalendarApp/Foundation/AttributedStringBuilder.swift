@@ -55,26 +55,30 @@ class AttributedStringBuilder {
 		}
 	}
 
-    class Action: Text {
+    class Action: Text, Equatable {
         let identifier: UUID
         var action: () -> Void
 
-        init(_ text: String, segmentStyle: SegmentStyle, action: @escaping () -> Void) {
-            self.identifier = UUID()
+        init(_ text: String, uuid: UUID, segmentStyle: SegmentStyle, action: @escaping () -> Void) {
+            self.identifier = uuid
             self.action = action
             super.init(text, segmentStyle: segmentStyle)
         }
 
-        static func bracket(_ text: String, color: AppColor, action: @escaping () -> Void) -> Action {
-            Action("[\(text)]",
+        static func bracket(_ text: String, uuid: UUID, color: AppColor, action: @escaping () -> Void) -> Action {
+            Action("[\(text)]", uuid: uuid,
                              segmentStyle: .init(underline: false, color: color),
                              action: action)
         }
 
-        static func underline(_ text: String, color: AppColor, action: @escaping () -> Void) -> Action {
-            Action(text,
+        static func underline(_ text: String, uuid: UUID, color: AppColor, action: @escaping () -> Void) -> Action {
+            Action(text, uuid: uuid,
                              segmentStyle: .init(underline: true, color: color),
                              action: action)
+        }
+
+        static func == (lhs: Action, rhs: Action) -> Bool {
+            return lhs.identifier == rhs.identifier
         }
     }
 

@@ -16,9 +16,9 @@ struct ButtonView: View {
         self.action = action
     }
 
-    init(title: String, font: AppFont, action: @escaping () -> Void) {
+    init(title: String, identifier: UUID = UUID(), font: AppFont, action: @escaping () -> Void) {
         self.baseStyle = .init(appFont: font)
-        self.action = .bracket(title, color: .appTint, action: action)
+        self.action = .bracket(title, uuid: identifier, color: .appTint, action: action)
     }
 
     var body: some View {
