@@ -26,38 +26,3 @@ struct ListItemView: View {
 		}
 	}
 }
-
-#Preview {
-	ScrollView {
-		Text("View: Cat")
-		ListItemView(model: try! .event(
-            viewer: AccountModelMocks.catAccount,
-			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
-		))
-		Text("View: Ivo")
-		ListItemView(model: try! .event(
-			viewer: AccountModelMocks.ivoAccount,
-			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
-		))
-		Text("View: Lloyd")
-		ListItemView(model: try! .event(
-			viewer: AccountModelMocks.lloydAccount,
-			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount)
-		))
-		Text("View: Cat")
-		ListItemView(model: try! .event(
-			viewer: AccountModelMocks.catAccount,
-			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
-		))
-		Text("View: Ivo")
-		ListItemView(model: try! .event(
-			viewer: AccountModelMocks.ivoAccount,
-			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
-		))
-		Text("View: Lloyd")
-		ListItemView(model: try! .event(
-			viewer: AccountModelMocks.lloydAccount,
-			event: EventModelMocks.event(creator: AccountModelMocks.lloydAccount, guests: [])
-		))
-	}
-}

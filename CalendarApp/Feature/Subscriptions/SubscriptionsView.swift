@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SubscriptionsView: View {
     private enum Model: Equatable {
-        case success([ListItemView.Model])
+        case success([AccountModel])
         case loading
     }
     
@@ -40,7 +40,7 @@ struct SubscriptionsView: View {
                                 .transition(.blurReplace)
                         } else {
                             ForEach(accounts, id: \.hashValue) { account in
-                                ListItemView(model: account)
+                                AccountView(account: account)
                                     .padding(.bottom, 4)
                             }
                             .transition(.blurReplace)
@@ -76,10 +76,7 @@ struct SubscriptionsView: View {
             let accounts = try await dataStore
                 .getAccounts(with: contacts.map(\.phoneNumber), and: following)
                 .sorted()
-
-            model = try .success(accounts.map({ account in
-                try ListItemView.Model.account(viewer: viewer, account: account, following: following)
-            }))
+            model = .success(accounts)
         } catch {
             self.error = error
         }
