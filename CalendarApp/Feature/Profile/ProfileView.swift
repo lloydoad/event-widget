@@ -17,7 +17,7 @@ struct ProfileView: View {
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
     let account: AccountModel
 
-    @State private var subscriptionButtonModel: SubscriptionAppActionHandler.Message = .loading
+    @State private var subscriptionButtonType: SubscriptionButtonView.ButtonType = .loading
     @State private var error: Error?
 
 	var body: some View {
@@ -25,7 +25,7 @@ struct ProfileView: View {
             ListTitleView(title: "events by \(account.username)")
             if appSessionStore.userAccount != account {
                 HStack {
-                    SubscriptionButtonView(account: account, message: $subscriptionButtonModel)
+                    SubscriptionButtonView(account: account, buttonType: $subscriptionButtonType)
                     Spacer()
                 }
             }
@@ -35,7 +35,7 @@ struct ProfileView: View {
             ))
 		}
         .errorAlert(error: $error)
-        .animation(.easeInOut, value: subscriptionButtonModel)
+        .animation(.easeInOut, value: subscriptionButtonType)
 		.padding(.horizontal, 16)
 		.padding(.bottom, 16)
         .onAppear {
@@ -63,9 +63,9 @@ struct ProfileView: View {
                     .dataStore
                     .getFollowingAccounts(userAccount: userAccount)
                 if following.contains(account.uuid) {
-                    subscriptionButtonModel = .unsubscribe
+                    subscriptionButtonType = .unsubscribe
                 } else {
-                    subscriptionButtonModel = .subscribe
+                    subscriptionButtonType = .subscribe
                 }
             } catch {
                 self.error = error

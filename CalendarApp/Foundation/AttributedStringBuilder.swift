@@ -34,6 +34,7 @@ class AttributedStringBuilder {
 		}
 	}
 
+    @available(*, deprecated, renamed: "Action", message: "should be removed")
 	class Button: Text {
 		var destination: URL
 		init(_ text: String, segmentStyle: SegmentStyle, destination: URL) {
@@ -54,6 +55,29 @@ class AttributedStringBuilder {
 		}
 	}
 
+    class Action: Text {
+        let identifier: UUID
+        var action: () -> Void
+
+        init(_ text: String, segmentStyle: SegmentStyle, action: @escaping () -> Void) {
+            self.identifier = UUID()
+            self.action = action
+            super.init(text, segmentStyle: segmentStyle)
+        }
+
+        static func bracket(_ text: String, color: AppColor, action: @escaping () -> Void) -> Action {
+            Action("[\(text)]",
+                             segmentStyle: .init(underline: false, color: color),
+                             action: action)
+        }
+
+        static func underline(_ text: String, color: AppColor, action: @escaping () -> Void) -> Action {
+            Action(text,
+                             segmentStyle: .init(underline: true, color: color),
+                             action: action)
+        }
+    }
+
 	let baseStyle: BaseStyle
 	init(baseStyle: BaseStyle) {
 		self.baseStyle = baseStyle
@@ -65,6 +89,7 @@ class AttributedStringBuilder {
 		return self
 	}
 
+    @available(*, deprecated, renamed: "append(action:)", message: "will be removed")
 	@discardableResult
 	private func appendButton(_ button: Button) -> AttributedStringBuilder {
 		var segment = get(text: button.text, segmentStyle: button.segmentStyle)
@@ -73,6 +98,15 @@ class AttributedStringBuilder {
 		fullString += segment
 		return self
 	}
+
+    @discardableResult
+    private func append(action: Action) -> AttributedStringBuilder {
+        var segment = get(text: action.text, segmentStyle: action.segmentStyle)
+        segment.link = ActionCentralDispatch.shared.url(for: action)
+        segment.foregroundColor = action.segmentStyle.color.asUIColor
+        fullString += segment
+        return self
+    }
 
 	private func get(text: String, segmentStyle: SegmentStyle) -> AttributedString {
 		var attributedSegment = AttributedString(text)
@@ -127,4 +161,9 @@ class AttributedStringBuilder {
 	func underline(_ text: String, url: URL, color: AppColor) throws -> AttributedStringBuilder {
 		appendButton(.underline(text, destination: url, color: color))
 	}
+
+    @discardableResult
+    func action(_ action: Action) -> AttributedStringBuilder {
+        return append(action: action)
+    }
 }

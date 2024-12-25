@@ -8,26 +8,30 @@
 import SwiftUI
 
 struct ButtonView: View {
-    let action: AppAction
-    let font: AppFont
-    let actionCoordinator: AppActionCoordinator
+    let baseStyle: AttributedStringBuilder.BaseStyle
+    let action: AttributedStringBuilder.Action
+
+    private init(baseStyle: AttributedStringBuilder.BaseStyle, action: AttributedStringBuilder.Action) {
+        self.baseStyle = baseStyle
+        self.action = action
+    }
+
+    init(title: String, font: AppFont, action: @escaping () -> Void) {
+        self.baseStyle = .init(appFont: font)
+        self.action = .bracket(title, color: .appTint, action: action)
+    }
 
     var body: some View {
-        Text(text(
-            action.defaultTitle,
-            baseStyle: .init(appFont: font),
-            action: action
-        ))
-    }
-
-    private func text(_ value: String, baseStyle: AttributedStringBuilder.BaseStyle, action: AppAction) -> AttributedString {
-        AttributedStringBuilder(baseStyle: baseStyle)
-            .bracket(value, fallbackURL: DeepLinkParser.Route.fallbackURL, deeplink: .action(action), color: .appTint)
-            .build()
-    }
-
-    func onAction(handler: AppActionHandler) -> Self {
-        actionCoordinator.register(handler)
-        return self
+        Text(
+            AttributedStringBuilder(baseStyle: baseStyle)
+                .action(action)
+                .build()
+        )
+        .onAppear {
+            ActionCentralDispatch.shared.register(action: action)
+        }
+        .onDisappear {
+            ActionCentralDispatch.shared.deregister(identifier: action.identifier)
+        }
     }
 }

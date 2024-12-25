@@ -30,28 +30,25 @@ struct EventView: View {
                 case .showControl:
                     if let viewingAccount = appSessionStore.userAccount {
                         if event.joinable(viewer: viewingAccount) {
-                            ButtonView(
-                                action: .join(event: event),
-                                font: .light,
-                                actionCoordinator: actionCoordinator
-                            )
-                            .onAction(handler: actionHandler)
+                            ButtonView(title: "join", font: .light) {
+                                Task {
+                                    try await actionHandler.handle(.join(event: event))
+                                }
+                            }
                         }
                         if event.cancellable(viewer: viewingAccount) {
-                            ButtonView(
-                                action: .cantGo(event: event),
-                                font: .light,
-                                actionCoordinator: actionCoordinator
-                            )
-                            .onAction(handler: actionHandler)
+                            ButtonView(title: "can't go", font: .light) {
+                                Task {
+                                    try await actionHandler.handle(.cantGo(event: event))
+                                }
+                            }
                         }
                         if event.deletable(viewer: viewingAccount) {
-                            ButtonView(
-                                action: .delete(event: event),
-                                font: .light,
-                                actionCoordinator: actionCoordinator
-                            )
-                            .onAction(handler: actionHandler)
+                            ButtonView(title: "delete", font: .light) {
+                                Task {
+                                    try await actionHandler.handle(.delete(event: event))
+                                }
+                            }
                         }
                     }
                 case .loading:

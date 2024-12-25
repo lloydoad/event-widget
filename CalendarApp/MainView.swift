@@ -45,6 +45,7 @@ struct MainView: View {
                     sheetPage = page
                 }
             }
+            ActionCentralDispatch.shared.handle(url: url)
         }
         .errorAlert(error: $error)
         .tint(Color(AppColor.appTint.asUIColor))
