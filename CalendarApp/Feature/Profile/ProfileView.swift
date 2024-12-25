@@ -8,11 +8,6 @@
 import SwiftUI
 
 struct ProfileView: View {
-    enum Model: Equatable {
-        case loading
-        case success([ListItemView.Model])
-    }
-
     @EnvironmentObject var appSessionStore: AppSessionStore
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
     let account: AccountModel

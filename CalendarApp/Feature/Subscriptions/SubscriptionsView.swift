@@ -19,22 +19,25 @@ struct SubscriptionsView: View {
     
     @State private var model: Model = .loading
     @State private var error: Error?
+    private let sendInviteActionID = UUID()
 
     var body: some View {
         VStack {
+            ListTitleView(title: "subscriptions")
             ScrollView {
                 VStack(spacing: 16) {
-                    ListTitleView(title: "subscriptions")
                     switch model {
                     case .success(let accounts):
                         if accounts.isEmpty {
                             AttributedStringBuilder(baseStyle: .init(appFont: .light))
                                 .primaryText("looks like your contacts aren't here yet\n")
-                                .bracket(
+                                .action(.bracket(
                                     "send invites",
-                                    fallbackURL: DeepLinkParser.Route.fallbackURL,
-                                    deeplink: .action(.invite),
-                                    color: .appTint)
+                                    uuid: sendInviteActionID,
+                                    color: .appTint,
+                                    action: {
+                                        fatalError("NOT IMPLEMENTED")
+                                    }))
                                 .view()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .transition(.blurReplace)
