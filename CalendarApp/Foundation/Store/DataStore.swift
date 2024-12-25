@@ -9,10 +9,14 @@ import SwiftUI
 
 protocol DataStoring {
     func save(account: AccountModel) async throws
-    
     func getAccounts(with phoneNumbers: [String], and uuids: [UUID]) async throws -> [AccountModel]
+
     func getEvents(viewing account: AccountModel, following: [UUID]) async throws -> [EventModel]
     func getEvents(creator account: AccountModel) async throws -> [EventModel]
+    func joinEvent(guest account: AccountModel, event: EventModel) async throws
+    func leaveEvent(guest account: AccountModel, event: EventModel) async throws
+    func deleteEvent(creator account: AccountModel, event: EventModel) async throws
+
     func getFollowingAccounts(userAccount: AccountModel) async throws -> [UUID]
     func addFollowing(account: AccountModel, following: AccountModel) async throws
     func removeFollowing(account: AccountModel, following: AccountModel) async throws
@@ -233,6 +237,33 @@ class MockDataStore: DataStoring {
         return eventsFromCreator.sorted { lhs, rhs in
             lhs.endDate > rhs.endDate
         }
+    }
+
+    func joinEvent(guest account: AccountModel, event: EventModel) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+        let index = events.firstIndex(where: { $0.uuid == event.uuid })
+        guard let index else { return }
+        var newEvent = events[index]
+        if !newEvent.guests.contains(account) {
+            newEvent.guests.append(account)
+        }
+        events[index] = newEvent
+    }
+
+    func leaveEvent(guest account: AccountModel, event: EventModel) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+        let index = events.firstIndex(where: { $0.uuid == event.uuid })
+        guard let index else { return }
+        var newEvent = events[index]
+        if newEvent.guests.contains(account) {
+            newEvent.guests.removeAll(where: { $0 == account })
+        }
+        events[index] = newEvent
+    }
+
+    func deleteEvent(creator account: AccountModel, event: EventModel) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+        events.removeAll(where: { $0 == event && $0.creator == account })
     }
 
     func getFollowingAccounts(userAccount: AccountModel) async throws -> [UUID] {

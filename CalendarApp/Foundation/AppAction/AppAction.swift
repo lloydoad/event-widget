@@ -8,9 +8,9 @@
 import SwiftUI
 
 enum AppAction: Codable, Hashable {
-    case join
-    case cantGo
-    case delete
+    case join(event: EventModel)
+    case cantGo(event: EventModel)
+    case delete(event: EventModel)
     case subscribe
     case unsubscribe
     case invite

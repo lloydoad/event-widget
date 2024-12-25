@@ -33,4 +33,8 @@ extension EventModel {
 	func deletable(viewer: AccountModel) -> Bool {
 		creator == viewer
 	}
+
+    func isActive() -> Bool {
+        endDate > .now
+    }
 }

@@ -71,23 +71,23 @@ extension ListItemView.Model {
 		let builder = AttributedStringBuilder(baseStyle: baseStyle)
 		if event.joinable(viewer: viewer) {
 			try builder
-				.bracket("join", deeplink: .action(.join), color: .appTint)
+                .bracket("join", deeplink: .action(.join(event: event)), color: .appTint)
 				.primaryText(" ")
 		}
 		if event.cancellable(viewer: viewer) {
 			try builder
-				.bracket("can't go", deeplink: .action(.cantGo), color: .appTint)
+                .bracket("can't go", deeplink: .action(.cantGo(event: event)), color: .appTint)
 				.primaryText(" ")
 		}
 		if event.deletable(viewer: viewer) {
 			try builder
-				.bracket("delete", deeplink: .action(.delete), color: .appTint)
+                .bracket("delete", deeplink: .action(.delete(event: event)), color: .appTint)
 				.primaryText(" ")
 		}
 		return builder.build()
 	}
 
-	static private func expiredEventContent(event: EventModel) throws -> AttributedString {
+	static func expiredEventContent(event: EventModel) throws -> AttributedString {
 		let timeValue = DateFormatter().formattedRange(start: event.startDate,
 													   end: event.endDate)
 		let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light, strikeThrough: true)
@@ -98,7 +98,7 @@ extension ListItemView.Model {
 			.build()
 	}
 
-    static private func eventContent(viewer: AccountModel, event: EventModel) throws -> AttributedString {
+    static func eventContent(viewer: AccountModel, event: EventModel) throws -> AttributedString {
 		let timeValue = DateFormatter().formattedRange(start: event.startDate,
 													   end: event.endDate)
 		let isNonCreatorGuest = event.isGoing(viewer: viewer) && viewer != event.creator
