@@ -15,14 +15,12 @@ struct CalendarAppApp: App {
     @StateObject private var dataStoreProvider = DataStoreProvider(dataStore: MockDataStore()) // TODO: Replace with network store
     
     private var accountWorker = AccountWorker()
-    private var eventWorker = EventWorker()
     private var contactSyncWorker = ContactSyncWorker()
 
     var body: some Scene {
         WindowGroup {
             MainView(
                 accountWorker: accountWorker,
-                eventWorker: eventWorker,
                 contactSyncWorker: contactSyncWorker
             )
             .environmentObject(appSessionStore)

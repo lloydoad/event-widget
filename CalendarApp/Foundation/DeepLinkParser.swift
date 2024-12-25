@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DeepLinkParser {
     enum Page: Codable, Hashable, Identifiable {
-        case events(AccountModel)
+        case feed
         case profile(AccountModel)
         case guestList([AccountModel])
         case subscriptions

@@ -13,7 +13,7 @@ struct SubscriptionAppActionHandler: AppActionHandler {
         case unhandledAction
     }
 
-    enum Message: Equatable {
+    enum Message: Hashable, Equatable {
         case loading
         case subscribe
         case unsubscribe

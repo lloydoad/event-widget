@@ -12,7 +12,6 @@ struct MainView: View {
     @EnvironmentObject var actionCoordinator: AppActionCoordinator
     
     var accountWorker: AccountWorking
-    var eventWorker: EventWorking
     var contactSyncWorker: ContactSyncWorking
     
     @State private var navigationPagePath: [DeepLinkParser.Page] = []
@@ -23,8 +22,8 @@ struct MainView: View {
     
     var body: some View {
         NavigationStack(path: $navigationPagePath) {
-            if let userAccount = appSessionStore.userAccount {
-                pageView(.events(userAccount))
+            if appSessionStore.userAccount != nil {
+                pageView(.feed)
                     .navigationDestination(for: DeepLinkParser.Page.self) { page in
                         pageView(page)
                     }
@@ -63,11 +62,8 @@ struct MainView: View {
     
     func pageView(_ page: DeepLinkParser.Page) -> some View {
         switch page {
-        case .events(let viewingAccount):
-            return AnyView(EventListView(
-                viewingAccount: viewingAccount,
-                eventWorker: eventWorker
-            ))
+        case .feed:
+            return AnyView(HomeFeedView())
         case .profile(let account):
             return AnyView(ProfileView(account: account))
         case .guestList(let guests):
