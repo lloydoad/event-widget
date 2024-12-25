@@ -10,13 +10,17 @@ import MapKit
 
 struct ComposerView: View {
     @EnvironmentObject var appSessionStore: AppSessionStore
+    @EnvironmentObject var dataStoreProvider: DataStoreProvider
     @Environment(\.dismiss) private var dismiss
     
     @State private var description: String = "description ..."
     @State private var startDate: Date = Date()
     @State private var endDate: Date = Date()
+
+    @State private var error: Error?
 	@State private var location: LocationModel? = nil
 	@State private var isLocationPickerPresented: Bool = false
+    @State private var isLoading: Bool = false
 
     var body: some View {
 		Form {
@@ -59,6 +63,8 @@ struct ComposerView: View {
 		})
 		.font(AppFont.light.asFont)
 		.tint(Color(AppColor.appTint.asUIColor))
+        .disabled(isLoading)
+        .errorAlert(error: $error)
     }
 
 	private var validatedEvent: EventModel? {
@@ -82,9 +88,19 @@ struct ComposerView: View {
 	}
 
     private func saveEvent() {
-        // Implement the logic to save the event
-		print(validatedEvent)
-        dismiss()
+        guard let validatedEvent else { return }
+        guard !isLoading else { return }
+        isLoading = true
+        Task {
+            do {
+                try await dataStoreProvider.dataStore.addEvent(event: validatedEvent)
+                dismiss()
+                isLoading = false
+            } catch {
+                self.error = error
+                isLoading = false
+            }
+        }
     }
 }
 

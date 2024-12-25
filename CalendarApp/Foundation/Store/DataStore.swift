@@ -16,6 +16,7 @@ protocol DataStoring {
     func joinEvent(guest account: AccountModel, event: EventModel) async throws
     func leaveEvent(guest account: AccountModel, event: EventModel) async throws
     func deleteEvent(creator account: AccountModel, event: EventModel) async throws
+    func addEvent(event: EventModel) async throws
 
     func getFollowingAccounts(userAccount: AccountModel) async throws -> [UUID]
     func addFollowing(account: AccountModel, following: AccountModel) async throws
@@ -261,6 +262,11 @@ class MockDataStore: DataStoring {
     func deleteEvent(creator account: AccountModel, event: EventModel) async throws {
         try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
         events.removeAll(where: { $0 == event && $0.creator == account })
+    }
+
+    func addEvent(event: EventModel) async throws {
+        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+        events.append(event)
     }
 
     func getFollowingAccounts(userAccount: AccountModel) async throws -> [UUID] {
