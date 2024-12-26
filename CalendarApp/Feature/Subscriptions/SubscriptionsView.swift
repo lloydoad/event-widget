@@ -20,18 +20,6 @@ struct SubscriptionsView: View {
     @State private var model: Model = .loading
     @State private var error: Error?
 
-    private let sendInviteActionID = UUID()
-    private var sendInviteAction: AttributedStringBuilder.Action {
-        .bracket(
-            "send invites",
-            identifier: sendInviteActionID.uuidString,
-            color: .appTint,
-            action: {
-                fatalError("NOT IMPLEMENTED")
-            }
-        )
-    }
-
     var body: some View {
         VStack {
             ListTitleView(title: "subscriptions")
@@ -41,17 +29,22 @@ struct SubscriptionsView: View {
                     case .success(let accounts):
                         if accounts.isEmpty {
                             AttributedStringBuilder(baseStyle: .init(appFont: .light))
-                                .primaryText("looks like your contacts aren't here yet\n")
-                                .action(sendInviteAction)
+                                .primaryText("looks like your contacts aren't here yet")
                                 .view()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .transition(.blurReplace)
-                                .onAppear {
-                                    ActionCentralDispatch.shared.register(action: sendInviteAction)
-                                }
-                                .onDisappear {
-                                    ActionCentralDispatch.shared.deregister(identifier: sendInviteAction.identifier)
-                                }
+                            // TODO: Add actual appstore link
+                            ShareLink(
+                                items: [URL(string: "https://apps.apple.com/app/your-app-id")!],
+                                message: Text("let's share impromptu events on [unentitled event widget]"),
+                                label: {
+                                AttributedStringBuilder(baseStyle: .init(appFont: .light))
+                                    .text(.init("[send invites]",
+                                                segmentStyle: .init(color: .appTint)))
+                                    .view()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .transition(.blurReplace)
+                            })
                         } else {
                             ForEach(accounts, id: \.hashValue) { account in
                                 AccountView(account: account)
