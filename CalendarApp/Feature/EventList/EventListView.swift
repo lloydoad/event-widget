@@ -54,6 +54,9 @@ struct EventListView: View {
         .onAppear {
             reloadData()
         }
+        .refreshable {
+            reloadData()
+        }
     }
 
     private func removeEvent(eventID: UUID) {
