@@ -9,7 +9,6 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject var onboardingStore: OnboardingStore
-    @EnvironmentObject var actionCoordinator: AppActionCoordinator
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
     @EnvironmentObject var appSessionStore: AppSessionStore
 
@@ -40,16 +39,6 @@ struct OnboardingView: View {
             }
         }
         .padding()
-        .onAppear {
-            actionCoordinator.register(
-                OnboardingAppActionHandler(
-                    accountWorker: accountWorker,
-                    appSessionStore: appSessionStore,
-                    onboardingStore: onboardingStore,
-                    dataStoreProvider: dataStoreProvider
-                )
-            )
-        }
     }
 }
 
@@ -61,5 +50,4 @@ struct OnboardingView: View {
         .environmentObject(OnboardingStore())
         .environmentObject(mockAppSessionStore(account: AccountModelMocks.lloydAccount))
         .environmentObject(DataStoreProvider(dataStore: dataStore))
-        .environmentObject(AppActionCoordinator())
 }

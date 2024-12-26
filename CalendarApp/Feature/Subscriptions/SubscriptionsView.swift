@@ -19,7 +19,18 @@ struct SubscriptionsView: View {
     
     @State private var model: Model = .loading
     @State private var error: Error?
+
     private let sendInviteActionID = UUID()
+    private var sendInviteAction: AttributedStringBuilder.Action {
+        .bracket(
+            "send invites",
+            uuid: sendInviteActionID,
+            color: .appTint,
+            action: {
+                fatalError("NOT IMPLEMENTED")
+            }
+        )
+    }
 
     var body: some View {
         VStack {
@@ -31,16 +42,16 @@ struct SubscriptionsView: View {
                         if accounts.isEmpty {
                             AttributedStringBuilder(baseStyle: .init(appFont: .light))
                                 .primaryText("looks like your contacts aren't here yet\n")
-                                .action(.bracket(
-                                    "send invites",
-                                    uuid: sendInviteActionID,
-                                    color: .appTint,
-                                    action: {
-                                        fatalError("NOT IMPLEMENTED")
-                                    }))
+                                .action(sendInviteAction)
                                 .view()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .transition(.blurReplace)
+                                .onAppear {
+                                    ActionCentralDispatch.shared.register(action: sendInviteAction)
+                                }
+                                .onDisappear {
+                                    ActionCentralDispatch.shared.deregister(identifier: sendInviteActionID)
+                                }
                         } else {
                             ForEach(accounts, id: \.hashValue) { account in
                                 AccountView(account: account)

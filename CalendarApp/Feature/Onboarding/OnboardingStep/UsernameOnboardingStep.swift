@@ -12,6 +12,8 @@ struct UsernameOnboardingStep: OnboardingStep {
         .username
     }
 
+    let claimUsernameActionUUID = UUID()
+
     func body(store: OnboardingStore) -> AnyView {
         return AnyView(
             VStack(spacing: 4) {
@@ -28,13 +30,17 @@ struct UsernameOnboardingStep: OnboardingStep {
                 .autocorrectionDisabled()
                 .textFieldStyle(.roundedBorder)
                 if store.entryText.count >= 3 {
-                    AttributedStringBuilder(baseStyle: .init(appFont: .light))
-                        .bracket("save username",
-                                 fallbackURL: DeepLinkParser.Route.fallbackURL,
-                                 deeplink: .action(.claimUsername(username: store.entryText)),
-                                 color: .appTint)
-                        .view()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    ButtonView(
+                        title: "save username",
+                        identifier: claimUsernameActionUUID,
+                        font: .light,
+                        action: {
+                            store.entryText = ""
+                            store.stage = .enterPhoneNumber(
+                                username: store.entryText
+                            )
+                        })
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     AttributedStringBuilder(baseStyle: .init(appFont: .light))
                         .text(.init("name cannot be shorter than 3 characters",

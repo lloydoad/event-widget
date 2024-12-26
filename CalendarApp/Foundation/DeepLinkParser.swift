@@ -21,7 +21,6 @@ struct DeepLinkParser {
     }
 
 	enum Route: Codable, Hashable {
-        case action(AppAction)
         case push(Page)
         case sheet(Page)
 

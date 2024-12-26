@@ -25,8 +25,9 @@ struct PhoneNumberField: View {
 }
 
 class PhoneNumberOnboardingStep: OnboardingStep {
+    private let createAccountActionUUID = UUID()
     private let formatter = PhoneNumberFormatter()
-    
+
     var stage: OnboardingStepType {
         .phoneNumber
     }
@@ -43,30 +44,48 @@ class PhoneNumberOnboardingStep: OnboardingStep {
                     }
                 ))
                 if formatter.isValid(store.entryText) {
-                    if store.isPerformingActivity {
-                        HStack {
+                    HStack {
+                        if store.isPerformingActivity {
                             ProgressView()
                             AttributedStringBuilder(baseStyle: .init(appFont: .large))
                                 .primaryText("creating account ")
                                 .view()
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                    } else {
-                        AttributedStringBuilder(baseStyle: .init(appFont: .large))
-                            .bracket("create account",
-                                     fallbackURL: DeepLinkParser.Route.fallbackURL,
-                                     deeplink: .action(
-                                        .createAccount(
-                                            username: username(store: store),
-                                            phoneNumber: store.entryText)
-                                     ),
-                                     color: .appTint)
-                            .view()
+                        } else {
+                            ButtonView(
+                                title: "create account",
+                                identifier: createAccountActionUUID,
+                                font: .large,
+                                action: { [weak self] in
+                                    self?.createAccount(store: store)
+                                })
                             .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        Spacer()
                     }
                 }
             }
         )
+    }
+
+    var currentTask: Task<Void, Error>?
+    func createAccount(store: OnboardingStore) {
+//        currentTask = Task {
+//            do {
+//                let newUserAccount = try await accountWorker
+//                    .createAccount(
+//                        username: username(store: store),
+//                        phoneNumber: store.entryText,
+//                        dataStore: dataStoreProvider.dataStore
+//                    )
+//                appSessionStore.userAccount = newUserAccount
+//                onboardingStore.isPerformingActivity = false
+//                onboardingStore.stage = .enterUsername
+//            } catch {
+//                onboardingStore.isPerformingActivity = false
+//                throw error
+//            }
+//        }
     }
 
     func isApplicable(store: OnboardingStore) -> Bool {

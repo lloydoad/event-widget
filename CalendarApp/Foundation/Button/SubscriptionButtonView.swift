@@ -16,7 +16,6 @@ struct SubscriptionButtonView: View {
 
     @EnvironmentObject var appSessionStore: AppSessionStore
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
-    @EnvironmentObject var actionCoordinator: AppActionCoordinator
 
     let account: AccountModel
     @Binding var buttonType: ButtonType

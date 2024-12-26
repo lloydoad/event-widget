@@ -9,17 +9,17 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var appSessionStore: AppSessionStore
-    @EnvironmentObject var actionCoordinator: AppActionCoordinator
-    
+
     var accountWorker: AccountWorking
     var contactSyncWorker: ContactSyncWorking
-    
+
+    @StateObject private var onboardingStore = OnboardingStore()
     @State private var navigationPagePath: [DeepLinkParser.Page] = []
     @State private var sheetPage: DeepLinkParser.Page?
     @State private var error: Error?
     
     private let deepLinkParser = DeepLinkParser()
-    
+
     var body: some View {
         NavigationStack(path: $navigationPagePath) {
             if appSessionStore.userAccount != nil {
@@ -31,14 +31,13 @@ struct MainView: View {
                 OnboardingView(accountWorker: accountWorker)
             }
         }
+        .environmentObject(onboardingStore)
         .sheet(item: $sheetPage, content: { page in
             pageView(page)
         })
         .onOpenURL { url in
             if let route = deepLinkParser.getRoute(url: url) {
                 switch route {
-                case .action(let action):
-                    handle(action: action)
                 case .push(let page):
                     navigationPagePath.append(page)
                 case .sheet(let page):
@@ -51,17 +50,7 @@ struct MainView: View {
         .errorAlert(error: $error)
         .tint(Color(AppColor.appTint.asUIColor))
     }
-    
-    func handle(action: AppAction) {
-        Task {
-            do {
-                try await actionCoordinator.handle(action)
-            } catch {
-                self.error = error
-            }
-        }
-    }
-    
+
     func pageView(_ page: DeepLinkParser.Page) -> some View {
         switch page {
         case .feed:
