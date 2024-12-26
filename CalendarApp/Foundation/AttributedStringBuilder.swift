@@ -1,5 +1,5 @@
 //
-//  AttributedStringBuilder.swift
+//  StringBuilder.swift
 //  CalendarApp
 //
 //  Created by Lloyd Dapaah on 12/17/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class AttributedStringBuilder {
+class StringBuilder {
 	private var fullString = AttributedString()
 
     struct BaseStyle: Hashable {
@@ -89,12 +89,12 @@ class AttributedStringBuilder {
 		self.baseStyle = baseStyle
 	}
 
-	private func appendText(_ text: Text) -> AttributedStringBuilder {
+	private func appendText(_ text: Text) -> StringBuilder {
 		fullString += get(text: text.text, segmentStyle: text.segmentStyle)
 		return self
 	}
 
-    private func append(route: Route) -> AttributedStringBuilder {
+    private func append(route: Route) -> StringBuilder {
 		var segment = get(text: route.text, segmentStyle: route.segmentStyle)
 		segment.link = route.destination
 		segment.foregroundColor = route.segmentStyle.color.asUIColor
@@ -102,7 +102,7 @@ class AttributedStringBuilder {
 		return self
 	}
 
-    private func append(action: Action) -> AttributedStringBuilder {
+    private func append(action: Action) -> StringBuilder {
         var segment = get(text: action.text, segmentStyle: action.segmentStyle)
         segment.link = ActionCentralDispatch.shared.url(for: action)
         segment.foregroundColor = action.segmentStyle.color.asUIColor
@@ -135,26 +135,26 @@ class AttributedStringBuilder {
     }
 
     @discardableResult
-    func text(_ text: Text) -> AttributedStringBuilder {
+    func text(_ text: Text) -> StringBuilder {
         return appendText(text)
     }
 
     @discardableResult
-    func route(_ route: Route) -> AttributedStringBuilder {
+    func route(_ route: Route) -> StringBuilder {
         append(route: route)
     }
 
     @discardableResult
-    func action(_ action: Action) -> AttributedStringBuilder {
+    func action(_ action: Action) -> StringBuilder {
         append(action: action)
     }
 
     @discardableResult
     func staticIfElse(
         condition: Bool,
-        trueBlock: (AttributedStringBuilder) -> AttributedStringBuilder,
-        falseBlock: (AttributedStringBuilder) -> AttributedStringBuilder
-    ) -> AttributedStringBuilder {
+        trueBlock: (StringBuilder) -> StringBuilder,
+        falseBlock: (StringBuilder) -> StringBuilder
+    ) -> StringBuilder {
         if condition {
             return trueBlock(self)
         } else {

@@ -42,7 +42,7 @@ struct UsernameOnboardingStep: OnboardingStep {
                         })
                     .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
-                    AttributedStringBuilder(baseStyle: .init(appFont: .light))
+                    StringBuilder(baseStyle: .init(appFont: .light))
                         .text(.init("name cannot be shorter than 3 characters",
                                     segmentStyle: .init(underline: false, color: .secondary)))
                         .view()

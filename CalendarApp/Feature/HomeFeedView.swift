@@ -42,7 +42,7 @@ struct HomeFeedView: View {
 
     private let createNewEventActionIdentifier: String = UUID().uuidString
     private let subscribeToFriendsActionIdentifier: String = UUID().uuidString
-    private var actions: [AttributedStringBuilder.Action] {
+    private var actions: [StringBuilder.Action] {
         [
             .bracket(
                 "create new event",

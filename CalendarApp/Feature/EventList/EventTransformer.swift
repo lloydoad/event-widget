@@ -15,9 +15,9 @@ struct EventTransformer {
             throw ErrorManager.with(message: "Could not create maps for \(event.location.address)")
         }
         let timeValue = DateFormatter().formattedRange(start: event.startDate, end: event.endDate)
-        let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light, strikeThrough: true)
+        let baseStyle = StringBuilder.BaseStyle(appFont: .light, strikeThrough: true)
 
-        return AttributedStringBuilder(baseStyle: baseStyle)
+        return StringBuilder(baseStyle: baseStyle)
             .text(.primary("\(event.description) • \(timeValue) at "))
             .route(.underline(event.location.address, destination: locationURL, color: .primary))
             .text(.primary(" • "))
@@ -31,8 +31,8 @@ struct EventTransformer {
 
         let timeValue = DateFormatter().formattedRange(start: event.startDate, end: event.endDate)
         let isNonCreatorGuest = event.isGoing(viewer: viewer) && viewer != event.creator
-        let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
-        let builder = AttributedStringBuilder(baseStyle: baseStyle)
+        let baseStyle = StringBuilder.BaseStyle(appFont: .light)
+        let builder = StringBuilder(baseStyle: baseStyle)
             .text(.primary("\(event.description) • \(timeValue) at "))
             .route(.underline(event.location.address, destination: locationURL, color: .primary))
             .text(.primary(" • "))
@@ -87,12 +87,12 @@ struct EventTransformer {
     }
 }
 
-extension AttributedStringBuilder {
-	func account(_ account: AccountModel) -> AttributedStringBuilder {
+extension StringBuilder {
+	func account(_ account: AccountModel) -> StringBuilder {
         route(.underline(account.username, page: .profile(account), color: .primary))
 	}
 
-    func guestList(_ text: String, viewer: AccountModel, event: EventModel) -> AttributedStringBuilder {
+    func guestList(_ text: String, viewer: AccountModel, event: EventModel) -> StringBuilder {
         route(.underline(text, page: .guestList(event.guests), color: .primary))
 	}
 }

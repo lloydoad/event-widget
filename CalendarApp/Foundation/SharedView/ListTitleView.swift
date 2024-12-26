@@ -12,7 +12,7 @@ struct ListTitleView: View {
 
 	var body: some View {
 		Text(
-			AttributedStringBuilder(baseStyle: .init(appFont: .navigationTitle))
+			StringBuilder(baseStyle: .init(appFont: .navigationTitle))
                 .text(.primary(title))
 				.build()
 		)

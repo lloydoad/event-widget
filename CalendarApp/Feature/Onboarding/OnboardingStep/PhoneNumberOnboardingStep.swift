@@ -47,7 +47,7 @@ class PhoneNumberOnboardingStep: OnboardingStep {
                     HStack {
                         if store.isPerformingActivity {
                             ProgressView()
-                            AttributedStringBuilder(baseStyle: .init(appFont: .large))
+                            StringBuilder(baseStyle: .init(appFont: .large))
                                 .text(.primary("creating account "))
                                 .view()
                                 .frame(maxWidth: .infinity, alignment: .leading)

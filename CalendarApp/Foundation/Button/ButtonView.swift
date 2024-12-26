@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct ButtonView: View {
-    let baseStyle: AttributedStringBuilder.BaseStyle
-    let action: AttributedStringBuilder.Action
+    let baseStyle: StringBuilder.BaseStyle
+    let action: StringBuilder.Action
 
-    init(baseStyle: AttributedStringBuilder.BaseStyle, action: AttributedStringBuilder.Action) {
+    init(baseStyle: StringBuilder.BaseStyle, action: StringBuilder.Action) {
         self.baseStyle = baseStyle
         self.action = action
     }
@@ -23,7 +23,7 @@ struct ButtonView: View {
 
     var body: some View {
         Text(
-            AttributedStringBuilder(baseStyle: baseStyle)
+            StringBuilder(baseStyle: baseStyle)
                 .action(action)
                 .build()
         )

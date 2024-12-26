@@ -11,12 +11,12 @@ class ActionCentralDispatch {
     static let shared = ActionCentralDispatch()
     private init() {}
 
-    private var registeredActions: [String: AttributedStringBuilder.Action] = [:]
+    private var registeredActions: [String: StringBuilder.Action] = [:]
     private let scheme = "calendarapp"
     private let host = "attributedaction"
     private let identifierQueryItemName = "identifier"
 
-    func url(for action: AttributedStringBuilder.Action) -> URL {
+    func url(for action: StringBuilder.Action) -> URL {
         var components = URLComponents()
         components.scheme = scheme
         components.host = host
@@ -26,7 +26,7 @@ class ActionCentralDispatch {
         return components.url!
     }
 
-    func action(for url: URL) -> AttributedStringBuilder.Action? {
+    func action(for url: URL) -> StringBuilder.Action? {
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         guard components?.scheme == scheme else { return nil }
         guard components?.host == host else { return nil }
@@ -37,7 +37,7 @@ class ActionCentralDispatch {
         return registeredActions[queryItemIdentifier]
     }
 
-    func register(action: AttributedStringBuilder.Action) {
+    func register(action: StringBuilder.Action) {
         registeredActions[action.identifier] = action
     }
 

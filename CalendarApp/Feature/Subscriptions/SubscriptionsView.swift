@@ -28,7 +28,7 @@ struct SubscriptionsView: View {
                     switch model {
                     case .success(let accounts):
                         if accounts.isEmpty {
-                            AttributedStringBuilder(baseStyle: .init(appFont: .light))
+                            StringBuilder(baseStyle: .init(appFont: .light))
                                 .text(.primary("looks like your contacts aren't here yet"))
                                 .view()
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -38,7 +38,7 @@ struct SubscriptionsView: View {
                                 items: [URL(string: "https://apps.apple.com/app/your-app-id")!],
                                 message: Text("let's share impromptu events on [unentitled event widget]"),
                                 label: {
-                                AttributedStringBuilder(baseStyle: .init(appFont: .light))
+                                StringBuilder(baseStyle: .init(appFont: .light))
                                     .text(.init("[send invites]",
                                                 segmentStyle: .init(color: .appTint)))
                                     .view()
