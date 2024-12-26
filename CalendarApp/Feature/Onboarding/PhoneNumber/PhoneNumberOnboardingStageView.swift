@@ -61,6 +61,7 @@ struct PhoneNumberOnboardingStageView: View {
                 showProgress = false
                 appSessionStore.userAccount = newAccount
             } catch {
+                showProgress = false
                 self.error = error
             }
         }
