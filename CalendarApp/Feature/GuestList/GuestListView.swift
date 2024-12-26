@@ -12,9 +12,9 @@ struct GuestListView: View {
 
     var body: some View {
         VStack {
+            ListTitleView(title: "guest list")
             ScrollView {
                 VStack(spacing: 16) {
-                    ListTitleView(title: "guest list")
                     ForEach(guests.sorted(), id: \.uuid) { guest in
                         AccountView(account: guest)
                     }
