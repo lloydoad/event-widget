@@ -11,63 +11,72 @@ struct EventTransformer {
     let viewer: AccountModel
 
     func expiredContent(event: EventModel) throws -> AttributedString {
-        let timeValue = DateFormatter().formattedRange(start: event.startDate,
-                                                       end: event.endDate)
+        guard let locationURL = event.location.appleMapsDeepLink else {
+            throw ErrorManager.with(message: "Could not create maps for \(event.location.address)")
+        }
+        let timeValue = DateFormatter().formattedRange(start: event.startDate, end: event.endDate)
         let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light, strikeThrough: true)
-        return try AttributedStringBuilder(baseStyle: baseStyle)
+
+        return AttributedStringBuilder(baseStyle: baseStyle)
             .text(.primary("\(event.description) • \(timeValue) at "))
-            .location(event.location)
+            .route(.underline(event.location.address, destination: locationURL, color: .primary))
             .text(.primary(" • "))
             .build()
     }
 
     func content(event: EventModel) throws -> AttributedString {
-        let timeValue = DateFormatter().formattedRange(start: event.startDate,
-                                                       end: event.endDate)
+        guard let locationURL = event.location.appleMapsDeepLink else {
+            throw ErrorManager.with(message: "Could not create maps for \(event.location.address)")
+        }
+
+        let timeValue = DateFormatter().formattedRange(start: event.startDate, end: event.endDate)
         let isNonCreatorGuest = event.isGoing(viewer: viewer) && viewer != event.creator
         let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .light)
-        let builder = try AttributedStringBuilder(baseStyle: baseStyle)
+        let builder = AttributedStringBuilder(baseStyle: baseStyle)
             .text(.primary("\(event.description) • \(timeValue) at "))
-            .location(event.location)
+            .route(.underline(event.location.address, destination: locationURL, color: .primary))
             .text(.primary(" • "))
-
-        if isNonCreatorGuest {
-            if event.guests.count > 1 {
-                try builder
-                    .account(viewer)
-                    .text(.primary(", "))
-                    .account(event.creator)
-                    .text(.primary(" and "))
-                    .guestList(
-                        otherGoingText(isGoing: true, event: event),
-                        viewer: viewer,
-                        event: event
-                    )
-                    .text(.primary(" are going •"))
-            } else {
-                builder
-                    .account(viewer)
-                    .text(.primary(" and "))
-                    .account(event.creator)
-                    .text(.primary(" are going •"))
-            }
-        } else {
-            if event.guests.count > 0 {
-                try builder
-                    .account(event.creator)
-                    .text(.primary(" and "))
-                    .guestList(
-                        otherGoingText(isGoing: false, event: event),
-                        viewer: viewer,
-                        event: event
-                    )
-                    .text(.primary(" are going •"))
-            } else {
-                builder
-                    .account(event.creator)
-                    .text(.primary(" is going •"))
-            }
-        }
+            .staticIfElse(
+                condition: isNonCreatorGuest,
+                trueBlock: { sb in
+                    if event.guests.count > 1 {
+                        sb
+                            .account(viewer)
+                            .text(.primary(", "))
+                            .account(event.creator)
+                            .text(.primary(" and "))
+                            .guestList(
+                                otherGoingText(isGoing: true, event: event),
+                                viewer: viewer,
+                                event: event
+                            )
+                            .text(.primary(" are going •"))
+                    } else {
+                        sb
+                            .account(viewer)
+                            .text(.primary(" and "))
+                            .account(event.creator)
+                            .text(.primary(" are going •"))
+                    }
+                },
+                falseBlock: { sb in
+                    if event.guests.count > 0 {
+                        sb
+                            .account(event.creator)
+                            .text(.primary(" and "))
+                            .guestList(
+                                otherGoingText(isGoing: false, event: event),
+                                viewer: viewer,
+                                event: event
+                            )
+                            .text(.primary(" are going •"))
+                    } else {
+                        sb
+                            .account(event.creator)
+                            .text(.primary(" is going •"))
+                    }
+                }
+            )
 
         return builder.build()
     }
@@ -83,14 +92,7 @@ extension AttributedStringBuilder {
         route(.underline(account.username, page: .profile(account), color: .primary))
 	}
 
-	func location(_ location: LocationModel) throws -> AttributedStringBuilder {
-		guard let url = location.appleMapsDeepLink else {
-			throw NSError(domain: "calendarApp", code: 1)
-		}
-        return route(.underline(location.address, destination: url, color: .primary))
-	}
-
-    func guestList(_ text: String, viewer: AccountModel, event: EventModel) throws -> AttributedStringBuilder {
+    func guestList(_ text: String, viewer: AccountModel, event: EventModel) -> AttributedStringBuilder {
         route(.underline(text, page: .guestList(event.guests), color: .primary))
 	}
 }

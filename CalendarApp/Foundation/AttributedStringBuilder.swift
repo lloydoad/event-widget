@@ -148,4 +148,17 @@ class AttributedStringBuilder {
     func action(_ action: Action) -> AttributedStringBuilder {
         append(action: action)
     }
+
+    @discardableResult
+    func staticIfElse(
+        condition: Bool,
+        trueBlock: (AttributedStringBuilder) -> AttributedStringBuilder,
+        falseBlock: (AttributedStringBuilder) -> AttributedStringBuilder
+    ) -> AttributedStringBuilder {
+        if condition {
+            return trueBlock(self)
+        } else {
+            return falseBlock(self)
+        }
+    }
 }

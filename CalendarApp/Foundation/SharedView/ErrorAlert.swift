@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+struct ErrorManager {
+    static func with(message: String) -> Error {
+        NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: message])
+    }
+}
+
 struct ErrorAlert: ViewModifier {
     @Binding var error: Error?
     
