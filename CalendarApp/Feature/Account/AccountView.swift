@@ -26,7 +26,7 @@ struct AccountView: View {
                     ForEach(controlTypes) { controlType in
                         switch controlType {
                         case .profile(let identifier):
-                            ButtonView(title: "profile", identifier: identifier, font: .light, action: {
+                            ButtonView(title: "profile", identifier: identifier.uuidString, font: .light, action: {
                                 let route = DeepLinkParser.Route.push(.profile(account))
                                 let url = try! route.url()
                                 UIApplication.shared.open(url)

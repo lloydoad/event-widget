@@ -54,7 +54,7 @@ class PhoneNumberOnboardingStep: OnboardingStep {
                         } else {
                             ButtonView(
                                 title: "create account",
-                                identifier: createAccountActionUUID,
+                                identifier: createAccountActionUUID.uuidString,
                                 font: .large,
                                 action: { [weak self] in
                                     self?.createAccount(store: store)

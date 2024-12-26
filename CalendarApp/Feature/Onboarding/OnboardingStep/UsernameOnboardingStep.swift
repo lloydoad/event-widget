@@ -32,7 +32,7 @@ struct UsernameOnboardingStep: OnboardingStep {
                 if store.entryText.count >= 3 {
                     ButtonView(
                         title: "save username",
-                        identifier: claimUsernameActionUUID,
+                        identifier: claimUsernameActionUUID.uuidString,
                         font: .light,
                         action: {
                             store.entryText = ""

@@ -16,9 +16,9 @@ struct ButtonView: View {
         self.action = action
     }
 
-    init(title: String, identifier: UUID = UUID(), font: AppFont, action: @escaping () -> Void) {
+    init(title: String, identifier: String, font: AppFont, action: @escaping () -> Void) {
         self.baseStyle = .init(appFont: font)
-        self.action = .bracket(title, uuid: identifier, color: .appTint, action: action)
+        self.action = .bracket(title, identifier: identifier, color: .appTint, action: action)
     }
 
     var body: some View {
@@ -31,7 +31,7 @@ struct ButtonView: View {
             ActionCentralDispatch.shared.register(action: action)
         }
         .onDisappear {
-            ActionCentralDispatch.shared.deregister(identifier: action.identifier)
+            ActionCentralDispatch.shared.deregister(identifier: action.text)
         }
     }
 }

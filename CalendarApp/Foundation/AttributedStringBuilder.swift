@@ -10,12 +10,12 @@ import SwiftUI
 class AttributedStringBuilder {
 	private var fullString = AttributedString()
 
-	struct BaseStyle {
+    struct BaseStyle: Hashable {
 		var appFont: AppFont
 		var strikeThrough: Bool = false
 	}
 
-	struct SegmentStyle {
+    struct SegmentStyle: Hashable {
 		var underline: Bool = false
 		var color: AppColor = .primary
 	}
@@ -56,29 +56,31 @@ class AttributedStringBuilder {
 	}
 
     class Action: Text, Equatable {
-        let identifier: UUID
+        var identifier: String
         var action: () -> Void
 
-        init(_ text: String, uuid: UUID, segmentStyle: SegmentStyle, action: @escaping () -> Void) {
-            self.identifier = uuid
+        init(_ text: String, identifier: String, segmentStyle: SegmentStyle, action: @escaping () -> Void) {
             self.action = action
+            self.identifier = identifier
             super.init(text, segmentStyle: segmentStyle)
         }
 
-        static func bracket(_ text: String, uuid: UUID, color: AppColor, action: @escaping () -> Void) -> Action {
-            Action("[\(text)]", uuid: uuid,
-                             segmentStyle: .init(underline: false, color: color),
-                             action: action)
+        static func bracket(_ text: String, identifier: String, color: AppColor, action: @escaping () -> Void) -> Action {
+            Action("[\(text)]",
+                   identifier: identifier,
+                   segmentStyle: .init(underline: false, color: color),
+                   action: action)
         }
 
-        static func underline(_ text: String, uuid: UUID, color: AppColor, action: @escaping () -> Void) -> Action {
-            Action(text, uuid: uuid,
-                             segmentStyle: .init(underline: true, color: color),
-                             action: action)
+        static func underline(_ text: String, identifier: String, color: AppColor, action: @escaping () -> Void) -> Action {
+            Action(text,
+                   identifier: identifier,
+                   segmentStyle: .init(underline: true, color: color),
+                   action: action)
         }
 
         static func == (lhs: Action, rhs: Action) -> Bool {
-            return lhs.identifier == rhs.identifier
+            return lhs.text == rhs.text
         }
     }
 

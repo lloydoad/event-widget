@@ -16,6 +16,10 @@ struct EventView: View {
 
     @StateObject private var viewModel: EventViewModel = .init()
 
+    let joinActionUUID = UUID()
+    let deleteActionUUID = UUID()
+    let cantGoActionUUID = UUID()
+
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(viewModel.content)
@@ -25,7 +29,7 @@ struct EventView: View {
                 switch viewModel.controls {
                 case .enable(let array):
                     ForEach(array, id: \.title) { control in
-                        ButtonView(title: control.title, font: .light) {
+                        ButtonView(title: control.title, identifier: actionIdentifier(control: control), font: .light) {
                             viewModel.perform(control: control)
                         }
                         .transition(.blurReplace)
@@ -46,6 +50,17 @@ struct EventView: View {
                 event: event,
                 removeEvent: removeEvent
             )
+        }
+    }
+
+    private func actionIdentifier(control: EventViewModel.Control) -> String {
+        switch control {
+        case .joinable:
+            return joinActionUUID.uuidString
+        case .cancellable:
+            return cantGoActionUUID.uuidString
+        case .deletable:
+            return deleteActionUUID.uuidString
         }
     }
 }

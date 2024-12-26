@@ -17,6 +17,9 @@ struct SubscriptionButtonView: View {
     @EnvironmentObject var appSessionStore: AppSessionStore
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
 
+    private let subscribeActionUUID = UUID()
+    private let unsubscribeActionUUID = UUID()
+
     let account: AccountModel
     @Binding var buttonType: ButtonType
 
@@ -28,6 +31,7 @@ struct SubscriptionButtonView: View {
         case .subscribe:
             ButtonView(
                 title: "subscribe",
+                identifier: subscribeActionUUID.uuidString,
                 font: .light,
                 action: {
                     subscribe()
@@ -37,6 +41,7 @@ struct SubscriptionButtonView: View {
         case .unsubscribe:
             ButtonView(
                 title: "unsubscribe",
+                identifier: unsubscribeActionUUID.uuidString,
                 font: .light,
                 action: {
                     unsubscribe()

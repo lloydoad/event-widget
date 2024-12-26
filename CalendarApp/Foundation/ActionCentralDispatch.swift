@@ -16,12 +16,12 @@ class ActionCentralDispatch {
     private let host = "attributedaction"
     private let identifierQueryItemName = "identifier"
 
-    func url(for actionHandler: AttributedStringBuilder.Action) -> URL {
+    func url(for action: AttributedStringBuilder.Action) -> URL {
         var components = URLComponents()
         components.scheme = scheme
         components.host = host
         components.queryItems = [
-            URLQueryItem(name: identifierQueryItemName, value: actionHandler.identifier.uuidString)
+            URLQueryItem(name: identifierQueryItemName, value: action.identifier)
         ]
         return components.url!
     }
@@ -38,11 +38,11 @@ class ActionCentralDispatch {
     }
 
     func register(action: AttributedStringBuilder.Action) {
-        registeredActions[action.identifier.uuidString] = action
+        registeredActions[action.identifier] = action
     }
 
-    func deregister(identifier: UUID) {
-        registeredActions[identifier.uuidString] = nil
+    func deregister(identifier: String) {
+        registeredActions[identifier] = nil
     }
 
     func handle(url: URL) {

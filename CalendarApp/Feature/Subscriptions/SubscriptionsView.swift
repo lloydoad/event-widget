@@ -24,7 +24,7 @@ struct SubscriptionsView: View {
     private var sendInviteAction: AttributedStringBuilder.Action {
         .bracket(
             "send invites",
-            uuid: sendInviteActionID,
+            identifier: sendInviteActionID.uuidString,
             color: .appTint,
             action: {
                 fatalError("NOT IMPLEMENTED")
@@ -50,7 +50,7 @@ struct SubscriptionsView: View {
                                     ActionCentralDispatch.shared.register(action: sendInviteAction)
                                 }
                                 .onDisappear {
-                                    ActionCentralDispatch.shared.deregister(identifier: sendInviteActionID)
+                                    ActionCentralDispatch.shared.deregister(identifier: sendInviteAction.identifier)
                                 }
                         } else {
                             ForEach(accounts, id: \.hashValue) { account in
