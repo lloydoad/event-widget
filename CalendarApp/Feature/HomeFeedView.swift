@@ -54,10 +54,10 @@ struct HomeFeedView: View {
                 }),
             .bracket(
                 "subscribe to more friends",
-                identifier: createNewEventActionIdentifier,
+                identifier: subscribeToFriendsActionIdentifier,
                 color: .secondary,
                 action: {
-                    let route = try! DeepLinkParser.Route.sheet(.subscriptions).url()
+                    let route = try! DeepLinkParser.Route.push(.subscriptions).url()
                     UIApplication.shared.open(route)
                 })
         ]

@@ -34,7 +34,8 @@ class ActionCentralDispatch {
         guard let queryItemIdentifier = queryItems?.first(where: {
             $0.name == identifierQueryItemName
         })?.value else { return nil }
-        return registeredActions[queryItemIdentifier]
+        let action = registeredActions[queryItemIdentifier]
+        return action
     }
 
     func register(action: StringBuilder.Action) {
