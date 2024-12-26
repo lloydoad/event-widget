@@ -10,14 +10,13 @@ import SwiftUI
 struct MainView: View {
     @EnvironmentObject var appSessionStore: AppSessionStore
 
-    var accountWorker: AccountWorking
     var contactSyncWorker: ContactSyncWorking
 
-    @StateObject private var onboardingStore = OnboardingStore()
     @State private var navigationPagePath: [DeepLinkParser.Page] = []
     @State private var sheetPage: DeepLinkParser.Page?
     @State private var error: Error?
-    
+    @State private var onboardingContext = OnboardingContext(stageIdentifier: UsernameOnboardingStage.identifier)
+
     private let deepLinkParser = DeepLinkParser()
 
     var body: some View {
@@ -28,10 +27,10 @@ struct MainView: View {
                         pageView(page)
                     }
             } else {
-                OnboardingView(accountWorker: accountWorker)
+                OnboardingView()
+                    .environmentObject(onboardingContext)
             }
         }
-        .environmentObject(onboardingStore)
         .sheet(item: $sheetPage, content: { page in
             pageView(page)
         })

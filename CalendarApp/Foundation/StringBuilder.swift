@@ -32,6 +32,10 @@ class StringBuilder {
 		static func primary(_ text: String) -> Text {
 			Text(text, segmentStyle: .init(underline: false, color: .primary))
 		}
+
+        static func secondary(_ text: String) -> Text {
+            Text(text, segmentStyle: .init(underline: false, color: .secondary))
+        }
 	}
 
 	class Route: Text {

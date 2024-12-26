@@ -8,34 +8,26 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @EnvironmentObject var onboardingStore: OnboardingStore
-    @EnvironmentObject var dataStoreProvider: DataStoreProvider
-    @EnvironmentObject var appSessionStore: AppSessionStore
+    @EnvironmentObject var context: OnboardingContext
 
-    private var steps: [any OnboardingStep] = [
-        UsernameOnboardingStep(),
-        PhoneNumberOnboardingStep(),
+    private var stages: [any OnboardingStage] = [
+        UsernameOnboardingStage(),
+        PhoneNumberOnboardingStage(),
     ]
-
-    init(accountWorker: AccountWorking) {
-        self.accountWorker = accountWorker
-    }
-    
-    var accountWorker: AccountWorking
 
     var body: some View {
         VStack(spacing: 16) {
             ListTitleView(title: "let's set up your account")
                 .frame(maxWidth: .infinity, alignment: .leading)
-            withAnimation(.easeInOut) {
-                ForEach(steps, id: \.stage) { step in
-                    if step.isApplicable(store: onboardingStore) {
-                        step.body(store: onboardingStore)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
+            ForEach(stages, id: \.identifier) { stage in
+                if stage.isApplicable(context: context) {
+                    stage.body(context: context)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .transition(.blurReplace)
                 }
             }
         }
+        .animation(.easeInOut, value: context.stageIdentifier)
         .padding()
     }
 }
@@ -44,8 +36,8 @@ struct OnboardingView: View {
     @Previewable @State var dataStore: MockDataStore = MockDataStore(followings: [
         AccountModelMocks.lloydUUID: []
     ])
-    OnboardingView(accountWorker: MockAccountWorker())
-        .environmentObject(OnboardingStore())
+    OnboardingView()
+        .environmentObject(OnboardingContext(stageIdentifier: UsernameOnboardingStage.identifier))
         .environmentObject(mockAppSessionStore(account: AccountModelMocks.lloydAccount))
         .environmentObject(DataStoreProvider(dataStore: dataStore))
 }
