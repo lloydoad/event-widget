@@ -105,11 +105,6 @@ struct AccountModelMocks {
 }
 
 class MockDataStore: DataStoring {
-    enum StoreError: Error {
-        case duplicateAccount
-        case duplicatePhoneNumber
-    }
-
     var accounts: [AccountModel]
     var followings: [UUID: [UUID]]
     var events: [EventModel]
@@ -300,12 +295,12 @@ class MockDataStore: DataStoring {
         if accounts.contains(where: {
             $0.uuid == account.uuid
         }) {
-            throw StoreError.duplicateAccount
+            throw ErrorManager.with(message: "This account already exists")
         }
         if accounts.contains(where: {
             isEqualPhoneNumber(lhs: $0.phoneNumber, rhs: account.phoneNumber)
         }) {
-            throw StoreError.duplicatePhoneNumber
+            throw ErrorManager.with(message: "This phone number already exists")
         }
         accounts.append(account)
     }

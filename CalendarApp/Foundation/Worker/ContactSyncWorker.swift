@@ -8,10 +8,6 @@
 import SwiftUI
 import Contacts
 
-enum ContactError: Error {
-    case accessDenied
-}
-
 struct Contact {
     let phoneNumber: String
 }
@@ -39,7 +35,7 @@ class ContactSyncWorker: ContactSyncWorking {
         let task = Task { @MainActor in
             let hasAccess = try await store.requestAccess(for: .contacts)
             guard hasAccess else {
-                throw ContactError.accessDenied
+                throw ErrorManager.with(message: "No access to contacts. Please enable access in Settings")
             }
             return try await fetchContacts()
         }
