@@ -25,9 +25,7 @@ struct OnboardingView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            AttributedStringBuilder(baseStyle: .init(appFont: .navigationTitle))
-                .primaryText("let's set up your account!")
-                .view()
+            ListTitleView(title: "let's set up your account")
                 .frame(maxWidth: .infinity, alignment: .leading)
             withAnimation(.easeInOut) {
                 ForEach(steps, id: \.stage) { step in

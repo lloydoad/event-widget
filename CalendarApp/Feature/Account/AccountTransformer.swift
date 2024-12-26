@@ -13,7 +13,7 @@ struct AccountTransformer {
     func transform(account: AccountModel) -> AttributedString {
         let baseStyle = AttributedStringBuilder.BaseStyle(appFont: .large)
         let builder = AttributedStringBuilder(baseStyle: baseStyle)
-        builder.primaryText("\(account.username), \(account.phoneNumber)")
+        builder.text(.primary("\(account.username), \(account.phoneNumber)"))
         let content = builder.build()
         return content
     }

@@ -29,8 +29,8 @@ struct HomeFeedView: View {
             ListTitleView(title: title)
             EventListView(eventListFetcher: eventListFetcher)
             VStack {
-                ForEach(buttons, id: \.identifier) { button in
-                    Text(button.asAttributedString)
+                ForEach(actions, id: \.identifier) { action in
+                    ButtonView(baseStyle: .init(appFont: .large), action: action)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(4)
                 }
@@ -39,21 +39,27 @@ struct HomeFeedView: View {
 		.padding(.horizontal, 16)
 		.padding(.bottom, 16)
 	}
-    
-    private var buttons: [ButtonModel] {
+
+    private let createNewEventActionIdentifier: String = UUID().uuidString
+    private let subscribeToFriendsActionIdentifier: String = UUID().uuidString
+    private var actions: [AttributedStringBuilder.Action] {
         [
-            ButtonModel(
-                identifier: UUID().uuidString,
-                title: "create new event",
+            .bracket(
+                "create new event",
+                identifier: createNewEventActionIdentifier,
                 color: .secondary,
-                route: .sheet(.composer)
-            ),
-            ButtonModel(
-                identifier: UUID().uuidString,
-                title: "subscribe to more friends",
+                action: {
+                    let route = try! DeepLinkParser.Route.sheet(.composer).url()
+                    UIApplication.shared.open(route)
+                }),
+            .bracket(
+                "subscribe to more friends",
+                identifier: createNewEventActionIdentifier,
                 color: .secondary,
-                route: .push(.subscriptions)
-            ),
+                action: {
+                    let route = try! DeepLinkParser.Route.sheet(.subscriptions).url()
+                    UIApplication.shared.open(route)
+                })
         ]
     }
 

@@ -34,25 +34,25 @@ class AttributedStringBuilder {
 		}
 	}
 
-    @available(*, deprecated, renamed: "Action", message: "should be removed")
-	class Button: Text {
+	class Route: Text {
 		var destination: URL
-		init(_ text: String, segmentStyle: SegmentStyle, destination: URL) {
+
+        private init(_ text: String, segmentStyle: SegmentStyle, destination: URL) {
 			self.destination = destination
 			super.init(text, segmentStyle: segmentStyle)
 		}
 
-		static func bracket(_ text: String, destination: URL, color: AppColor) -> Button {
-			Button("[\(text)]",
-				   segmentStyle: .init(underline: false, color: color),
-				   destination: destination)
+        static func underline(_ text: String, page: DeepLinkParser.Page, color: AppColor) -> Route {
+            Route(text,
+                  segmentStyle: .init(underline: true, color: color),
+                  destination: try! DeepLinkParser.Route.push(page).url())
 		}
 
-		static func underline(_ text: String, destination: URL, color: AppColor) -> Button {
-			Button(text,
-				   segmentStyle: .init(underline: true, color: color),
-				   destination: destination)
-		}
+        static func underline(_ text: String, destination: URL, color: AppColor) -> Route {
+            Route(text,
+                  segmentStyle: .init(underline: true, color: color),
+                  destination: destination)
+        }
 	}
 
     class Action: Text, Equatable {
@@ -89,23 +89,19 @@ class AttributedStringBuilder {
 		self.baseStyle = baseStyle
 	}
 
-	@discardableResult
 	private func appendText(_ text: Text) -> AttributedStringBuilder {
 		fullString += get(text: text.text, segmentStyle: text.segmentStyle)
 		return self
 	}
 
-    @available(*, deprecated, renamed: "append(action:)", message: "will be removed")
-	@discardableResult
-	private func appendButton(_ button: Button) -> AttributedStringBuilder {
-		var segment = get(text: button.text, segmentStyle: button.segmentStyle)
-		segment.link = button.destination
-		segment.foregroundColor = button.segmentStyle.color.asUIColor
+    private func append(route: Route) -> AttributedStringBuilder {
+		var segment = get(text: route.text, segmentStyle: route.segmentStyle)
+		segment.link = route.destination
+		segment.foregroundColor = route.segmentStyle.color.asUIColor
 		fullString += segment
 		return self
 	}
 
-    @discardableResult
     private func append(action: Action) -> AttributedStringBuilder {
         var segment = get(text: action.text, segmentStyle: action.segmentStyle)
         segment.link = ActionCentralDispatch.shared.url(for: action)
@@ -138,38 +134,18 @@ class AttributedStringBuilder {
         SwiftUI.Text(build())
     }
 
-	@discardableResult
-	func primaryText(_ text: String) -> AttributedStringBuilder {
-		self.appendText(.primary(text))
-	}
-    
+    @discardableResult
     func text(_ text: Text) -> AttributedStringBuilder {
         return appendText(text)
     }
 
-	@discardableResult
-	func bracket(_ text: String, deeplink: DeepLinkParser.Route, color: AppColor) throws -> AttributedStringBuilder {
-		appendButton(.bracket(text, destination: try deeplink.url(), color: color))
-	}
-    
     @discardableResult
-    func bracket(_ text: String, fallbackURL: URL, deeplink: DeepLinkParser.Route, color: AppColor) -> AttributedStringBuilder {
-        let url = (try? deeplink.url()) ?? fallbackURL
-        return appendButton(.bracket(text, destination: url, color: color))
+    func route(_ route: Route) -> AttributedStringBuilder {
+        append(route: route)
     }
-
-	@discardableResult
-	func underline(_ text: String, deeplink: DeepLinkParser.Route, color: AppColor) throws -> AttributedStringBuilder {
-		appendButton(.underline(text, destination: try deeplink.url(), color: color))
-	}
-
-	@discardableResult
-	func underline(_ text: String, url: URL, color: AppColor) throws -> AttributedStringBuilder {
-		appendButton(.underline(text, destination: url, color: color))
-	}
 
     @discardableResult
     func action(_ action: Action) -> AttributedStringBuilder {
-        return append(action: action)
+        append(action: action)
     }
 }

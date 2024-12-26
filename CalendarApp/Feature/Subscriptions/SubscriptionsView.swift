@@ -29,7 +29,7 @@ struct SubscriptionsView: View {
                     case .success(let accounts):
                         if accounts.isEmpty {
                             AttributedStringBuilder(baseStyle: .init(appFont: .light))
-                                .primaryText("looks like your contacts aren't here yet")
+                                .text(.primary("looks like your contacts aren't here yet"))
                                 .view()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .transition(.blurReplace)

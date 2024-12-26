@@ -48,7 +48,7 @@ class PhoneNumberOnboardingStep: OnboardingStep {
                         if store.isPerformingActivity {
                             ProgressView()
                             AttributedStringBuilder(baseStyle: .init(appFont: .large))
-                                .primaryText("creating account ")
+                                .text(.primary("creating account "))
                                 .view()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         } else {

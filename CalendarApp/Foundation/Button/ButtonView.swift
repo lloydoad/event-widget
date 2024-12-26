@@ -11,7 +11,7 @@ struct ButtonView: View {
     let baseStyle: AttributedStringBuilder.BaseStyle
     let action: AttributedStringBuilder.Action
 
-    private init(baseStyle: AttributedStringBuilder.BaseStyle, action: AttributedStringBuilder.Action) {
+    init(baseStyle: AttributedStringBuilder.BaseStyle, action: AttributedStringBuilder.Action) {
         self.baseStyle = baseStyle
         self.action = action
     }
