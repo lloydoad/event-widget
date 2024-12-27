@@ -74,7 +74,7 @@ struct SubscriptionsView: View {
             }
         }
     }
-    
+
     private func fetchFollowingAccounts(viewer: AccountModel) async {
         do {
             let contacts = try await contactSyncWorker.sync()

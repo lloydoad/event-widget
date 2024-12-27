@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 struct ErrorAlert: ViewModifier {
     @Binding var error: Error?
     
