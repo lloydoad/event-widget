@@ -1,2 +1,2 @@
-SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvenFvY2twYndweGtncndneWVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUyNTM5NTYsImV4cCI6MjA1MDgyOTk1Nn0.41sYnPXprk0BiDAjwUQYkGNx_DoZ6NmwInhgshe6m3w
-SUPABASE_URL = https:/$()/xozqockpbwpxkgrwgyef.supabase.co
+SUPABASE_KEY = <key>
+SUPABASE_URL = <url>
