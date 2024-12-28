@@ -27,11 +27,19 @@ struct HomeFeedView: View {
 		VStack {
             ListTitleView(title: title)
             EventListView(eventListFetcher: eventListFetcher)
-            VStack {
+            VStack(spacing: 8) {
                 ForEach(actions, id: \.identifier) { action in
                     ButtonView(baseStyle: .init(appFont: .large), action: action)
                         .frame(maxWidth: .infinity, alignment: .trailing)
-                        .padding(4)
+                }
+                if let userAccount = appSessionStore.userAccount {
+                    StringBuilder(baseStyle: .init(appFont: .large))
+                        .route(.bracket(
+                            "my events",
+                            page: .profile(userAccount),
+                            color: .secondary))
+                        .view()
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
 		}
