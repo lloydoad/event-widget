@@ -16,14 +16,14 @@ class SupabaseDataStore: DataStoring {
             let key = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_KEY") as? String,
             !key.isEmpty
         else {
-            throw ErrorManager.with(message: "Server Key not found")
+            throw ErrorManager.with(loggedMessage: "Server Key not found")
         }
         guard
             let urlValue = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String,
             let url = URL(string: urlValue),
             url.host != nil
         else {
-            throw ErrorManager.with(message: "Server URL not found")
+            throw ErrorManager.with(loggedMessage: "Server URL not found")
         }
         client = SupabaseClient(supabaseURL: url, supabaseKey: key)
     }

@@ -15,7 +15,8 @@ struct MainView: View {
     @State private var navigationPagePath: [DeepLinkParser.Page] = []
     @State private var sheetPage: DeepLinkParser.Page?
     @State private var error: Error?
-    @State private var onboardingContext = OnboardingContext(stageIdentifier: UsernameOnboardingStage.identifier)
+    @State private var onboardingContext = OnboardingContext(
+        stageIdentifier: AppleAuthOnboardingStage.identifier)
 
     private let deepLinkParser = DeepLinkParser()
 

@@ -35,7 +35,11 @@ class ContactSyncWorker: ContactSyncWorking {
         let task = Task { @MainActor in
             let hasAccess = try await store.requestAccess(for: .contacts)
             guard hasAccess else {
-                throw ErrorManager.with(message: "No access to contacts. Please enable access in Settings")
+                throw ErrorManager
+                    .with(
+                        loggedMessage: "No access to contacts",
+                        appMessage: "No access to contacts. Please enable access in Settings"
+                    )
             }
             return try await fetchContacts()
         }

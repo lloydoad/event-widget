@@ -22,7 +22,7 @@ struct ModelParser {
             encoder.outputFormatting = .prettyPrinted
             let jsonData = try encoder.encode(value)
             guard let jsonString = String(data: jsonData, encoding: .utf8) else {
-                throw ErrorManager.with(message: "unable to convert json data to string")
+                throw ErrorManager.with(loggedMessage: "unable to convert json data to string")
             }
             return jsonString
         } catch {
@@ -35,7 +35,7 @@ struct ModelParser {
         do {
             let decoder = JSONDecoder()
             guard let jsonData = jsonString.data(using: .utf8) else {
-                throw ErrorManager.with(message: "unable to convert json string to data")
+                throw ErrorManager.with(loggedMessage: "unable to convert json string to data")
             }
             return try decoder.decode(type, from: jsonData)
         } catch {

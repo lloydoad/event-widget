@@ -12,7 +12,7 @@ fileprivate let iso8601DateFormatter = ISO8601DateFormatter()
 extension DateFormatter {
     func fromIso8601(_ string: String) throws -> Date {
         guard let date = iso8601DateFormatter.date(from: string) else {
-            throw ErrorManager.with(message: "invalid ISO8601 date \(string)")
+            throw ErrorManager.with(loggedMessage: "invalid ISO8601 date \(string)")
         }
         return date
     }

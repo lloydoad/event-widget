@@ -12,7 +12,7 @@ struct EventTransformer {
 
     func expiredContent(event: EventModel) throws -> AttributedString {
         guard let locationURL = event.location.appleMapsDeepLink else {
-            throw ErrorManager.with(message: "Could not create maps for \(event.location.address)")
+            throw ErrorManager.with(loggedMessage: "Could not create maps for \(event.location.address)")
         }
         let timeValue = DateFormatter().formattedRange(start: event.startDate, end: event.endDate)
         let baseStyle = StringBuilder.BaseStyle(appFont: .light, strikeThrough: true)
@@ -26,7 +26,7 @@ struct EventTransformer {
 
     func content(event: EventModel) throws -> AttributedString {
         guard let locationURL = event.location.appleMapsDeepLink else {
-            throw ErrorManager.with(message: "Could not create maps for \(event.location.address)")
+            throw ErrorManager.with(loggedMessage: "Could not create maps for \(event.location.address)")
         }
 
         let timeValue = DateFormatter().formattedRange(start: event.startDate, end: event.endDate)

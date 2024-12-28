@@ -25,7 +25,7 @@ struct ErrorAlert: ViewModifier {
                 .font(AppFont.light.asFont)
             },
             message: { error in
-                Text(error.localizedDescription)
+                Text(getAppMessage(error))
                     .font(AppFont.light.asFont)
                     .onAppear {
                         logError(error)
@@ -34,12 +34,23 @@ struct ErrorAlert: ViewModifier {
         )
     }
 
+    private func getAppMessage(_ error: Error) -> String {
+        let nsError = error as NSError
+        if let appMessage = nsError.userInfo[ErrorManager.appMessageKey] as? String {
+            return appMessage
+        } else {
+            return "Please try again later"
+        }
+    }
+
     private func logError(_ error: Error) {
         let nsError = error as NSError
-        guard
-            let failureReason = nsError.userInfo[NSLocalizedFailureReasonErrorKey] as? String
-        else { return }
-        SystemLogger.error("\(failureReason)")
+        if let failureReason = nsError.userInfo[ErrorManager.loggedMessageKey] as? String {
+            SystemLogger.error("\(failureReason)")
+        } else {
+            SystemLogger.error("\(error.localizedDescription)")
+        }
+
     }
 }
 

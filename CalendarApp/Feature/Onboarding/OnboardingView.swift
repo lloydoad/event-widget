@@ -11,8 +11,9 @@ struct OnboardingView: View {
     @EnvironmentObject var context: OnboardingContext
 
     private var stages: [any OnboardingStage] = [
+        AppleAuthOnboardingStage(),
         UsernameOnboardingStage(),
-        PhoneNumberOnboardingStage(),
+        PhoneNumberOnboardingStage()
     ]
 
     var body: some View {
