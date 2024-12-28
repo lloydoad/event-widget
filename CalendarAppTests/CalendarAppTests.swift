@@ -13,13 +13,17 @@ import Foundation
 struct CalendarAppTests {
 
     @Test func example() async throws {
-        let dataStore = SupabaseDataStore()
-        let formatter = PhoneNumberFormatter()
-        print(formatter.format("3333333333"))
-        print(formatter.removeFormatting("(333) 333-3333"))
-        print(formatter.removeFormatting("(333)-333-3333"))
-        print(formatter.removeFormatting("(333)-333-3333"))
-        print(formatter.removeFormatting("333-333-3333"))
+        let apiKey = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_KEY") as? String
+        let apiUrl = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String
+
+        print(apiKey, apiUrl)
+//        let dataStore = SupabaseDataStore()
+//        let formatter = PhoneNumberFormatter()
+//        print(formatter.format("3333333333"))
+//        print(formatter.removeFormatting("(333) 333-3333"))
+//        print(formatter.removeFormatting("(333)-333-3333"))
+//        print(formatter.removeFormatting("(333)-333-3333"))
+//        print(formatter.removeFormatting("333-333-3333"))
 //        let accounts = try await dataStore.getAccounts(
 //            with: ["(333)-333-3333"],
 //            and: [UUID(uuidString: "daae79a4-27fc-485a-9fe2-ef95b8b43498")!]

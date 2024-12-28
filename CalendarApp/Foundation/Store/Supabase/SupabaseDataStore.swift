@@ -9,10 +9,24 @@ import SwiftUI
 import Supabase
 
 class SupabaseDataStore: DataStoring {
-    private let client = SupabaseClient(
-        supabaseURL: URL(string: "")!,
-        supabaseKey: ""
-    )
+    private let client: SupabaseClient
+
+    init() throws {
+        guard
+            let key = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_KEY") as? String,
+            !key.isEmpty
+        else {
+            throw ErrorManager.with(message: "Server Key not found")
+        }
+        guard
+            let urlValue = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String,
+            let url = URL(string: urlValue),
+            url.host != nil
+        else {
+            throw ErrorManager.with(message: "Server URL not found")
+        }
+        client = SupabaseClient(supabaseURL: url, supabaseKey: key)
+    }
 
     func create(account: AccountModel) async throws {
         try await client

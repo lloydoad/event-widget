@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct ErrorManager {
-    static func with(message: String) -> Error {
-        NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: message])
+    static func with(message: String, description: String = "Please try again later") -> Error {
+        NSError(domain: "", code: 0, userInfo: [
+            NSLocalizedFailureReasonErrorKey: message,
+            NSLocalizedDescriptionKey: description
+        ])
     }
 }
