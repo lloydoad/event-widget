@@ -65,13 +65,9 @@ class AccountViewModel: ObservableObject, Identifiable {
         self.subscriptionButtonType = .loading
         currentTask = Task {
             do {
-                let following = try await dataStore.getFollowingAccounts(userAccount: userAccount)
+                let isFollowing = try await dataStore.isFollowing(follower: userAccount, following: account)
                 await MainActor.run {
-                    if following.contains(account.uuid) {
-                        self.subscriptionButtonType = .unsubscribe
-                    } else {
-                        self.subscriptionButtonType = .subscribe
-                    }
+                    self.subscriptionButtonType = isFollowing ? .unsubscribe : .subscribe
                 }
             } catch {
                 await MainActor.run {

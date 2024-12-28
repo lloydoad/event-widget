@@ -57,7 +57,7 @@ struct PhoneNumberOnboardingStageView: View {
         currentTask = Task {
             do {
                 let newAccount = AccountModel(uuid: .init(), username: username, phoneNumber: phoneNumber)
-                try await dataStoreProvider.dataStore.save(account: newAccount)
+                try await dataStoreProvider.dataStore.create(account: newAccount)
                 showProgress = false
                 appSessionStore.userAccount = newAccount
             } catch {

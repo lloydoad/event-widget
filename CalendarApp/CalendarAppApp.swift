@@ -10,8 +10,8 @@ import SwiftUI
 @main
 struct CalendarAppApp: App {
     @StateObject private var appSessionStore = AppSessionStore()
-    @StateObject private var dataStoreProvider = DataStoreProvider(dataStore: MockDataStore()) // TODO: Replace with network store
-    
+    @StateObject private var dataStoreProvider = DataStoreProvider(dataStore: SupabaseDataStore())
+
     private var contactSyncWorker = ContactSyncWorker()
 
     var body: some Scene {

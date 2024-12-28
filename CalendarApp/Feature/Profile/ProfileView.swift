@@ -54,13 +54,12 @@ struct ProfileView: View {
         guard account != userAccount else { return }
         Task {
             do {
-                let following = try await dataStoreProvider
-                    .dataStore
-                    .getFollowingAccounts(userAccount: userAccount)
-                if following.contains(account.uuid) {
-                    subscriptionButtonType = .unsubscribe
-                } else {
-                    subscriptionButtonType = .subscribe
+                let isFollowing = try await dataStoreProvider.dataStore.isFollowing(
+                    follower: userAccount,
+                    following: account
+                )
+                await MainActor.run {
+                    self.subscriptionButtonType = isFollowing ? .unsubscribe : .subscribe
                 }
             } catch {
                 self.error = error

@@ -18,8 +18,7 @@ struct HomeFeedView: View {
         func fetchLatestData() async throws -> [EventModel] {
             guard let viewingAccount = appSessionStore.userAccount else { return [] }
             let dataStore = dataStoreProvider.dataStore
-            let followingAccounts = try await dataStore.getFollowingAccounts(userAccount: viewingAccount)
-            let events = try await dataStore.getEvents(viewing: viewingAccount, following: followingAccounts)
+            let events = try await dataStore.getEventFeed(viewing: viewingAccount)
             return events
         }
     }

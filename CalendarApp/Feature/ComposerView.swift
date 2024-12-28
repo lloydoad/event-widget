@@ -93,7 +93,7 @@ struct ComposerView: View {
         isLoading = true
         Task {
             do {
-                try await dataStoreProvider.dataStore.addEvent(event: validatedEvent)
+                _ = try await dataStoreProvider.dataStore.create(event: validatedEvent)
                 dismiss()
                 isLoading = false
             } catch {

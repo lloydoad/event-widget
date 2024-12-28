@@ -79,9 +79,8 @@ struct SubscriptionsView: View {
         do {
             let contacts = try await contactSyncWorker.sync()
             let dataStore = dataStoreProvider.dataStore
-            let following = try await dataStore.getFollowingAccounts(userAccount: viewer)
             let accounts = try await dataStore
-                .getAccounts(with: contacts.map(\.phoneNumber), and: following)
+                .getSubscriptionFeed(viewer: viewer, localPhoneNumbers: contacts.map(\.phoneNumber))
                 .sorted()
             model = .success(accounts)
         } catch {

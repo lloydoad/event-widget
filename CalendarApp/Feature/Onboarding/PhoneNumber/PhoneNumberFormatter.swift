@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class PhoneNumberFormatter {
+struct PhoneNumberFormatter {
     func format(_ number: String) -> String {
         let digits = number.filter { $0.isNumber }
         var result = ""
@@ -28,7 +28,11 @@ class PhoneNumberFormatter {
         }
         return result
     }
-    
+
+    func removeFormatting(_ number: String) -> String {
+        number.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
+    }
+
     func isValid(_ number: String) -> Bool {
         let digits = number.filter { $0.isNumber }
         return digits.count == 10

@@ -7,7 +7,20 @@
 
 import Foundation
 
+fileprivate let iso8601DateFormatter = ISO8601DateFormatter()
+
 extension DateFormatter {
+    func fromIso8601(_ string: String) throws -> Date {
+        guard let date = iso8601DateFormatter.date(from: string) else {
+            throw ErrorManager.with(message: "invalid ISO8601 date \(string)")
+        }
+        return date
+    }
+
+    func toIso8601(_ date: Date) -> String {
+        iso8601DateFormatter.string(from: date)
+    }
+
 	func formattedRange(start: Date, end: Date) -> String {
 		dateFormat = "h:mma" // 12-hour format with am/pm
 		let startTime = string(from: start).lowercased()

@@ -54,14 +54,14 @@ struct SubscriptionButtonView: View {
     private func subscribe() {
         guard let userAccount = appSessionStore.userAccount else { return }
         performRequest(request: {
-            try await dataStoreProvider.dataStore.addFollowing(account: userAccount, following: account)
+            try await dataStoreProvider.dataStore.follow(follower: userAccount, following: account)
         }, finalType: .unsubscribe)
     }
 
     private func unsubscribe() {
         guard let userAccount = appSessionStore.userAccount else { return }
         performRequest(request: {
-            try await dataStoreProvider.dataStore.removeFollowing(account: userAccount, following: account)
+            try await dataStoreProvider.dataStore.unfollow(follower: userAccount, following: account)
         }, finalType: .subscribe)
     }
 
