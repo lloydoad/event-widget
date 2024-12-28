@@ -59,3 +59,6 @@ injectionforxcode/
 *.code-workspace
 .history/
 
+# Secrets
+DatabaseConfig.xcconfig
+CalendarApp/DatabaseConfig.xcconfig
