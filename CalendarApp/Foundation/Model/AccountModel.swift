@@ -72,3 +72,21 @@ extension AccountModel {
         )
     }
 }
+
+extension AccountModel {
+    struct RealtimeCreateRequest: Codable {
+        let p_account_id: UUID
+        let p_apple_id: String
+        let p_phone_number: String
+        let p_username: String
+    }
+
+    func realtimeCreateRequest(identifier: String) -> RealtimeCreateRequest {
+        .init(
+            p_account_id: uuid,
+            p_apple_id: identifier,
+            p_phone_number: phoneNumber,
+            p_username: username
+        )
+    }
+}

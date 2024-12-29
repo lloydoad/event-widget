@@ -10,6 +10,7 @@ import Foundation
 
 extension SupabaseClient {
     enum Table: String {
+        case apple_identifiers
         case accounts
         case follows
         case events

@@ -49,6 +49,7 @@ struct PhoneNumberOnboardingStageView: View {
     @State private var currentTask: Task<Void, Error>? = nil
     func createAccount() {
         guard let username = context.savedUsername else { return }
+        guard let identifier = context.userIdentifier else { return }
         let phoneNumber = entryText
 
         showProgress = true
@@ -57,7 +58,7 @@ struct PhoneNumberOnboardingStageView: View {
         currentTask = Task {
             do {
                 let newAccount = AccountModel(uuid: .init(), username: username, phoneNumber: phoneNumber)
-                try await dataStoreProvider.dataStore.create(account: newAccount)
+                try await dataStoreProvider.dataStore.create(account: newAccount, identifier: identifier)
                 showProgress = false
                 appSessionStore.userAccount = newAccount
             } catch {

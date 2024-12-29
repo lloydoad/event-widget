@@ -296,7 +296,7 @@ class MockDataStore: DataStoring {
         followers[follower.uuid] = newList
     }
 
-    func create(account: AccountModel) async throws {
+    func create(account: AccountModel, identifier: String) async throws {
         try await Task.sleep(nanoseconds: 2_500_000_000) // 2.5 second delay
         if accounts.contains(where: {
             $0.uuid == account.uuid

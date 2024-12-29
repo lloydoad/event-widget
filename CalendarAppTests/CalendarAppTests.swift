@@ -13,10 +13,9 @@ import Foundation
 struct CalendarAppTests {
 
     @Test func example() async throws {
-//        let apiKey = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_KEY") as? String
-//        let apiUrl = Bundle.main.object(forInfoDictionaryKey: "SUPABASE_URL") as? String
-//
-//        print(apiKey, apiUrl)
+        let datastore = try SupabaseDataStore()
+        let testAccount = AccountModel(uuid: UUID(), username: "agatha", phoneNumber: "9119119191")
+        try await datastore.create(account: testAccount, identifier: "agatha-all-along-disney")
     }
 
 }

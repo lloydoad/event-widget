@@ -10,6 +10,7 @@ import SwiftUI
 
 enum SupabaseColumn {
     case fullEvent
+    case accountFromAppleID
 
     var stringValue: String {
         switch self {
@@ -22,6 +23,14 @@ enum SupabaseColumn {
                 creator:creator_id(id, username, phone_number),
                 location:location_id(address, city, state),
                 guests:event_guests(guest:guest_id(id, username, phone_number))
+            """
+        case .accountFromAppleID:
+            """
+            account:account_id (
+                id,
+                username,
+                phone_number
+            )
             """
         }
     }

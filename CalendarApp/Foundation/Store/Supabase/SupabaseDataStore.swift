@@ -29,15 +29,22 @@ class SupabaseDataStore: DataStoring {
     }
 
     func getAccount(appleUserIdentifier: String) async throws -> AccountModel? {
-        try await Task.sleep(nanoseconds: 290_000_000)
-        // TODO: complete
-        return nil
+        struct Response: Codable {
+            let account: AccountModel.Realtime
+        }
+        let response: Response = try await client
+            .from(.apple_identifiers)
+            .select(.accountFromAppleID)
+            .eq("apple_id", value: appleUserIdentifier)
+            .single()
+            .execute()
+            .value
+        return response.account.model
     }
 
-    func create(account: AccountModel) async throws {
+    func create(account: AccountModel, identifier: String) async throws {
         try await client
-            .from(.accounts)
-            .insert(account.realtime)
+            .rpc("create_account_with_apple", params: account.realtimeCreateRequest(identifier: identifier))
             .execute()
     }
 
