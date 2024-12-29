@@ -29,17 +29,16 @@ class SupabaseDataStore: DataStoring {
     }
 
     func getAccount(appleUserIdentifier: String) async throws -> AccountModel? {
-        struct Response: Codable {
+        struct SelectResponse: Codable {
             let account: AccountModel.Realtime
         }
-        let response: Response = try await client
+        let response: [SelectResponse] = try await client
             .from(.apple_identifiers)
             .select(.accountFromAppleID)
             .eq("apple_id", value: appleUserIdentifier)
-            .single()
             .execute()
             .value
-        return response.account.model
+        return response.first?.account.model
     }
 
     func create(account: AccountModel, identifier: String) async throws {
