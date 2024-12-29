@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Contacts
 
 struct SubscriptionsView: View {
     private enum Model: Equatable {
@@ -75,15 +76,27 @@ struct SubscriptionsView: View {
         }
     }
 
+    private func getContacts() async -> [Contact] {
+        do {
+            return try await contactSyncWorker.sync()
+        } catch {
+            Task { @MainActor in
+                self.error = error
+            }
+            return []
+        }
+    }
+
     private func fetchFollowingAccounts(viewer: AccountModel) async {
         do {
-            let contacts = try await contactSyncWorker.sync()
+            let contacts = await getContacts()
             let dataStore = dataStoreProvider.dataStore
             let accounts = try await dataStore
                 .getSubscriptionFeed(viewer: viewer, localPhoneNumbers: contacts.map(\.phoneNumber))
                 .sorted()
             model = .success(accounts)
         } catch {
+
             self.error = error
         }
     }

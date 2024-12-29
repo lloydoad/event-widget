@@ -33,15 +33,23 @@ class ContactSyncWorker: ContactSyncWorking {
     func sync() async throws -> [Contact] {
         currentTask?.cancel()
         let task = Task { @MainActor in
-            let hasAccess = try await store.requestAccess(for: .contacts)
-            guard hasAccess else {
+            do {
+                let hasAccess = try await store.requestAccess(for: .contacts)
+                guard hasAccess else {
+                    throw ErrorManager
+                        .with(
+                            loggedMessage: "No access to contacts",
+                            appMessage: "No access to contacts. Please enable access in Settings"
+                        )
+                }
+                return try await fetchContacts()
+            } catch {
                 throw ErrorManager
                     .with(
-                        loggedMessage: "No access to contacts",
+                        loggedMessage: error.localizedDescription,
                         appMessage: "No access to contacts. Please enable access in Settings"
                     )
             }
-            return try await fetchContacts()
         }
         currentTask = task
         return try await task.value
