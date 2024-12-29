@@ -5,7 +5,7 @@
 //  Created by Lloyd Dapaah on 12/20/24.
 //
 
-import SwiftUI
+import Foundation
 
 protocol AccountDataStoring {
     func create(account: AccountModel, identifier: String) async throws

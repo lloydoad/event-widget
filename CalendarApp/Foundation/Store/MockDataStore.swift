@@ -5,7 +5,7 @@
 //  Created by Lloyd Dapaah on 12/26/24.
 //
 
-import SwiftUI
+import Foundation
 
 struct EventModelMocks {
     static func event(

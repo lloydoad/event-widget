@@ -5,7 +5,7 @@
 //  Created by Lloyd Dapaah on 12/19/24.
 //
 
-import SwiftUI
+import Foundation
 
 class AppSessionStore: ObservableObject {
     @Published var userAccount: AccountModel? //= AccountModelMocks.lloydAccount

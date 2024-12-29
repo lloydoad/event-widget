@@ -5,8 +5,8 @@
 //  Created by Lloyd Dapaah on 12/28/24.
 //
 
-import Supabase
 import Foundation
+import Supabase
 
 extension SupabaseClient {
     enum Table: String {

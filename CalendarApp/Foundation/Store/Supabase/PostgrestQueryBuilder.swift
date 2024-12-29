@@ -5,8 +5,8 @@
 //  Created by Lloyd Dapaah on 12/28/24.
 //
 
+import Foundation
 import Supabase
-import SwiftUI
 
 enum SupabaseColumn {
     case fullEvent
