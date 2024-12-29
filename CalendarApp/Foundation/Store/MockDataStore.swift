@@ -311,6 +311,11 @@ class MockDataStore: DataStoring {
         accounts.append(account)
     }
 
+    func getAccount(appleUserIdentifier: String) async throws -> AccountModel? {
+        try await Task.sleep(nanoseconds: 290_000_000)
+        return AccountModelMocks.lloydAccount
+    }
+
     private func isEqualPhoneNumber(lhs: String, rhs: String) -> Bool {
         lhs.filter(\.isNumber) == rhs.filter(\.isNumber)
     }

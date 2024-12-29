@@ -37,6 +37,9 @@ struct CalendarAppApp: App {
             .onAppear {
                 setupDatabase()
             }
+            .onChange(of: appSessionStore.userAccount) { _, newValue in
+                appSessionStore.storeUserAccountToDefaults()
+            }
 		}
     }
 

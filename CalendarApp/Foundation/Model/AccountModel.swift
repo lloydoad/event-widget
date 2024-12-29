@@ -47,3 +47,28 @@ extension AccountModel {
         .init(model: self)
     }
 }
+
+extension AccountModel {
+    func toPlistDictionary() -> [String: Any] {
+        return [
+            "uuid": uuid.uuidString,
+            "username": username,
+            "phoneNumber": phoneNumber
+        ]
+    }
+
+    static func fromPlistDictionary(_ dict: [String: Any]) -> AccountModel? {
+        guard
+            let uuidString = dict["uuid"] as? String,
+            let uuid = UUID(uuidString: uuidString),
+            let username = dict["username"] as? String,
+            let phoneNumber = dict["phoneNumber"] as? String
+        else { return nil }
+
+        return AccountModel(
+            uuid: uuid,
+            username: username,
+            phoneNumber: phoneNumber
+        )
+    }
+}

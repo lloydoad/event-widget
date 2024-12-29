@@ -16,6 +16,10 @@ struct UsernameOnboardingStage: OnboardingStage {
         "enter_username"
     }
 
+    var personalizedTitle: String? {
+        "🔖 what should we call you?"
+    }
+
     private let claimUsernameActionUUID = UUID()
     @State private var entryText: String = ""
 
@@ -27,6 +31,6 @@ struct UsernameOnboardingStage: OnboardingStage {
     }
 
     func isApplicable(context: OnboardingContext) -> Bool {
-        context.stageIdentifier == Self.identifier && context.savedUsername == nil
+        context.stageIdentifier == Self.identifier && context.savedUsername == nil && context.userIdentifier != nil
     }
 }

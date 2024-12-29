@@ -16,6 +16,10 @@ struct PhoneNumberOnboardingStage: OnboardingStage {
         Self.identifier
     }
 
+    var personalizedTitle: String? {
+        "📱 add phone number for making connections"
+    }
+
     func body(context: OnboardingContext) -> AnyView {
         AnyView(
             PhoneNumberOnboardingStageView()

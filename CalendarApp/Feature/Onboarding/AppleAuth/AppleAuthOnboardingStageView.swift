@@ -8,6 +8,8 @@
 import SwiftUI
 import AuthenticationServices
 
+
+
 struct AppleAuthOnboardingStageView: View {
     @EnvironmentObject var context: OnboardingContext
     @Environment(\.colorScheme) var colorScheme: ColorScheme
@@ -35,11 +37,7 @@ struct AppleAuthOnboardingStageView: View {
         case .success(let authorization):
             if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
                 context.userIdentifier = appleIDCredential.user
-                // TODO: make network request if user exists
-                // go to account checking stage
-                // if account exists for user identifier, store it in app session
-                // otherwise setup account
-                context.stageIdentifier = UsernameOnboardingStage.identifier
+                context.stageIdentifier = AccountMappingStage.identifier
             } else {
                 self.error = ErrorManager.with(
                     loggedMessage: "unable to retrieve apple ID credential",

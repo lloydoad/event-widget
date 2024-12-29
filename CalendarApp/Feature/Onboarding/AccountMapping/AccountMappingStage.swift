@@ -1,5 +1,5 @@
 //
-//  AppleAuthOnboardingStage.swift
+//  AccountMappingStage.swift
 //  CalendarApp
 //
 //  Created by Lloyd Dapaah on 12/28/24.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct AppleAuthOnboardingStage: OnboardingStage {
+struct AccountMappingStage: OnboardingStage {
     static var identifier: String {
-        "sign_in_with_apple"
+        "map_identifier_to_account"
     }
 
     var identifier: String {
@@ -17,17 +17,17 @@ struct AppleAuthOnboardingStage: OnboardingStage {
     }
 
     var personalizedTitle: String? {
-        "👋 connect your account to continue"
+        "🔐 connecting your account"
     }
 
     func body(context: OnboardingContext) -> AnyView {
         AnyView(
-            AppleAuthOnboardingStageView()
+            AccountMappingStageView()
                 .environmentObject(context)
         )
     }
 
     func isApplicable(context: OnboardingContext) -> Bool {
-        context.stageIdentifier == Self.identifier && context.userIdentifier == nil
+        context.stageIdentifier == Self.identifier && context.userIdentifier != nil
     }
 }

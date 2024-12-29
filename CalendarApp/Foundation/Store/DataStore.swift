@@ -9,6 +9,7 @@ import SwiftUI
 
 protocol AccountDataStoring {
     func create(account: AccountModel) async throws
+    func getAccount(appleUserIdentifier: String) async throws -> AccountModel?
 }
 
 protocol EventDataStoring {

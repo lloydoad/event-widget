@@ -8,7 +8,7 @@
 import SwiftUI
 import os
 
-fileprivate let SystemLogger = Logger(subsystem: "App", category: "ErrorAlert")
+let SystemLogger = Logger(subsystem: "App", category: "ErrorAlert")
 
 struct ErrorAlert: ViewModifier {
     @Binding var error: Error?

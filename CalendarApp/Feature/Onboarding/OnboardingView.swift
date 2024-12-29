@@ -9,22 +9,28 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject var context: OnboardingContext
+    @State private var title: String = ""
 
     private var stages: [any OnboardingStage] = [
         AppleAuthOnboardingStage(),
+        AccountMappingStage(),
         UsernameOnboardingStage(),
         PhoneNumberOnboardingStage()
     ]
 
     var body: some View {
         VStack(spacing: 16) {
-            ListTitleView(title: "let's set up your account")
+            ListTitleView(title: title)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .transition(.blurReplace)
             ForEach(stages, id: \.identifier) { stage in
                 if stage.isApplicable(context: context) {
                     stage.body(context: context)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .transition(.blurReplace)
+                        .onAppear {
+                            title = stage.personalizedTitle ?? ""
+                        }
                 }
             }
         }

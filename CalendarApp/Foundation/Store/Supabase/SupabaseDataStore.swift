@@ -28,6 +28,12 @@ class SupabaseDataStore: DataStoring {
         client = SupabaseClient(supabaseURL: url, supabaseKey: key)
     }
 
+    func getAccount(appleUserIdentifier: String) async throws -> AccountModel? {
+        try await Task.sleep(nanoseconds: 290_000_000)
+        // TODO: complete
+        return nil
+    }
+
     func create(account: AccountModel) async throws {
         try await client
             .from(.accounts)
