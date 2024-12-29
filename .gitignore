@@ -62,3 +62,4 @@ injectionforxcode/
 # Secrets
 DatabaseConfig.xcconfig
 CalendarApp/DatabaseConfig.xcconfig
+CalendarApp/DatabaseConfig.xcconfig
