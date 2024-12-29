@@ -9,7 +9,6 @@ import Foundation
 
 class AppSessionStore: ObservableObject {
     @Published var userAccount: AccountModel? //= AccountModelMocks.lloydAccount
-    @Published var hasSyncedContacts: Bool = false
 
     enum UserDefaultKeys: String {
         case userAccount
@@ -36,9 +35,8 @@ class AppSessionStore: ObservableObject {
     }
 }
 
-func mockAppSessionStore(account: AccountModel? = AccountModelMocks.lloydAccount, hasSyncedContacts: Bool = false) -> AppSessionStore {
+func mockAppSessionStore(account: AccountModel? = AccountModelMocks.lloydAccount) -> AppSessionStore {
     let store = AppSessionStore()
     store.userAccount = account
-    store.hasSyncedContacts = hasSyncedContacts
     return store
 }
