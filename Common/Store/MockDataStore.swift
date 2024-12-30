@@ -181,7 +181,7 @@ class MockDataStore: DataStoring {
         self.events = events
     }
 
-    func getEventFeed(viewing account: AccountModel) async throws -> [EventModel] {
+    func getEventFeed(viewing account: AccountModel, limit: Int?) async throws -> [EventModel] {
         try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
         let following = accounts.filter {
             (self.followers[$0.uuid] ?? []).contains(account.uuid)

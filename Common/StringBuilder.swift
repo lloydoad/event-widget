@@ -36,6 +36,10 @@ class StringBuilder {
         static func secondary(_ text: String) -> Text {
             Text(text, segmentStyle: .init(underline: false, color: .secondary))
         }
+
+        static func colored(_ text: String, color: AppColor) -> Text {
+            Text(text, segmentStyle: .init(underline: false, color: color))
+        }
 	}
 
 	class Route: Text {

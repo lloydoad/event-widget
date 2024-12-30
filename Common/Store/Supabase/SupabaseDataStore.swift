@@ -87,12 +87,21 @@ class SupabaseDataStore: DataStoring {
             .execute()
     }
 
-    func getEventFeed(viewing account: AccountModel) async throws -> [EventModel] {
+    func getEventFeed(viewing account: AccountModel, limit: Int?) async throws -> [EventModel] {
         let params = ["p_viewer_id": account.uuid]
-        let response: [EventModel.Realtime] = try await client
-            .rpc("get_events_feed", params: params)
-            .execute()
-            .value
+        let response: [EventModel.Realtime]
+        if let limit {
+            response = try await client
+                .rpc("get_events_feed", params: params)
+                .limit(limit)
+                .execute()
+                .value
+        } else {
+            response = try await client
+                .rpc("get_events_feed", params: params)
+                .execute()
+                .value
+        }
         return try response.map { try $0.model() }
     }
 
@@ -140,14 +149,14 @@ class SupabaseDataStore: DataStoring {
     }
 
     func isFollowing(follower: AccountModel, following: AccountModel) async throws -> Bool {
-        let response: [RealtimeFollow] = try await client
+        let response = try await client
             .from(.follows)
             .select()
             .eq("follower_id", value: follower.uuid)
             .eq("following_id", value: following.uuid)
             .execute()
-            .value
-        return !response.isEmpty
+            .count
+        return (response ?? 0) > 0
     }
 
     func follow(follower: AccountModel, following: AccountModel) async throws {

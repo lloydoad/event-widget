@@ -18,7 +18,7 @@ protocol EventDataStoring {
     func leaveEvent(guest account: AccountModel, event: EventModel) async throws
     func deleteEvent(creator account: AccountModel, event: EventModel) async throws
 
-    func getEventFeed(viewing account: AccountModel) async throws -> [EventModel]
+    func getEventFeed(viewing account: AccountModel, limit: Int?) async throws -> [EventModel]
     func getEvents(creator account: AccountModel) async throws -> [EventModel]
     func getEvent(uuid: UUID) async throws -> EventModel?
 }

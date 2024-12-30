@@ -32,6 +32,11 @@ extension DateFormatter {
 		return "\(cleanStartTime) to \(cleanEndTime)"
 	}
 
+    func cleanString(date: Date) -> String {
+        dateFormat = "h:mma" // 12-hour format with am/pm
+        return string(from: date).replacingOccurrences(of: ":00", with: "")
+    }
+
 	func createDate(
 		day: Int? = nil,
 		month: Int? = nil,

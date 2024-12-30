@@ -5,7 +5,7 @@
 //  Created by Lloyd Dapaah on 12/20/24.
 //
 
-import SwiftUI
+import Foundation
 
 struct PhoneNumberFormatter {
     func format(_ number: String) -> String {
