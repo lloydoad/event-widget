@@ -14,20 +14,27 @@ class AppSessionStore: ObservableObject {
         case userAccount
     }
 
+    static var sharedDefaults: UserDefaults = {
+        let appDefaults = UserDefaults(suiteName: "group.shared-defaults.dapaah.lloyd.CalendarApp")
+        if let appDefaults {
+            UserDefaults.standard.dictionaryRepresentation().forEach {
+                appDefaults.set($0.value, forKey: $0.key)
+            }
+        }
+        return appDefaults ?? .standard
+    }()
+
     init(userAccount: AccountModel? = AppSessionStore.getUserAccountFromDefaults()) {
         self.userAccount = userAccount
     }
 
     func storeUserAccountToDefaults() {
-        UserDefaults.standard.set(userAccount?.toPlistDictionary(),
-                                  forKey: UserDefaultKeys.userAccount.rawValue)
+        Self.sharedDefaults.set(userAccount?.toPlistDictionary(), forKey: UserDefaultKeys.userAccount.rawValue)
     }
 
     static func getUserAccountFromDefaults() -> AccountModel? {
         guard
-            let data = UserDefaults
-                .standard
-                .object(forKey: UserDefaultKeys.userAccount.rawValue) as? [String: Any]
+            let data = sharedDefaults.object(forKey: UserDefaultKeys.userAccount.rawValue) as? [String: Any]
         else {
             return nil
         }
