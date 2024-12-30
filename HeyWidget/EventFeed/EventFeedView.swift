@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct EventFeedView : View {
     var entry: EventFeedProvider.Entry
@@ -19,9 +20,9 @@ struct EventFeedView : View {
                     .build())
                 .frame(maxWidth: .infinity, alignment: .leading)
             } else {
-                ForEach(entry.events, id: \.uuid) { event in
+                ForEach(entry.events, id: \.event.uuid) { eventViewModel in
                     VStack(alignment: .leading) {
-                        Text(eventTitle(event: event, userAccount: entry.userAccount))
+                        Text(eventTitle(event: eventViewModel.event, isGuest: eventViewModel.isGuest))
                         .lineLimit(3, reservesSpace: true)
                     }
                     .padding(.bottom, 2)
@@ -42,9 +43,8 @@ struct EventFeedView : View {
             .build()
     }
 
-    func eventTitle(event: EventModel, userAccount: AccountModel) -> AttributedString {
-        let userIsGuest = event.guests.contains(where: { $0.uuid == userAccount.uuid })
-        let actionTitle = userIsGuest ? "joining " : "tap to join "
+    func eventTitle(event: EventModel, isGuest: Bool) -> AttributedString {
+        let actionTitle = isGuest ? "joining " : "tap to join "
         var text = event.creator.username
         text += " @ \(DateFormatter().cleanString(date: event.startDate)): "
         text += event.description
@@ -53,4 +53,11 @@ struct EventFeedView : View {
             .text(.colored(text.lowercased(), color: .primary))
             .build()
     }
+}
+
+#Preview(as: .systemSmall) {
+    HeyWidget()
+} timeline: {
+    EventFeedEntry(date: .now, events: [])
+    EventFeedEntry(date: .now, events: EventFeedProvider.placeholderEvents())
 }

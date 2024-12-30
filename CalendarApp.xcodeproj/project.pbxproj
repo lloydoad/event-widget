@@ -196,7 +196,6 @@
 		4C526C3A2D11F3DD0063552F = {
 			isa = PBXGroup;
 			children = (
-				0C57CCCA2D225EB900B24252 /* HeyWidgetExtension.entitlements */,
 				0C57CCAB2D21B63400B24252 /* Common */,
 				4C526C452D11F3DD0063552F /* CalendarApp */,
 				4C526C562D11F3E00063552F /* CalendarAppTests */,
@@ -204,6 +203,7 @@
 				0C57CC9B2D21B30300B24252 /* HeyWidget */,
 				0C6799D02D1E2D1F00733C86 /* Frameworks */,
 				4C526C442D11F3DD0063552F /* Products */,
+				0C57CCCA2D225EB900B24252 /* HeyWidgetExtension.entitlements */,
 			);
 			sourceTree = "<group>";
 		};

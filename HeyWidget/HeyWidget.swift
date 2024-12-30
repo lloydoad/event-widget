@@ -27,10 +27,3 @@ struct HeyWidget: Widget {
         .description("See upcoming events from friends and quickly join in")
     }
 }
-
-#Preview(as: .systemSmall) {
-    HeyWidget()
-} timeline: {
-    EventFeedEntry(date: .now, events: [], userAccount: EventFeedProvider.placeholderUser)
-    EventFeedEntry(date: .now, events: EventFeedProvider.placeholderEvents(), userAccount: EventFeedProvider.placeholderUser)
-}

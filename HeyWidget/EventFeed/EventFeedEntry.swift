@@ -9,7 +9,10 @@ import WidgetKit
 import SwiftUI
 
 struct EventFeedEntry: TimelineEntry {
+    struct EventViewModel {
+        var event: EventModel
+        var isGuest: Bool
+    }
     var date: Date
-    let events: [EventModel]
-    let userAccount: AccountModel
+    let events: [EventViewModel]
 }
