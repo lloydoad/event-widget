@@ -13,7 +13,7 @@ struct ComposerView: View {
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
     @Environment(\.dismiss) private var dismiss
     
-    @State private var description: String = "description ..."
+    @State private var description: String = ""
     @State private var startDate: Date = Date()
     @State private var endDate: Date = Date()
 
@@ -25,20 +25,30 @@ struct ComposerView: View {
     var body: some View {
 		Form {
 			ListTitleView(title: "create new event")
-			TextEditor(text: $description)
-				.frame(minHeight: 300, maxHeight: 350)
-				.onChange(of: description, { oldValue, newValue in
-					if newValue.count < 100 {
-						description = newValue
-					} else {
-						description = oldValue
-					}
-				})
+            ZStack(alignment: .topLeading) {
+                if description.isEmpty {
+                    Text("what's happening?")
+                        .foregroundColor(Color(.placeholderText))
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 8)
+                }
+                TextEditor(text: $description)
+                    .frame(minHeight: 300, maxHeight: 350)
+                    .onChange(of: description, { oldValue, newValue in
+                        if newValue.count < 100 {
+                            description = newValue
+                        } else {
+                            description = oldValue
+                        }
+                    })
+            }
 			DatePicker("starts:",
 					   selection: $startDate,
+                       in: Date()...,
 					   displayedComponents: [.date, .hourAndMinute])
 			DatePicker("ends:",
                        selection: $endDate,
+                       in: startDate...,
                        displayedComponents: [.date, .hourAndMinute])
 			HStack {
 				Spacer()
@@ -70,7 +80,8 @@ struct ComposerView: View {
 	private var validatedEvent: EventModel? {
 		guard
 			!description.isEmpty,
-			endDate > .now,
+            endDate > startDate,
+            endDate > .now,
 			let location = location,
             let userAccount = appSessionStore.userAccount
 		else {
@@ -108,4 +119,5 @@ struct ComposerView: View {
 #Preview {
 	ComposerView()
         .environmentObject(mockAppSessionStore())
+        .environmentObject(DataStoreProvider(dataStore: MockDataStore()))
 }
