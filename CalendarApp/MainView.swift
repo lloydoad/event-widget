@@ -63,8 +63,13 @@ struct MainView: View {
             return AnyView(SubscriptionsView(
                 contactSyncWorker: contactSyncWorker
             ))
-        case .composer:
-            return AnyView(ComposerView())
+        case .composer(let event):
+            return AnyView(ComposerView(
+                eventID: event?.uuid ?? .init(),
+                description: event?.description ?? "",
+                startDate: event?.startDate ?? .now,
+                endDate: event?.endDate ?? .now
+            ))
         }
     }
 }

@@ -13,8 +13,8 @@ struct DeepLinkParser {
         case profile(AccountModel)
         case guestList([AccountModel])
         case subscriptions
-        case composer
-        
+        case composer(EventModel?)
+
         var id: String {
             hashValue.description
         }

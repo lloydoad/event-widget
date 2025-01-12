@@ -12,13 +12,14 @@ struct ComposerView: View {
     @EnvironmentObject var appSessionStore: AppSessionStore
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
     @Environment(\.dismiss) private var dismiss
-    
-    @State private var description: String = ""
-    @State private var startDate: Date = Date()
-    @State private var endDate: Date = Date()
+
+    var eventID: UUID
+    @State var description: String
+    @State var startDate: Date
+    @State var endDate: Date
+    @State var location: LocationModel?
 
     @State private var error: Error?
-	@State private var location: LocationModel? = nil
 	@State private var isLocationPickerPresented: Bool = false
     @State private var isLoading: Bool = false
 
@@ -88,7 +89,7 @@ struct ComposerView: View {
 			return nil
 		}
 		return EventModel(
-            uuid: .init(),
+            uuid: eventID,
             creator: userAccount,
 			description: description,
 			startDate: startDate,
@@ -117,7 +118,7 @@ struct ComposerView: View {
 
 
 #Preview {
-	ComposerView()
+    ComposerView(eventID: UUID(), description: "", startDate: .now, endDate: .now)
         .environmentObject(mockAppSessionStore())
         .environmentObject(DataStoreProvider(dataStore: MockDataStore()))
 }

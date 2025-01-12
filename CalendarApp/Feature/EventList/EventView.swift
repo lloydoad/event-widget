@@ -19,6 +19,7 @@ struct EventView: View {
     let joinActionUUID = UUID()
     let deleteActionUUID = UUID()
     let cantGoActionUUID = UUID()
+    let editActionUUID = UUID()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -61,6 +62,8 @@ struct EventView: View {
             return cantGoActionUUID.uuidString
         case .deletable:
             return deleteActionUUID.uuidString
+        case .edit:
+            return editActionUUID.uuidString
         }
     }
 }

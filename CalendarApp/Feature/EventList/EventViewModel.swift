@@ -12,6 +12,7 @@ class EventViewModel: ObservableObject, Identifiable {
         case joinable
         case cancellable
         case deletable
+        case edit
 
         var title: String {
             switch self {
@@ -21,6 +22,8 @@ class EventViewModel: ObservableObject, Identifiable {
                 "can't go"
             case .deletable:
                 "delete"
+            case .edit:
+                "edit"
             }
         }
 
@@ -36,6 +39,9 @@ class EventViewModel: ObservableObject, Identifiable {
                 try await dataStore.leaveEvent(guest: userAccount, event: event)
             case .deletable:
                 try await dataStore.deleteEvent(creator: userAccount, event: event)
+            case .edit:
+                let url = try DeepLinkParser.Route.sheet(.composer(event)).url()
+                await UIApplication.shared.open(url)
             }
         }
     }
@@ -122,6 +128,7 @@ class EventViewModel: ObservableObject, Identifiable {
             controls.append(.cancellable)
         }
         if event.deletable(viewer: userAccount) {
+            controls.append(.edit)
             controls.append(.deletable)
         }
         return controls

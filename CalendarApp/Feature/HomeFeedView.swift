@@ -56,7 +56,7 @@ struct HomeFeedView: View {
                 identifier: createNewEventActionIdentifier,
                 color: .secondary,
                 action: {
-                    let route = try! DeepLinkParser.Route.sheet(.composer).url()
+                    let route = try! DeepLinkParser.Route.sheet(.composer(nil)).url()
                     UIApplication.shared.open(route)
                 }),
             .bracket(
