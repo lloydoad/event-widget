@@ -16,11 +16,6 @@ struct EventView: View {
 
     @StateObject private var viewModel: EventViewModel = .init()
 
-    let joinActionUUID = UUID()
-    let deleteActionUUID = UUID()
-    let cantGoActionUUID = UUID()
-    let editActionUUID = UUID()
-
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(viewModel.content)
@@ -55,15 +50,18 @@ struct EventView: View {
     }
 
     private func actionIdentifier(control: EventViewModel.Control) -> String {
-        switch control {
-        case .joinable:
-            return joinActionUUID.uuidString
-        case .cancellable:
-            return cantGoActionUUID.uuidString
-        case .deletable:
-            return deleteActionUUID.uuidString
-        case .edit:
-            return editActionUUID.uuidString
-        }
+        let prefix: String = {
+            switch control {
+            case .joinable:
+                return ButtonIdentifier.joinEventAction
+            case .cancellable:
+                return ButtonIdentifier.cantGoEventAction
+            case .deletable:
+                return ButtonIdentifier.deleteEventAction
+            case .edit:
+                return ButtonIdentifier.editEventAction
+            }
+        }()
+        return prefix + "_" + event.uuid.uuidString
     }
 }

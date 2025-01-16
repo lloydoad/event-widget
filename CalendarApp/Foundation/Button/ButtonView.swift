@@ -32,7 +32,7 @@ struct ButtonView: View {
             ActionCentralDispatch.shared.register(action: action)
         }
         .onDisappear {
-            ActionCentralDispatch.shared.deregister(identifier: action.text)
+            ActionCentralDispatch.shared.deregister(identifier: action.identifier)
         }
     }
 }
