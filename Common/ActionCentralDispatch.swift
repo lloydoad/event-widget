@@ -49,6 +49,9 @@ class ActionCentralDispatch {
 
     func deregister(identifier: String) {
         ActionLogger.info("Deregister \(identifier)")
+        if !registeredActions.contains(where: { $0.key == identifier }) {
+            ActionLogger.error("Attempted to deregister non-existent action: \(identifier)")
+        }
         registeredActions[identifier] = nil
     }
 
