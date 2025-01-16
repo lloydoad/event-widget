@@ -23,10 +23,17 @@ struct HomeFeedView: View {
         }
     }
 
+    private let title = "untitled events widget"
+
 	var body: some View {
 		VStack {
             ListTitleView(title: title)
-            EventListView(eventListFetcher: eventListFetcher)
+            EventListView(
+                eventListFetcher: EventListFetcher(
+                    dataStoreProvider: dataStoreProvider,
+                    appSessionStore: appSessionStore
+                )
+            )
             VStack(spacing: 8) {
                 ForEach(actions, id: \.identifier) { action in
                     ButtonView(baseStyle: .init(appFont: .large), action: action)
@@ -66,16 +73,5 @@ struct HomeFeedView: View {
                     UIApplication.shared.open(route)
                 })
         ]
-    }
-
-	private var title: String {
-		"untitled events widget"
-	}
-
-    private var eventListFetcher: EventListFetching {
-        EventListFetcher(
-            dataStoreProvider: dataStoreProvider,
-            appSessionStore: appSessionStore
-        )
     }
 }

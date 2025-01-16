@@ -40,6 +40,7 @@ class EventViewModel: ObservableObject, Identifiable {
                 try await dataStore.leaveEvent(guest: userAccount, event: event)
             case .deletable:
                 try await dataStore.deleteEvent(creator: userAccount, event: event)
+                ActionCentralDispatch.shared.handle(action: ButtonIdentifier.refreshEventListAction)
             case .edit:
                 let url = try DeepLinkParser.Route.sheet(.composer(event)).url()
                 await UIApplication.shared.open(url)

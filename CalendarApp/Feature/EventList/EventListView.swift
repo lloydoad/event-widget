@@ -52,7 +52,17 @@ struct EventListView: View {
         .animation(.easeInOut, value: model)
         .errorAlert(error: $error)
         .onAppear {
+            ActionCentralDispatch
+                .shared
+                .register(
+                    identifier: ButtonIdentifier.refreshEventListAction
+                ) {
+                    reloadData()
+                }
             reloadData()
+        }
+        .onDisappear {
+            ActionCentralDispatch.shared.deregister(identifier: ButtonIdentifier.refreshEventListAction)
         }
         .refreshable {
             reloadData()

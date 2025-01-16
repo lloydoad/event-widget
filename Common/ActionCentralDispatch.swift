@@ -42,11 +42,19 @@ class ActionCentralDispatch {
         registeredActions[action.identifier] = action
     }
 
+    func register(identifier: String, action: @escaping () -> Void) {
+        register(action: StringBuilder.Action("", identifier: identifier, segmentStyle: .init(), action: action))
+    }
+
     func deregister(identifier: String) {
         registeredActions[identifier] = nil
     }
 
     func handle(url: URL) {
         action(for: url)?.action()
+    }
+
+    func handle(action identifier: String) {
+        registeredActions[identifier]?.action()
     }
 }

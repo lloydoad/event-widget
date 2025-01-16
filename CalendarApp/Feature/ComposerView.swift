@@ -111,6 +111,7 @@ struct ComposerView: View {
                 } else {
                     _ = try await dataStoreProvider.dataStore.create(event: validatedEvent)
                 }
+                ActionCentralDispatch.shared.handle(action: ButtonIdentifier.refreshEventListAction)
                 dismiss()
                 isLoading = false
             } catch {

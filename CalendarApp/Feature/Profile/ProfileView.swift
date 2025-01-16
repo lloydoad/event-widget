@@ -24,10 +24,12 @@ struct ProfileView: View {
                     Spacer()
                 }
             }
-            EventListView(eventListFetcher: ProfileEventListFetcher(
-                dataStoreProvider: dataStoreProvider,
-                account: account
-            ))
+            EventListView(
+                eventListFetcher: ProfileEventListFetcher(
+                    dataStoreProvider: dataStoreProvider,
+                    account: account
+                )
+            )
 		}
         .errorAlert(error: $error)
         .animation(.easeInOut, value: subscriptionButtonType)

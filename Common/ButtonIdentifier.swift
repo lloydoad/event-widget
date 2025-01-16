@@ -10,4 +10,5 @@ import SwiftUI
 struct ButtonIdentifier {
     static let createNewEventAction: String = "createNewEventAction"
     static let subscribeToFriendsAction: String = "subscribeToFriendsAction"
+    static let refreshEventListAction: String = "refreshEventListAction"
 }
