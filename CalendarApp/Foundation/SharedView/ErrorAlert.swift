@@ -8,8 +8,6 @@
 import SwiftUI
 import os
 
-let SystemLogger = Logger(subsystem: "App", category: "ErrorAlert")
-
 struct ErrorAlert: ViewModifier {
     @Binding var error: Error?
     
@@ -46,9 +44,9 @@ struct ErrorAlert: ViewModifier {
     private func logError(_ error: Error) {
         let nsError = error as NSError
         if let failureReason = nsError.userInfo[ErrorManager.loggedMessageKey] as? String {
-            SystemLogger.error("\(failureReason)")
+            ErrorAlertLogger.error("\(failureReason)")
         } else {
-            SystemLogger.error("\(error.localizedDescription)")
+            ErrorAlertLogger.error("\(error.localizedDescription)")
         }
 
     }

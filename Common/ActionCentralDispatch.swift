@@ -39,6 +39,7 @@ class ActionCentralDispatch {
     }
 
     func register(action: StringBuilder.Action) {
+        ActionLogger.info("Register \(action.identifier)")
         registeredActions[action.identifier] = action
     }
 
@@ -47,6 +48,7 @@ class ActionCentralDispatch {
     }
 
     func deregister(identifier: String) {
+        ActionLogger.info("Deregister \(identifier)")
         registeredActions[identifier] = nil
     }
 

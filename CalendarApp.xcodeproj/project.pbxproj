@@ -82,6 +82,7 @@
 				ErrorManager.swift,
 				Formatter/DateFormatterExtension.swift,
 				Formatter/PhoneNumberFormatter.swift,
+				Loggers.swift,
 				Model/AccountModel.swift,
 				Model/EventModel.swift,
 				Model/LocationModel.swift,

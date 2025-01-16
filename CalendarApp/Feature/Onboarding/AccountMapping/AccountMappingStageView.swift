@@ -39,7 +39,7 @@ struct AccountMappingStageView: View {
                 }
             } catch {
                 Task { @MainActor in
-                    SystemLogger.error("\(error.localizedDescription)")
+                    DefaultLogger.error("\(error.localizedDescription)")
                     context.userIdentifier = nil
                     context.stageIdentifier = AppleAuthOnboardingStage.identifier
                 }
