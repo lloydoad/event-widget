@@ -49,7 +49,18 @@ class SupabaseDataStore: DataStoring {
 
     func create(event: EventModel) async throws -> EventModel {
         let response: EventModel.RealtimeCreateResponse = try await client
-            .rpc("create_event", params: event.realtimeCreateRequest)
+            .rpc("create_event_v2", params: event.realtimeCreateRequest)
+            .single()
+            .execute()
+            .value
+        var createdEvent = event
+        createdEvent.uuid = response.event_id
+        return createdEvent
+    }
+
+    func update(event: EventModel) async throws -> EventModel {
+        let response: EventModel.RealtimeCreateResponse = try await client
+            .rpc("update_event_v2", params: event.realtimeCreateRequest)
             .single()
             .execute()
             .value

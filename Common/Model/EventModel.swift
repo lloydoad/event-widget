@@ -46,7 +46,7 @@ extension EventModel {
     }
 
     struct RealtimeCreateRequest: Encodable {
-        let p_event_id: UUID?
+        let p_event_id: UUID
         let p_creator_id: UUID
         let p_description: String
         let p_start_date: Date
@@ -54,12 +54,14 @@ extension EventModel {
         let p_address: String
         let p_city: String
         let p_state: String
+        let p_code: String
+        let p_country: String
         let p_guest_ids: [UUID]
     }
 
     var realtimeCreateRequest: RealtimeCreateRequest {
         RealtimeCreateRequest(
-            p_event_id: nil,
+            p_event_id: uuid,
             p_creator_id: creator.uuid,
             p_description: description,
             p_start_date: startDate,
@@ -67,6 +69,8 @@ extension EventModel {
             p_address: location.address,
             p_city: location.city,
             p_state: location.state,
+            p_code: location.code,
+            p_country: location.country,
             p_guest_ids: guests.map(\.uuid)
         )
     }

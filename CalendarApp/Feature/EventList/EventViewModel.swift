@@ -27,6 +27,7 @@ class EventViewModel: ObservableObject, Identifiable {
             }
         }
 
+        @MainActor
         func action(
             userAccount: AccountModel,
             event: EventModel,

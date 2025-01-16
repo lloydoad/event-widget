@@ -13,6 +13,7 @@ struct ComposerView: View {
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
     @Environment(\.dismiss) private var dismiss
 
+    var shouldUpdate: Bool
     var eventID: UUID
     @State var description: String
     @State var startDate: Date
@@ -105,7 +106,11 @@ struct ComposerView: View {
         isLoading = true
         Task {
             do {
-                _ = try await dataStoreProvider.dataStore.create(event: validatedEvent)
+                if shouldUpdate {
+                    _ = try await dataStoreProvider.dataStore.update(event: validatedEvent)
+                } else {
+                    _ = try await dataStoreProvider.dataStore.create(event: validatedEvent)
+                }
                 dismiss()
                 isLoading = false
             } catch {
@@ -118,7 +123,7 @@ struct ComposerView: View {
 
 
 #Preview {
-    ComposerView(eventID: UUID(), description: "", startDate: .now, endDate: .now)
+    ComposerView(shouldUpdate: false, eventID: UUID(), description: "", startDate: .now, endDate: .now)
         .environmentObject(mockAppSessionStore())
         .environmentObject(DataStoreProvider(dataStore: MockDataStore()))
 }

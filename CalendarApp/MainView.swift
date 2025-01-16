@@ -65,10 +65,12 @@ struct MainView: View {
             ))
         case .composer(let event):
             return AnyView(ComposerView(
+                shouldUpdate: event != nil,
                 eventID: event?.uuid ?? .init(),
                 description: event?.description ?? "",
                 startDate: event?.startDate ?? .now,
-                endDate: event?.endDate ?? .now
+                endDate: event?.endDate ?? .now,
+                location: event?.location
             ))
         }
     }

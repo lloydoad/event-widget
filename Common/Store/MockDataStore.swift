@@ -13,8 +13,10 @@ struct EventModelMocks {
         description: String = "building lego till 8 or later. I'm not sure",
         location: LocationModel = LocationModel(
             address: "235 Valencia St",
+            code: "94103",
             city: "San Francisco",
-            state: "California"
+            state: "California",
+            country: "USA"
         ),
         startDate: Date = .now,
         endDate: Date = .now,
@@ -111,8 +113,10 @@ class MockDataStore: DataStoring {
                 description: "building lego till 8pm or later. idk",
                 location: LocationModel(
                     address: "1 haight st",
+                    code: "11111",
                     city: "san francisco",
-                    state: "california"
+                    state: "california",
+                    country: "USA"
                 ),
                 startDate: DateFormatter().createDate(hour: 17, minute: 00)!,
                 endDate: DateFormatter().createDate(hour: 21, minute: 00)!,
@@ -123,8 +127,10 @@ class MockDataStore: DataStoring {
                 description: "thinking about going to a comedy after work. open to ideas",
                 location: LocationModel(
                     address: "250 fell st",
+                    code: "11111",
                     city: "san francisco",
-                    state: "california"
+                    state: "california",
+                    country: "USA"
                 ),
                 startDate: DateFormatter().createDate(hour: 12, minute: 00)!,
                 endDate: DateFormatter().createDate(hour: 15, minute: 00)!,
@@ -135,8 +141,10 @@ class MockDataStore: DataStoring {
                 description: "anyone down to smash 👀 (as-in nintendo smash)",
                 location: LocationModel(
                     address: "250 king st",
+                    code: "11111",
                     city: "san francisco",
-                    state: "california"
+                    state: "california",
+                    country: "USA"
                 ),
                 startDate: DateFormatter().createDate(hour: 4, minute: 00)!,
                 endDate: DateFormatter().createDate(hour: 7, minute: 00)!,
@@ -147,8 +155,10 @@ class MockDataStore: DataStoring {
                 description: "lets go around town and be spooky",
                 location: LocationModel(
                     address: "1 california st",
+                    code: "11111",
                     city: "san francisco",
-                    state: "california"
+                    state: "california",
+                    country: "USA"
                 ),
                 startDate: DateFormatter().createDate(hour: 1, minute: 30)!,
                 endDate: DateFormatter().createDate(hour: 4, minute: 15)!,
@@ -245,6 +255,13 @@ class MockDataStore: DataStoring {
 
     func create(event: EventModel) async throws -> EventModel {
         try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+        events.append(event)
+        return event
+    }
+
+    func update(event: EventModel) async throws -> EventModel {
+        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
+        events.removeAll(where: { $0.uuid == event.uuid })
         events.append(event)
         return event
     }

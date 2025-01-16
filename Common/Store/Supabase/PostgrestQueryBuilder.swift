@@ -21,7 +21,7 @@ enum SupabaseColumn {
                 start_date,
                 end_date,
                 creator:creator_id(id, username, phone_number),
-                location:location_id(address, city, state),
+                location:location_id(address, city, state, code, country),
                 guests:event_guests(guest:guest_id(id, username, phone_number))
             """
         case .accountFromAppleID:

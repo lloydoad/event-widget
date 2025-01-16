@@ -27,7 +27,9 @@ struct ButtonView: View {
                 .action(action)
                 .build()
         )
+        .accessibilityIdentifier(action.identifier)
         .onAppear {
+            print(action.identifier)
             ActionCentralDispatch.shared.register(action: action)
         }
         .onDisappear {

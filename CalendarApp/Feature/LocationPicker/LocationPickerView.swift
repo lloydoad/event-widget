@@ -92,10 +92,13 @@ struct LocationPickerView: View {
 
 	private func locationModel(from item: MKMapItem) -> LocationModel {
 		let placemark = item.placemark
-		let address = placemark.thoroughfare ?? ""
-		let city = placemark.locality ?? ""
-		let state = placemark.administrativeArea ?? ""
-		return LocationModel(address: address, city: city, state: state)
+        let postalAddress = placemark.postalAddress
+        let address = postalAddress?.street ?? ""
+        let city = postalAddress?.city ?? ""
+        let state = postalAddress?.state ?? ""
+        let code = postalAddress?.postalCode ?? ""
+        let country = postalAddress?.country ?? ""
+        return LocationModel(address: address, code: code, city: city, state: state, country: country)
 	}
 }
 

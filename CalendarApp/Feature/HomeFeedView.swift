@@ -47,13 +47,11 @@ struct HomeFeedView: View {
 		.padding(.bottom, 16)
 	}
 
-    private let createNewEventActionIdentifier: String = UUID().uuidString
-    private let subscribeToFriendsActionIdentifier: String = UUID().uuidString
     private var actions: [StringBuilder.Action] {
         [
             .bracket(
                 "create new event",
-                identifier: createNewEventActionIdentifier,
+                identifier: ButtonIdentifier.createNewEventAction,
                 color: .secondary,
                 action: {
                     let route = try! DeepLinkParser.Route.sheet(.composer(nil)).url()
@@ -61,7 +59,7 @@ struct HomeFeedView: View {
                 }),
             .bracket(
                 "subscribe to more friends",
-                identifier: subscribeToFriendsActionIdentifier,
+                identifier: ButtonIdentifier.subscribeToFriendsAction,
                 color: .secondary,
                 action: {
                     let route = try! DeepLinkParser.Route.push(.subscriptions).url()

@@ -14,6 +14,7 @@ protocol AccountDataStoring {
 
 protocol EventDataStoring {
     func create(event: EventModel) async throws -> EventModel
+    func update(event: EventModel) async throws -> EventModel
     func joinEvent(guest account: AccountModel, event: EventModel) async throws
     func leaveEvent(guest account: AccountModel, event: EventModel) async throws
     func deleteEvent(creator account: AccountModel, event: EventModel) async throws

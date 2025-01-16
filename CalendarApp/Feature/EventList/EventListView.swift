@@ -35,7 +35,7 @@ struct EventListView: View {
             case .success(let events):
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach(events, id: \.uuid.uuidString) { event in
+                        ForEach(events, id: \.hashValue.description) { event in
                             EventView(
                                 event: event,
                                 removeEvent: { eventID in

@@ -28,6 +28,22 @@ final class CalendarAppUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
+        let link = app.links.containing(NSPredicate(format: "label CONTAINS '[create new event]'")).firstMatch
+        XCTAssertTrue(link.waitForExistence(timeout: 2))
+
+        link.tap()
+
+//        let textView = app.textViews["createNewEventAction"]
+//        guard let link = textView.links.allElementsBoundByIndex.first else {
+//            XCTFail()
+//            return
+//        }
+
+//        let createText = app
+//            .staticTexts
+//            .element(matching: NSPredicate(format: "label CONTAINS[c] 'create new event'"))
+//        XCTAssertTrue(createText.waitForExistence(timeout: 1))
+//        ButtonIdentifier.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 

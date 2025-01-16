@@ -45,7 +45,7 @@ struct EventFeedProvider: TimelineProvider {
     static let placeholderUser = AccountModel(uuid: UUID(), username: "alex", phoneNumber: "")
     static func placeholderEvents() -> [EventFeedEntry.EventViewModel] {
         let dateFormatter = DateFormatter()
-        let mockLocation = LocationModel(address: "", city: "", state: "")
+        let mockLocation = LocationModel(address: "", code: "", city: "", state: "", country: "")
         return [
             .init(
                 event: EventModel(
