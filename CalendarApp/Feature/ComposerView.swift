@@ -72,6 +72,7 @@ struct ComposerView: View {
 		}
 		.sheet(isPresented: $isLocationPickerPresented, content: {
 			LocationPickerView(location: $location)
+                .presentationDetents([.medium])
 		})
 		.font(AppFont.light.asFont)
 		.tint(Color(AppColor.appTint.asUIColor))
