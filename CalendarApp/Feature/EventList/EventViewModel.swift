@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 class EventViewModel: ObservableObject, Identifiable {
     var id: String
     var dataStore: DataStoring?
@@ -30,14 +28,14 @@ class EventViewModel: ObservableObject, Identifiable {
         self.transformer = nil
     }
 
-    func configure(dataStore: DataStoring, appSessionStore: AppSessionStore, event: EventModel, removeEvent: @escaping ((UUID) -> Void)) {
+    func configure(dataStore: DataStoring, appSessionStore: AppSessionStore, event: EventModel, listIdentifier: String, removeEvent: @escaping ((UUID) -> Void)) {
         self.id = event.uuid.uuidString
         self.dataStore = dataStore
         self.appSessionStore = appSessionStore
         self.event = event
         self.removeEvent = removeEvent
         if let userAccount = appSessionStore.userAccount {
-            self.transformer = EventTransformer(viewer: userAccount)
+            self.transformer = EventTransformer(viewer: userAccount, listIdentifier: listIdentifier)
         }
         self.content = transformer?.content(event: event, hasTask: false) ?? ""
     }

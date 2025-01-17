@@ -25,6 +25,7 @@ struct ProfileView: View {
                 }
             }
             EventListView(
+                identifier: "profile",
                 eventListFetcher: ProfileEventListFetcher(
                     dataStoreProvider: dataStoreProvider,
                     account: account

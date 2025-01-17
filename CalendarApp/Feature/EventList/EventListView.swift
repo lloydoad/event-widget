@@ -17,6 +17,7 @@ struct EventListView: View {
         case loading
     }
 
+    var identifier: String
     var eventListFetcher: EventListFetching
 
     @State private var error: Error?
@@ -37,6 +38,7 @@ struct EventListView: View {
                     VStack(spacing: 16) {
                         ForEach(events, id: \.hashValue.description) { event in
                             EventView(
+                                listIdentifier: identifier,
                                 event: event,
                                 removeEvent: { eventID in
                                     removeEvent(eventID: eventID)

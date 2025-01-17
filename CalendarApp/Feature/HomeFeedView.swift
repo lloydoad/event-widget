@@ -29,6 +29,7 @@ struct HomeFeedView: View {
 		VStack {
             ListTitleView(title: title)
             EventListView(
+                identifier: "homeFeed",
                 eventListFetcher: EventListFetcher(
                     dataStoreProvider: dataStoreProvider,
                     appSessionStore: appSessionStore

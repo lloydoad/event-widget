@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EventTransformer {
     let viewer: AccountModel
+    let listIdentifier: String
 
     func content(event: EventModel, hasTask: Bool) -> AttributedString {
         do {
@@ -75,7 +76,7 @@ struct EventTransformer {
             .text(.primary(" • "))
             .action(.bracket(
                 control.title,
-                identifier: control.identifier(event: event),
+                identifier: control.identifier(event: event, listIdentifier: listIdentifier),
                 color: .appTint,
                 action: { }
             ))

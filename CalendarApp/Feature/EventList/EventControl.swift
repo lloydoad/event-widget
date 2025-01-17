@@ -42,7 +42,7 @@ enum EventControl: Equatable, CaseIterable {
         }
     }
 
-    func identifier(event: EventModel) -> String {
+    func identifier(event: EventModel, listIdentifier: String) -> String {
         let prefix: String = {
             switch self {
             case .joinable:
@@ -55,6 +55,6 @@ enum EventControl: Equatable, CaseIterable {
                 return ButtonIdentifier.editEventAction
             }
         }()
-        return prefix + "_" + event.uuid.uuidString
+        return prefix + "_" + event.uuid.uuidString + "_" + listIdentifier
     }
 }

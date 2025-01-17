@@ -11,6 +11,7 @@ struct EventView: View {
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
     @EnvironmentObject var appSessionStore: AppSessionStore
 
+    var listIdentifier: String
     var event: EventModel
     var removeEvent: (UUID) -> Void
 
@@ -27,6 +28,7 @@ struct EventView: View {
                 dataStore: dataStoreProvider.dataStore,
                 appSessionStore: appSessionStore,
                 event: event,
+                listIdentifier: listIdentifier,
                 removeEvent: removeEvent
             )
         }
@@ -37,7 +39,8 @@ struct EventView: View {
 
     private func registerActions() {
         for control in EventControl.allCases {
-            ActionCentralDispatch.shared.register(identifier: control.identifier(event: event), action: {
+            ActionCentralDispatch.shared
+                .register(identifier: control.identifier(event: event, listIdentifier: listIdentifier), action: {
                 viewModel.perform(control: control)
             })
         }
@@ -45,7 +48,8 @@ struct EventView: View {
 
     private func unregisterActions() {
         for control in EventControl.allCases {
-            ActionCentralDispatch.shared.deregister(identifier: control.identifier(event: event))
+            ActionCentralDispatch.shared
+                .deregister(identifier: control.identifier(event: event, listIdentifier: listIdentifier))
         }
     }
 }
