@@ -71,6 +71,7 @@ class StringBuilder {
 
     class Action: Text, Equatable {
         var identifier: String
+        /// @Deprecated
         var action: () -> Void
 
         init(_ text: String, identifier: String, segmentStyle: SegmentStyle, action: @escaping () -> Void) {
@@ -94,7 +95,7 @@ class StringBuilder {
         }
 
         static func == (lhs: Action, rhs: Action) -> Bool {
-            return lhs.text == rhs.text
+            return lhs.text == rhs.text && lhs.identifier == rhs.identifier
         }
     }
 

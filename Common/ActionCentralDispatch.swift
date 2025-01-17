@@ -56,7 +56,8 @@ class ActionCentralDispatch {
     }
 
     func handle(url: URL) {
-        action(for: url)?.action()
+        let foundAction = action(for: url)
+        foundAction?.action()
     }
 
     func handle(action identifier: String) {

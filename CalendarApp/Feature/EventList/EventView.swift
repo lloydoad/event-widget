@@ -17,29 +17,12 @@ struct EventView: View {
     @StateObject private var viewModel: EventViewModel = .init()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(viewModel.content)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .transition(.blurReplace)
-            HStack {
-                switch viewModel.controls {
-                case .enable(let array):
-                    ForEach(array, id: \.title) { control in
-                        ButtonView(title: control.title, identifier: actionIdentifier(control: control), font: .light) {
-                            viewModel.perform(control: control)
-                        }
-                        .transition(.blurReplace)
-                    }
-                case .disabled:
-                    ProgressView()
-                        .transition(.blurReplace)
-                }
-                Spacer()
-            }
-        }
+        Text(viewModel.content)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .transition(.blurReplace)
         .animation(.easeInOut, value: viewModel.content)
-        .animation(.easeInOut, value: viewModel.controls)
         .onAppear {
+            registerActions()
             viewModel.configure(
                 dataStore: dataStoreProvider.dataStore,
                 appSessionStore: appSessionStore,
@@ -47,21 +30,22 @@ struct EventView: View {
                 removeEvent: removeEvent
             )
         }
+        .onDisappear {
+            unregisterActions()
+        }
     }
 
-    private func actionIdentifier(control: EventViewModel.Control) -> String {
-        let prefix: String = {
-            switch control {
-            case .joinable:
-                return ButtonIdentifier.joinEventAction
-            case .cancellable:
-                return ButtonIdentifier.cantGoEventAction
-            case .deletable:
-                return ButtonIdentifier.deleteEventAction
-            case .edit:
-                return ButtonIdentifier.editEventAction
-            }
-        }()
-        return prefix + "_" + event.uuid.uuidString
+    private func registerActions() {
+        for control in EventControl.allCases {
+            ActionCentralDispatch.shared.register(identifier: control.identifier(event: event), action: {
+                viewModel.perform(control: control)
+            })
+        }
+    }
+
+    private func unregisterActions() {
+        for control in EventControl.allCases {
+            ActionCentralDispatch.shared.deregister(identifier: control.identifier(event: event))
+        }
     }
 }
