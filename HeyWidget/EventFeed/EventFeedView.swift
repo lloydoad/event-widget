@@ -45,11 +45,16 @@ struct EventFeedView : View {
 
     func eventTitle(event: EventModel, isGuest: Bool) -> AttributedString {
         let actionTitle = isGuest ? "joining " : "tap to join "
+        let strikethrough = event.endDate < .now
         var text = event.creator.username
         text += " @ \(DateFormatter().cleanString(date: event.startDate)): "
         text += event.description
-        return StringBuilder(baseStyle: .init(appFont: .widget))
-            .text(.colored(actionTitle, color: .appTint))
+        return StringBuilder(baseStyle: .init(appFont: .widget, strikeThrough: strikethrough))
+            .staticIfElse(
+                condition: strikethrough,
+                trueBlock: { $0 },
+                falseBlock: { $0.text(.colored(actionTitle, color: .appTint)) }
+            )
             .text(.colored(text.lowercased(), color: .primary))
             .build()
     }
