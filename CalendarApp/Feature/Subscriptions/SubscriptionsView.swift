@@ -35,18 +35,23 @@ struct SubscriptionsView: View {
                                 .view()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .transition(.blurReplace)
-                            // TODO: Add actual appstore link
-                            ShareLink(
-                                items: [URL(string: "https://apps.apple.com/app/your-app-id")!],
-                                message: Text("let's share impromptu events on [unentitled event widget]"),
-                                label: {
-                                StringBuilder(baseStyle: .init(appFont: .light))
-                                    .text(.init("[send invites]",
-                                                segmentStyle: .init(color: .appTint)))
-                                    .view()
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .transition(.blurReplace)
-                            })
+                            if
+                                let appName = appSessionStore.featureFlags["app_name"],
+                                let appStoreLink = appSessionStore.featureFlags["appstore_link"] {
+                                ShareLink(
+                                    items: [
+                                        URL(string: appStoreLink) ?? URL(string: "www.apple.com")!
+                                    ],
+                                    message: Text("let's share impromptu events on [\(appName)]"),
+                                    label: {
+                                    StringBuilder(baseStyle: .init(appFont: .light))
+                                        .text(.init("[send invites]",
+                                                    segmentStyle: .init(color: .appTint)))
+                                        .view()
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .transition(.blurReplace)
+                                    })
+                            }
                         } else {
                             ForEach(accounts, id: \.hashValue.description) { account in
                                 AccountView(listIdentifier: listIdentifier, account: account)

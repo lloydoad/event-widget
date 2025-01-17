@@ -10,6 +10,7 @@ import Foundation
 protocol AccountDataStoring {
     func create(account: AccountModel, identifier: String) async throws
     func getAccount(appleUserIdentifier: String) async throws -> AccountModel?
+    func getFeatureFlags() async throws -> [String:String]
 }
 
 protocol EventDataStoring {

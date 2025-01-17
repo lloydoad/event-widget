@@ -46,6 +46,7 @@ struct CalendarAppApp: App {
     func setupDatabase() {
         do {
             dataStoreProvider.dataStore = try SupabaseDataStore()
+            appSessionStore.fetchFeatureFlags(dataStore: dataStoreProvider.dataStore)
             isInitializing = false
         } catch {
             self.error = error

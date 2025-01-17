@@ -12,7 +12,7 @@ struct AccountTransformer {
 
     func transform(account: AccountModel, controlResult: AccountControl.Result) -> AttributedString {
         let baseStyle = StringBuilder.BaseStyle(appFont: .large)
-        var builder = StringBuilder(baseStyle: baseStyle)
+        let builder = StringBuilder(baseStyle: baseStyle)
             .text(.primary("\(account.username), \(account.phoneNumber)\n"))
             .route(.bracket(
                 "profile",

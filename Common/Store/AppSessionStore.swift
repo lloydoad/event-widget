@@ -9,6 +9,7 @@ import Foundation
 
 class AppSessionStore: ObservableObject {
     @Published var userAccount: AccountModel? //= AccountModelMocks.lloydAccount
+    @Published var featureFlags: [String: String] = [:]
 
     enum UserDefaultKeys: String {
         case userAccount
@@ -30,6 +31,23 @@ class AppSessionStore: ObservableObject {
 
     func storeUserAccountToDefaults() {
         Self.sharedDefaults.set(userAccount?.toPlistDictionary(), forKey: UserDefaultKeys.userAccount.rawValue)
+    }
+
+    var fetchFeatureFlagsTask: Task<Void, Never>?
+    func fetchFeatureFlags(dataStore: DataStoring) {
+        fetchFeatureFlagsTask?.cancel()
+        fetchFeatureFlagsTask = Task {
+            do {
+                let featureFlags = try await dataStore.getFeatureFlags()
+                await MainActor.run {
+                    self.featureFlags = featureFlags
+                }
+            } catch {
+                await MainActor.run {
+                    DefaultLogger.error("Feature flag setup failed: \(error)")
+                }
+            }
+        }
     }
 
     static func getUserAccountFromDefaults() -> AccountModel? {

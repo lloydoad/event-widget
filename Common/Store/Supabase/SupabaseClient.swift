@@ -16,6 +16,7 @@ extension SupabaseClient {
         case events
         case event_guests
         case locations
+        case feature_flags
     }
 
     func from(_ table: Table) -> PostgrestQueryBuilder {

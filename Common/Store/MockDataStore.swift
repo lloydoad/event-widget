@@ -191,6 +191,10 @@ class MockDataStore: DataStoring {
         self.events = events
     }
 
+    func getFeatureFlags() async throws -> [String : String] {
+        [:]
+    }
+
     func getEventFeed(viewing account: AccountModel, limit: Int?) async throws -> [EventModel] {
         try await Task.sleep(nanoseconds: 500_000_000) // 0.5 second delay
         let following = accounts.filter {

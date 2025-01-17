@@ -47,6 +47,18 @@ class SupabaseDataStore: DataStoring {
             .execute()
     }
 
+    func getFeatureFlags() async throws -> [String : String] {
+        struct FeatureFlag: Codable {
+            var key: String
+            var value: String
+        }
+        let response: [FeatureFlag] = try await client
+            .from(.feature_flags)
+            .execute()
+            .value
+        return Dictionary(uniqueKeysWithValues: response.map { ($0.key, $0.value) })
+    }
+
     func create(event: EventModel) async throws -> EventModel {
         let response: EventModel.RealtimeCreateResponse = try await client
             .rpc("create_event_v2", params: event.realtimeCreateRequest)
