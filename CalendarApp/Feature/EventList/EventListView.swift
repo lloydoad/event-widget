@@ -43,7 +43,6 @@ struct EventListView: View {
                                 removeEvent: { eventID in
                                     removeEvent(eventID: eventID)
                                 })
-                                .padding(.bottom, 16)
                         }
                     }
                     .frame(maxWidth: .infinity)

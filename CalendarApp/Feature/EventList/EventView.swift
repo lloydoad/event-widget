@@ -20,6 +20,7 @@ struct EventView: View {
     var body: some View {
         Text(viewModel.content)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(uiColor: .systemBackground))
             .transition(.blurReplace)
         .animation(.easeInOut, value: viewModel.content)
         .onAppear {
