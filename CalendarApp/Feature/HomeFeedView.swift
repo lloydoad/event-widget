@@ -23,11 +23,9 @@ struct HomeFeedView: View {
         }
     }
 
-    private let title = "untitled events widget"
-
 	var body: some View {
 		VStack {
-            ListTitleView(title: title)
+            ListTitleView(title: "events")
             EventListView(
                 identifier: "homeFeed",
                 eventListFetcher: EventListFetcher(
@@ -36,18 +34,10 @@ struct HomeFeedView: View {
                 )
             )
             VStack(spacing: 8) {
-                ForEach(actions, id: \.identifier) { action in
-                    ButtonView(baseStyle: .init(appFont: .large), action: action)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                }
+                Action("create new event", route: .sheet(.composer(nil)))
+                Action("subcribe to more feeds", route: .push(.subscriptions))
                 if let userAccount = appSessionStore.userAccount {
-                    StringBuilder(baseStyle: .init(appFont: .large))
-                        .route(.bracket(
-                            "my events",
-                            page: .profile(userAccount),
-                            color: .secondary))
-                        .view()
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    Action("my events", route: .push(.profile(userAccount)))
                 }
             }
 		}
@@ -55,24 +45,10 @@ struct HomeFeedView: View {
 		.padding(.bottom, 16)
 	}
 
-    private var actions: [StringBuilder.Action] {
-        [
-            .bracket(
-                "create new event",
-                identifier: ButtonIdentifier.createNewEventAction,
-                color: .secondary,
-                action: {
-                    let route = try! DeepLinkParser.Route.sheet(.composer(nil)).url()
-                    UIApplication.shared.open(route)
-                }),
-            .bracket(
-                "subscribe to more friends",
-                identifier: ButtonIdentifier.subscribeToFriendsAction,
-                color: .secondary,
-                action: {
-                    let route = try! DeepLinkParser.Route.push(.subscriptions).url()
-                    UIApplication.shared.open(route)
-                })
-        ]
+    private func Action(_ title: String, route: DeepLinkParser.Route) -> some View {
+        StringBuilder(baseStyle: .init(appFont: .large))
+            .route(.bracket(title, route: route, color: .appTint))
+            .view()
+            .frame(maxWidth: .infinity, alignment: .trailing)
     }
 }

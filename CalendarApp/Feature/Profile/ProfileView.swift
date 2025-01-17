@@ -22,7 +22,7 @@ struct ProfileView: View {
             Text(content())
                 .frame(maxWidth: .infinity, alignment: .leading)
             EventListView(
-                identifier: "profile",
+                identifier: listIdentifier,
                 eventListFetcher: ProfileEventListFetcher(
                     dataStoreProvider: dataStoreProvider,
                     account: account

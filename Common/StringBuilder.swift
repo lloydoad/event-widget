@@ -67,6 +67,12 @@ class StringBuilder {
                   segmentStyle: .init(underline: false, color: color),
                   destination: try! DeepLinkParser.Route.push(page).url())
         }
+
+        static func bracket(_ text: String, route: DeepLinkParser.Route, color: AppColor) -> Route {
+            Route("[\(text)]",
+                  segmentStyle: .init(underline: false, color: color),
+                  destination: try! route.url())
+        }
 	}
 
     class Action: Text, Equatable {
