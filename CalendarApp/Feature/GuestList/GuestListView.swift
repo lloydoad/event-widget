@@ -9,6 +9,7 @@ import SwiftUI
 
 struct GuestListView: View {
     let guests: [AccountModel]
+    private let listIdentifier: String = "guestList"
 
     var body: some View {
         VStack {
@@ -16,7 +17,7 @@ struct GuestListView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     ForEach(guests.sorted(), id: \.uuid) { guest in
-                        AccountView(account: guest)
+                        AccountView(listIdentifier: listIdentifier, account: guest)
                     }
                 }
                 .frame(maxWidth: .infinity)

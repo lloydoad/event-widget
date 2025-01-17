@@ -22,20 +22,20 @@ struct EventView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color(uiColor: .systemBackground))
             .transition(.blurReplace)
-        .animation(.easeInOut, value: viewModel.content)
-        .onAppear {
-            registerActions()
-            viewModel.configure(
-                dataStore: dataStoreProvider.dataStore,
-                appSessionStore: appSessionStore,
-                event: event,
-                listIdentifier: listIdentifier,
-                removeEvent: removeEvent
-            )
-        }
-        .onDisappear {
-            unregisterActions()
-        }
+            .animation(.easeInOut, value: viewModel.content)
+            .onAppear {
+                registerActions()
+                viewModel.configure(
+                    dataStore: dataStoreProvider.dataStore,
+                    appSessionStore: appSessionStore,
+                    event: event,
+                    listIdentifier: listIdentifier,
+                    removeEvent: removeEvent
+                )
+            }
+            .onDisappear {
+                unregisterActions()
+            }
     }
 
     private func registerActions() {

@@ -17,7 +17,8 @@ struct SubscriptionsView: View {
     @EnvironmentObject var dataStoreProvider: DataStoreProvider
     @EnvironmentObject var appSessionStore: AppSessionStore
     let contactSyncWorker: ContactSyncWorking
-    
+    private let listIdentifier: String = "subscriptionsList"
+
     @State private var model: Model = .loading
     @State private var error: Error?
 
@@ -47,9 +48,8 @@ struct SubscriptionsView: View {
                                     .transition(.blurReplace)
                             })
                         } else {
-                            ForEach(accounts, id: \.hashValue) { account in
-                                AccountView(account: account)
-                                    .padding(.bottom, 4)
+                            ForEach(accounts, id: \.hashValue.description) { account in
+                                AccountView(listIdentifier: listIdentifier, account: account)
                             }
                             .transition(.blurReplace)
                         }

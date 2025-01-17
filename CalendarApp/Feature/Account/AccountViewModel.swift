@@ -8,66 +8,45 @@
 import SwiftUI
 
 class AccountViewModel: ObservableObject, Identifiable {
-    enum Control: Equatable, Identifiable {
-        case subscription
-        case profile(identifier: UUID)
-
-        var id: String {
-            switch self {
-            case .subscription: return "subscription"
-            case .profile(identifier: let identifier): return identifier.uuidString
-            }
-        }
-    }
-
-    enum ControlState: Equatable {
-        case enable([Control])
-        case disabled
-    }
-
-    private let profileActionUUID: UUID = UUID()
-
-    var id: String
+    var listIdentifier: String
+    var transformer: AccountTransformer
     var dataStore: DataStoring?
     var appSessionStore: AppSessionStore?
     var account: AccountModel?
 
     @Published var content: AttributedString
-    @Published var controls: ControlState
-    @Published var subscriptionButtonType: SubscriptionButtonView.ButtonType = .loading
     @Published var error: Error?
 
     // MARK: - Init
 
     init() {
-        self.id = UUID().uuidString
+        self.listIdentifier = ""
+        self.transformer = AccountTransformer(listIdentifier: listIdentifier)
         self.content = ""
-        self.controls = .disabled
     }
 
-    func configure(dataStore: DataStoring, appSessionStore: AppSessionStore, account: AccountModel) {
-        self.id = account.uuid.uuidString
+    func configure(dataStore: DataStoring, appSessionStore: AppSessionStore, account: AccountModel, listIdentifier: String) {
         self.dataStore = dataStore
         self.appSessionStore = appSessionStore
         self.account = account
-        self.content = Self.getContent(account: account, appSessionStore: appSessionStore)
-        self.controls = .enable(Self.getControls(account: account, appSessionStore: appSessionStore, profileActionUUID: profileActionUUID))
-        self.updateSubscriptionStatus()
+        self.transformer = AccountTransformer(listIdentifier: listIdentifier)
+        self.content = transformer.transform(account: account, controlResult: .unknown)
+        self.perform(control: .getSubscriptionStatus)
     }
 
     var currentTask: Task<Void, Never>?
-    func updateSubscriptionStatus() {
+    func perform(control: AccountControl) {
         guard let appSessionStore else { return }
         guard let dataStore else { return }
         guard let userAccount = appSessionStore.userAccount else { return }
         guard let account else { return }
         currentTask?.cancel()
-        self.subscriptionButtonType = .loading
+        content = transformer.transform(account: account, controlResult: .unknown)
         currentTask = Task {
             do {
-                let isFollowing = try await dataStore.isFollowing(follower: userAccount, following: account)
+                let result = try await control.action(userAccount: userAccount, account: account, dataStore: dataStore)
                 await MainActor.run {
-                    self.subscriptionButtonType = isFollowing ? .unsubscribe : .subscribe
+                    content = transformer.transform(account: account, controlResult: result)
                 }
             } catch {
                 await MainActor.run {
@@ -75,22 +54,5 @@ class AccountViewModel: ObservableObject, Identifiable {
                 }
             }
         }
-    }
-
-    // MARK: - Content Builders
-
-    static func getControls(account: AccountModel, appSessionStore: AppSessionStore, profileActionUUID: UUID) -> [Control] {
-        guard let userAccount = appSessionStore.userAccount else { return [] }
-        var controls: [Control] = [.profile(identifier: profileActionUUID)]
-        if account != userAccount {
-            controls.append(.subscription)
-        }
-        return controls
-    }
-
-    static func getContent(account: AccountModel, appSessionStore: AppSessionStore) -> AttributedString {
-        guard let userAccount = appSessionStore.userAccount else { return "" }
-        let accountTransformer = AccountTransformer(viewer: userAccount)
-        return accountTransformer.transform(account: account)
     }
 }

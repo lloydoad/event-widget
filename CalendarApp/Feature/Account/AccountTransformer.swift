@@ -8,14 +8,20 @@
 import SwiftUI
 
 struct AccountTransformer {
-    let viewer: AccountModel
+    let listIdentifier: String
 
-    func transform(account: AccountModel) -> AttributedString {
+    func transform(account: AccountModel, controlResult: AccountControl.Result) -> AttributedString {
         let baseStyle = StringBuilder.BaseStyle(appFont: .large)
-        let builder = StringBuilder(baseStyle: baseStyle)
-        builder.text(.primary("\(account.username), \(account.phoneNumber)"))
-        let content = builder.build()
-        return content
+        var builder = StringBuilder(baseStyle: baseStyle)
+            .text(.primary("\(account.username), \(account.phoneNumber)\n"))
+            .route(.bracket(
+                "profile",
+                page: .profile(account),
+                color: .appTint
+            ))
+            .text(.primary(" "))
+            .account(result: controlResult, account: account, listIdentifier: listIdentifier)
+        return builder.build()
     }
 }
 
