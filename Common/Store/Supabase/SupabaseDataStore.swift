@@ -160,14 +160,14 @@ class SupabaseDataStore: DataStoring {
     }
 
     func isFollowing(follower: AccountModel, following: AccountModel) async throws -> Bool {
-        let response = try await client
+        let response: [RealtimeFollow] = try await client
             .from(.follows)
             .select()
             .eq("follower_id", value: follower.uuid)
             .eq("following_id", value: following.uuid)
             .execute()
-            .count
-        return (response ?? 0) > 0
+            .value
+        return response.count > 0
     }
 
     func follow(follower: AccountModel, following: AccountModel) async throws {

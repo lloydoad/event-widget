@@ -69,7 +69,7 @@ struct ProfileView: View {
                         color: .appTint,
                         action: {}
                     ))
-                    .text(.primary(" to "))
+                    .text(.primary(" from "))
             case .notSubscribed:
                 builder = builder
                     .action(.bracket(
