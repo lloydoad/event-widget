@@ -39,7 +39,7 @@ class ActionCentralDispatch {
     }
 
     func register(action: StringBuilder.Action) {
-        ActionLogger.info("Register \(action.identifier)")
+        ActionLogger.trace("Register \(action.identifier)")
         registeredActions[action.identifier] = action
     }
 
@@ -48,7 +48,7 @@ class ActionCentralDispatch {
     }
 
     func deregister(identifier: String) {
-        ActionLogger.info("Deregister \(identifier)")
+        ActionLogger.trace("Deregister \(identifier)")
         if !registeredActions.contains(where: { $0.key == identifier }) {
             ActionLogger.error("Attempted to deregister non-existent action: \(identifier)")
         }

@@ -8,8 +8,6 @@
 import SwiftUI
 import AuthenticationServices
 
-
-
 struct AppleAuthOnboardingStageView: View {
     @EnvironmentObject var context: OnboardingContext
     @Environment(\.colorScheme) var colorScheme: ColorScheme

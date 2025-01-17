@@ -17,7 +17,7 @@ struct AppleAuthOnboardingStage: OnboardingStage {
     }
 
     var personalizedTitle: String? {
-        "👋 connect your account to continue"
+        "👋 connect your apple ID to continue"
     }
 
     func body(context: OnboardingContext) -> AnyView {
