@@ -1,0 +1,18 @@
+name: Sync Feature Flags - TinyFlag
+on:
+  push:
+    paths: ['**/generated_feature_flags/**', '**/*FeatureFlag.swift']
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      # Required for updating stored flags
+      contents: write
+    steps:
+      # checkout current repo
+      - uses: actions/checkout@v3
+      # checkout tiny flags repository
+      - uses: lloydoad/tiny-flagging-action@main
+        with:
+          # token for write access to repository storing feature flags
+          token: ${{ secrets.GITHUB_TOKEN }}

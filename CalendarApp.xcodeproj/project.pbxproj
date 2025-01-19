@@ -95,6 +95,7 @@
 				Store/Supabase/SupabaseClient.swift,
 				Store/Supabase/SupabaseDataStore.swift,
 				StringBuilder.swift,
+				StringFeatureFlag.swift,
 				Theme/AppColor.swift,
 				Theme/AppFont.swift,
 			);
